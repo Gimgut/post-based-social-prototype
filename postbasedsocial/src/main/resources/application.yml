@@ -15,3 +15,12 @@ spring:
 
   profiles:
     active: DbRandomPopulation
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 568593949275-lrg41604loib2nhqbju58bha470ja32r.apps.googleusercontent.com
+            client-secret: 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
+
