@@ -1,12 +1,14 @@
 package gimgut.postbasedsocial.security.authentication;
 
+import gimgut.postbasedsocial.api.user.UserInfo;
+
 public class LoginResponseDto {
     private LoginResponseStatus status;
-    private UserDetailsDto user;
+    private UserInfo userInfo;
 
-    public LoginResponseDto(LoginResponseStatus status, UserDetailsDto userDetailsDto) {
+    public LoginResponseDto(LoginResponseStatus status, UserInfo userInfo) {
         this.status = status;
-        this.user = userDetailsDto;
+        this.userInfo = userInfo;
     }
 
     public LoginResponseStatus getStatus() {
@@ -17,11 +19,11 @@ public class LoginResponseDto {
         this.status = status;
     }
 
-    public UserDetailsDto getUser() {
-        return user;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUser(UserDetailsDto user) {
-        this.user = user;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

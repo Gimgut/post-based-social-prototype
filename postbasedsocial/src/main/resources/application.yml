@@ -23,4 +23,11 @@ spring:
           google:
             client-id: 568593949275-lrg41604loib2nhqbju58bha470ja32r.apps.googleusercontent.com
             client-secret: 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
+            redirectUri: http://localhost:4200/auth/callback
+
+app:
+  security:
+    accessTokenExpiryTimeMs: 600000
+    refreshTokenExpiryTimeMs: 15778800000
+    secret: secret123
 

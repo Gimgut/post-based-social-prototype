@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.security;
+package gimgut.postbasedsocial.security.oauth2;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,12 +28,19 @@ public class InMemoryRequestRepository implements AuthorizationRequestRepository
     public void saveAuthorizationRequest( OAuth2AuthorizationRequest authorizationRequest,
                                           HttpServletRequest request, HttpServletResponse response ) {
         String state = authorizationRequest.getState();
-        logger.info("saveAuthorizationRequest. state: " + state +"\nclient id: " + authorizationRequest.getScopes());
+        logger.info("saveAuthorizationRequest. state: " + state
+                +"\nclient scopes: " + authorizationRequest.getScopes()
+                +"\nclient id: "+ authorizationRequest.getClientId()
+        +"\nredirect uri: " + authorizationRequest.getRedirectUri());
+        //logger.info("request url: " + request.getRequestURL());
+        //logger.info("response header names: " + response.getHeaderNames());
+
         cache.put( state, authorizationRequest );
     }
 
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest( HttpServletRequest request ) {
+
         logger.info("removeAuthorizationRequest");
         String state = request.getParameter( "state" );
         if ( state != null ) {

@@ -1,10 +1,14 @@
 package gimgut.postbasedsocial.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.security.authentication.JwtAuthenticationFilter;
-import gimgut.postbasedsocial.security.oauth2.AuthenticationSuccess;
+import gimgut.postbasedsocial.api.user.UserInfoRepository;
+import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
+import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
+import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
+import gimgut.postbasedsocial.security.oauth2.Oauth2AuthenticationSuccess;
 import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
 import gimgut.postbasedsocial.security.authentication.UserDetailsMapper;
+import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
@@ -39,17 +43,27 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserDetailsMapper userDetailsMapper;
+    private final JwtService jwtService;
 
     private final String AUTH_LOGIN = "/api/auth/signin";
     private final String AUTH_REGISTER = "/api/auth/signup";
+    private final GoogleRegistrationService googleRegistrationService;
+    private final UserInfoRepository userInfoRepository;
 
-    public AppSecurityConfig(ObjectMapper mapper, UserDetailsService userDetailsService,
+    public AppSecurityConfig(ObjectMapper mapper,
+                             UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
-                             UserDetailsMapper userDetailsMapper) {
+                             UserDetailsMapper userDetailsMapper,
+                             JwtService jwtService,
+                             GoogleRegistrationService googleRegistrationService,
+                             UserInfoRepository userInfoRepository) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userDetailsMapper = userDetailsMapper;
+        this.jwtService = jwtService;
+        this.googleRegistrationService = googleRegistrationService;
+        this.userInfoRepository = userInfoRepository;
     }
 
 
@@ -61,27 +75,35 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
+        JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
                 authenticationManagerBean(),
-                userDetailsMapper);
-        jwtAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
+                userDetailsMapper, mapper, jwtService, userInfoRepository);
+        jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //public endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/feed/**" , "/api/user/**", "/api/post/**", "/login/oauth2/**", "/oauth2/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/feed/**" , "/api/user/**", "/api/post/**", "/login/**", "/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER).permitAll();
         //authenticated endpoints
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
         http.authorizeRequests().antMatchers("/**").permitAll();
 
-        http.addFilter(jwtAuthenticationFilter);
-        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(jwtEmailPasswordAuthenticationFilter);
+        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, jwtService), UsernamePasswordAuthenticationFilter.class);
 
-        http.oauth2Login().successHandler(new AuthenticationSuccess()).and().exceptionHandling().authenticationEntryPoint(this::authenticationEntryPoint);
-        http.oauth2Login().authorizationEndpoint().authorizationRequestRepository(new InMemoryRequestRepository());
+        http.oauth2Login()
+                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService))
+                .and()
+                .exceptionHandling().authenticationEntryPoint(this::authenticationEntryPoint);
+        http.oauth2Login()
+                .authorizationEndpoint()
+                    .authorizationRequestRepository(new InMemoryRequestRepository());
+        http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
+
+
         //http.oauth2Login().loginPage("http://localhost:4200/auth").successHandler(new Oauth2AuthenticationSuccess());
         //http.oauth2Client().disable();
         //http.oauth2Login().disable();
@@ -90,7 +112,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void authenticationEntryPoint(HttpServletRequest request, HttpServletResponse response,
                                           AuthenticationException authException ) throws IOException {
-        logger.info("authenticationEntryPoint");
+        logger.info("authentication exception entry point");
         response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
         response.getWriter().write( mapper.writeValueAsString( Collections.singletonMap( "error", "Unauthenticated" ) ) );
     }

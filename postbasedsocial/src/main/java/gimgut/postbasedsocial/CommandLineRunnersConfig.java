@@ -8,7 +8,7 @@ import gimgut.postbasedsocial.api.user.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.security.UserCredentialsEmailRepository;
+import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRegistration;
 import gimgut.postbasedsocial.services.TimeService;
 import org.apache.commons.logging.Log;
@@ -33,7 +33,7 @@ public class CommandLineRunnersConfig {
         return args -> {
             randomPublicationService.addRandomPublications(10);
             List<Post> allPublications = publicationRepository.findAll();
-            allPublications.forEach((x) -> System.out.println(x.toString()));
+            allPublications.forEach((x) -> logger.info(x.toString()));
             allPublications = publicationRepository.findAllByOrderByDatetimeDesc();
             allPublications.forEach((x) -> logger.info(x.toString()));
         };

@@ -1,7 +1,7 @@
 package gimgut.postbasedsocial.security.authentication;
 
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.security.UserCredentialsEmailRepository;
+import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRegistration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

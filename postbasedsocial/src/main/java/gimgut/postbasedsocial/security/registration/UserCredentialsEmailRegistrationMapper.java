@@ -1,6 +1,5 @@
 package gimgut.postbasedsocial.security.registration;
 
-import gimgut.postbasedsocial.api.user.UserInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -8,5 +7,5 @@ import org.mapstruct.Mapping;
 public interface UserCredentialsEmailRegistrationMapper {
 
     @Mapping(target = "userInfo.username", source = "username")
-    UserCredentialsEmailRegistration toUserCredentialsEmailRegistration(RegistrationRequestDto registrationRequestDto);
+    UserCredentialsEmailRegistration toUserCredentialsEmailRegistration(EmailRegistrationRequestDto emailRegistrationRequestDto);
 }

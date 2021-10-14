@@ -1,8 +1,11 @@
 package gimgut.postbasedsocial.security.authentication;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.user.UserInfoRepository;
+import gimgut.postbasedsocial.security.AuthenticationType;
+import gimgut.postbasedsocial.security.JwtService;
+import gimgut.util.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,18 +18,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsMapper userDetailsMapper;
     private final ObjectMapper objectMapper;
+    private final JwtService jwtService;
+    private final UserInfoRepository userInfoRepository;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsMapper userDetailsMapper) {
+    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsMapper userDetailsMapper, ObjectMapper objectMapper, JwtService jwtService, UserInfoRepository userInfoRepository) {
         this.authenticationManager = authenticationManager;
         this.userDetailsMapper = userDetailsMapper;
-        objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
+        this.jwtService = jwtService;
+        this.userInfoRepository = userInfoRepository;
     }
 
     @Override
@@ -51,30 +57,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         logger.info("Authentication is successful for user: " + authResult.getName());
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-        String role = userDetails.getAuthorities().stream().toList().get(0).toString();
-        String access_token = JWT.create()
-                .withSubject(userDetails.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 600))
-                .withIssuer(request.getRequestURI().toString())
-                .withClaim("role", role)
-                .sign(algorithm);
+        Pair<String, String> tokens = jwtService.getAccessRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
-        String refresh_token = JWT.create()
-                .withSubject(userDetails.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) //7 days expiry
-                .withIssuer(request.getRequestURI().toString())
-                .withClaim("role", role)
-                .sign(algorithm);
-
-
-        response.setHeader("access_token", access_token);
-        response.setHeader("refresh_token", refresh_token);
+        response.setHeader("access_token", tokens.getFirst());
+        response.setHeader("refresh_token", tokens.getSecond());
 
         response.setContentType("application/json");
         objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.SUCCESS, userDetailsMapper.toUserDetailsDto(userDetails))
+                new LoginResponseDto(LoginResponseStatus.SUCCESS, userInfoRepository.findById(userDetails.getId()).orElse(null))
         );
     }
 

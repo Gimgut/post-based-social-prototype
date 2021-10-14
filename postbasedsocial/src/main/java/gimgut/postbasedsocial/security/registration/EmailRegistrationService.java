@@ -5,14 +5,13 @@ import gimgut.postbasedsocial.api.user.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.security.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.services.TimeService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class RegistrationService {
+public class EmailRegistrationService {
 
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -20,7 +19,7 @@ public class RegistrationService {
     private final UserInfoRepository userInfoRepository;
     private final TimeService timeService;
 
-    public RegistrationService(RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserCredentialsEmailRepository userCredentialsEmailRepository, UserInfoRepository userInfoRepository, TimeService timeService) {
+    public EmailRegistrationService(RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserCredentialsEmailRepository userCredentialsEmailRepository, UserInfoRepository userInfoRepository, TimeService timeService) {
         this.userCredentialsEmailRepository = userCredentialsEmailRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;

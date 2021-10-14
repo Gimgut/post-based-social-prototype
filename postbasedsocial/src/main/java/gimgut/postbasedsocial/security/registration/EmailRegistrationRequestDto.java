@@ -1,14 +1,14 @@
 package gimgut.postbasedsocial.security.registration;
 
-public class RegistrationRequestDto {
+public class EmailRegistrationRequestDto {
     private String email;
     private String username;
     private String password;
 
-    public RegistrationRequestDto() {
+    public EmailRegistrationRequestDto() {
     }
 
-    public RegistrationRequestDto(String email, String username, String password) {
+    public EmailRegistrationRequestDto(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;

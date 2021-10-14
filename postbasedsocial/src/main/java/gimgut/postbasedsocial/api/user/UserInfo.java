@@ -25,16 +25,23 @@ public class UserInfo {
     @Column(name = "dt_registration")
     private LocalDateTime registrationTime;
 
+    /**
+     * Contains picture url
+     * TODO: add service that shortens picture url
+     */
+    private String picture;
+
     public UserInfo() {
     }
 
-    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime) {
+    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime, String picture) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.activated = activated;
         this.locked = locked;
         this.registrationTime = registrationTime;
+        this.picture = picture;
     }
 
     public Long getId() {
@@ -95,5 +102,13 @@ public class UserInfo {
                 ", locked=" + locked +
                 ", registrationTime=" + registrationTime +
                 '}';
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

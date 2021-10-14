@@ -1,9 +1,7 @@
 package gimgut.postbasedsocial.security.authorization;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import gimgut.postbasedsocial.security.JwtService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,9 +20,11 @@ import java.util.Collection;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final String AUTH_LOGIN;
+    private JwtService jwtService;
 
-    public JwtAuthorizationFilter(String auth_login) {
+    public JwtAuthorizationFilter(String auth_login, JwtService jwtService) {
         AUTH_LOGIN = auth_login;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -38,10 +38,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    String token = authorizationHeader.substring(7);
-                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                    JWTVerifier verifier = JWT.require(algorithm).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
+                    String accessToken = authorizationHeader.substring(7);
+
+                    DecodedJWT decodedJWT = jwtService.verifyAccessToken(accessToken);
 
                     String username = decodedJWT.getSubject();
                     String role = decodedJWT.getClaim("role").asString();
