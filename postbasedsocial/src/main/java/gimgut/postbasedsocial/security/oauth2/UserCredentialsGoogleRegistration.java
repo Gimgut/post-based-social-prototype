@@ -1,11 +1,12 @@
 package gimgut.postbasedsocial.security.oauth2;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.security.SecuredUser;
 
 import javax.persistence.*;
 
 @Entity(name = "UserCredentialsGoogle")
-public class UserCredentialsGoogleRegistration {
+public class UserCredentialsGoogleRegistration implements SecuredUser {
 
     @Id
     @SequenceGenerator(name = "user_cred_google_sequence", sequenceName = "user_cred_google_sequence", allocationSize = 1)

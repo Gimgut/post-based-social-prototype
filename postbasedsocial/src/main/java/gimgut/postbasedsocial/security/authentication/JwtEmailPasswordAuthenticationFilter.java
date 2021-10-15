@@ -58,7 +58,7 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        Pair<String, String> tokens = jwtService.getAccessRefreshTokens(userDetails, AuthenticationType.EMAIL);
+        Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
         response.setHeader("access_token", tokens.getFirst());
         response.setHeader("refresh_token", tokens.getSecond());

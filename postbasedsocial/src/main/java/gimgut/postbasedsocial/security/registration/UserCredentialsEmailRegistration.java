@@ -1,11 +1,12 @@
 package gimgut.postbasedsocial.security.registration;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.security.SecuredUser;
 
 import javax.persistence.*;
 
 @Entity(name = "UserCredentialsEmail")
-public class UserCredentialsEmailRegistration {
+public class UserCredentialsEmailRegistration implements SecuredUser {
 
     @Id
     @SequenceGenerator(name = "user_cred_email_reg_sequence", sequenceName = "user_cred_email_reg_sequence", allocationSize = 1)

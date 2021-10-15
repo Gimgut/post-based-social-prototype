@@ -51,7 +51,7 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
             UserCredentialsGoogleRegistration registeredUser = googleRegistrationService.getUserByEmailOrRegisterAsNew(user);
             if (registeredUser != null) {
 
-                Pair<String, String> tokens = jwtService.getAccessRefreshTokens(registeredUser);
+                Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
 
                 httpServletResponse.setHeader("access_token", tokens.getFirst());
                 httpServletResponse.setHeader("refresh_token", tokens.getSecond());
@@ -72,8 +72,5 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
             objectMapper.writeValue(httpServletResponse.getOutputStream(),
                     new LoginResponseDto(LoginResponseStatus.FAILED, null));
         }
-
-        objectMapper.writeValue(httpServletResponse.getOutputStream(), Map.of("res", "hi!"));
-                //new LoginResponseDto(LoginResponseStatus.SUCCESS, userDetailsMapper.toUserDetailsDto(userDetails));
     }
 }
