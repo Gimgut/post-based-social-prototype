@@ -1,0 +1,14 @@
+<div class="header-main">
+    <div class="header-content">
+  
+      <div class="header-logo div-horizontal">
+        <h1 class="white-text">Prototype</h1>
+      </div>
+  
+      <div class="header-auth div-horizontal">
+        <a *ngIf="profileContainer.user === undefined" routerLink="/auth" class="white-text">Sign In</a>
+        <a *ngIf="profileContainer.user !== undefined" class="white-text">{{profileContainer.user.username}}</a>
+      </div>
+    </div>
+  </div>
+  
