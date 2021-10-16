@@ -22,14 +22,12 @@ import java.io.IOException;
 public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsMapper userDetailsMapper;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
     private final UserInfoRepository userInfoRepository;
 
-    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsMapper userDetailsMapper, ObjectMapper objectMapper, JwtService jwtService, UserInfoRepository userInfoRepository) {
+    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService, UserInfoRepository userInfoRepository) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsMapper = userDetailsMapper;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
         this.userInfoRepository = userInfoRepository;

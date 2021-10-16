@@ -7,7 +7,6 @@ import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
 import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
 import gimgut.postbasedsocial.security.oauth2.Oauth2AuthenticationSuccess;
 import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
-import gimgut.postbasedsocial.security.authentication.UserDetailsMapper;
 import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,25 +41,23 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper mapper;
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserDetailsMapper userDetailsMapper;
     private final JwtService jwtService;
 
     private final String AUTH_LOGIN = "/api/auth/signin";
     private final String AUTH_REGISTER = "/api/auth/signup";
+    private final String AUTH_REFRESH_TOKEN = "/api/auth/refresh_token";
     private final GoogleRegistrationService googleRegistrationService;
     private final UserInfoRepository userInfoRepository;
 
     public AppSecurityConfig(ObjectMapper mapper,
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
-                             UserDetailsMapper userDetailsMapper,
                              JwtService jwtService,
                              GoogleRegistrationService googleRegistrationService,
                              UserInfoRepository userInfoRepository) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.userDetailsMapper = userDetailsMapper;
         this.jwtService = jwtService;
         this.googleRegistrationService = googleRegistrationService;
         this.userInfoRepository = userInfoRepository;
@@ -76,8 +73,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
-                authenticationManagerBean(),
-                userDetailsMapper, mapper, jwtService, userInfoRepository);
+                authenticationManagerBean(), mapper, jwtService, userInfoRepository);
         jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
@@ -85,7 +81,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //public endpoints
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/feed/**" , "/api/user/**", "/api/post/**", "/login/**", "/oauth2/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER).permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER, AUTH_REFRESH_TOKEN).permitAll();
         //authenticated endpoints
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
