@@ -4,12 +4,12 @@ import { User } from '../models/user.model';
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileContainer {
+export class ProfileService {
 
   user: User | undefined;
 
   constructor() {
-    console.log('profile container constructor');
+    console.log('profile service constructor');
    }
 
   public setProfileUser(user: User) {

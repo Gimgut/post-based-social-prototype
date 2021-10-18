@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostService } from './services/post.service';
-import { ProfileContainer } from './services/profile.container';
 import { FeedComponent } from './components/feed/feed.component';
 import { HeaderMainComponent } from './components/header-main/header-main.component';
 import { PostComponent } from './components/post/post.component';
 import { RouterModule } from '@angular/router';
-import { Post } from './models/post.model';
+import { ProfileService } from './services/profile.service';
 
 
 
@@ -22,7 +21,7 @@ import { Post } from './models/post.model';
   ],
   providers: [
     PostService,
-    ProfileContainer
+    ProfileService
   ],
   exports: [
     FeedComponent,

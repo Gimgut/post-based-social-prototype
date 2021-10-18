@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileContainer } from '../../services/profile.container';
+import { ProfileService } from '../../services/profile.service';
+
 
 @Component({
   selector: 'app-header-main',
@@ -9,7 +10,7 @@ import { ProfileContainer } from '../../services/profile.container';
 export class HeaderMainComponent implements OnInit {
 
   constructor(
-    public profileContainer: ProfileContainer
+    public profileService: ProfileService
   ) { }
 
   ngOnInit(): void {

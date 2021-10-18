@@ -6,8 +6,8 @@
       </div>
   
       <div class="header-auth div-horizontal">
-        <a *ngIf="profileContainer.user === undefined" routerLink="/auth" class="white-text">Sign In</a>
-        <a *ngIf="profileContainer.user !== undefined" class="white-text">{{profileContainer.user.username}}</a>
+        <a *ngIf="profileService.user === undefined" routerLink="/auth" class="white-text">Sign In</a>
+        <a *ngIf="profileService.user !== undefined" class="white-text">{{profileService.user.username}}</a>
       </div>
     </div>
   </div>

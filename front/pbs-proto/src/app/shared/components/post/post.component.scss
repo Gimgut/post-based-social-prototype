@@ -1,0 +1,44 @@
+h2 {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    margin: 0;
+    padding: 0;
+}
+
+h5 {
+    margin: 0;
+    padding: 0;
+}
+
+.post {
+    background-color: white;
+    padding: 0.5em;
+    margin-top: 0.2em;
+}
+
+.post-header {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.post-author {
+    display: inline-block;
+    margin-right: 1em;
+    margin-bottom: 0;
+}
+
+.post-date {
+    display: inline-block;
+}
+
+.post-body {
+    text-align: justify;
+}
+
+.txt-normal {
+    text-decoration: none;
+    font-weight: normal;
+}

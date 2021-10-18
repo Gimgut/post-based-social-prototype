@@ -45,12 +45,14 @@ public class RandomEnglishGenerator extends StringGenerator {
         }
     }
 
+    //TODO: Build a distribution chart to look at
     public double f() {
         double alpha = 3.0;
         double x = alpha * random.nextDouble();
         return Math.exp(-alpha * x);
     }
-
+    
+    //TODO: Build a distribution chart to look at
     public int generateRandomWordIndex() {
         double y = f();
         return (int) (y*(double)words.size());
