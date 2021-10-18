@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { RegistrationResponseDto, RegistrationResponseStatus } from './registration-response.dto';
 import { RegistrationService } from './registration.service';
 import { UserCredentialsDto } from './user-credentials.dto';
@@ -39,7 +39,6 @@ export class RegistrationComponent implements OnInit {
   }, this.passwordMatchValidator );
 
   constructor(
-    private formBuilder: FormBuilder,
     private registrationService: RegistrationService
   ) {}
 

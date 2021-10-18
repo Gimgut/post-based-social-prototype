@@ -51,7 +51,7 @@ public class RandomEnglishGenerator extends StringGenerator {
         double x = alpha * random.nextDouble();
         return Math.exp(-alpha * x);
     }
-    
+
     //TODO: Build a distribution chart to look at
     public int generateRandomWordIndex() {
         double y = f();
