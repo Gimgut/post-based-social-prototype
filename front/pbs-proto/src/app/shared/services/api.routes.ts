@@ -13,15 +13,18 @@ export class ApiRoutes {
   }
 
   getPost = (postId: string) =>
-    `${this.apiUrl}/api/post/${postId}`
+    `${this.apiUrl}/api/post/${postId}`;
 
   //Submit lastPostId = ''; to show first posts
   getFeedRecent = (lastPostId: string) =>
-    `${this.apiUrl}/api/feed/recent/${lastPostId}`
+    `${this.apiUrl}/api/feed/recent/${lastPostId}`;
 
   createNewAccount = () =>
-    `${this.apiUrl}/api/auth/signup`
+    `${this.apiUrl}/api/auth/signup`;
 
   signIn_Email = () =>
-    `${this.apiUrl}/api/auth/signin`
+    `${this.apiUrl}/api/auth/signin`;
+
+  refreshToken = () =>
+    `${this.apiUrl}/api/auth/refresh_token`;
 }
