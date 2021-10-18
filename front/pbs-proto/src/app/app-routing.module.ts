@@ -7,7 +7,8 @@ const routes: Routes = [
     path: '',
     children: [
       { path: 'recent', loadChildren: () => import('./modules/feed-recent/feed-recent.module').then(m => m.FeedRecentModule) },
-      { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => AuthModule) }
+      { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
+      { path: 'post/:parameter', loadChildren: () => import('./modules/post-page/post-page.module').then(m => m.PostPageModule) },
     ]
   }
 ];
