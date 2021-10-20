@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { LoginResponseAdapter, LoginResponseDto, LoginResponseStatus } from '../../dto/auth/login-response.dto';
+import { LoginResponseDto, LoginResponseStatus } from '../../dto/auth/login-response.dto';
 import { User } from '../../models/user.model';
 import { ApiRoutes } from '../api.routes';
 import { ProfileService } from '../profile.service';
@@ -9,7 +9,7 @@ import { ProfileService } from '../profile.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationService implements OnInit {
+export class AuthenticationServiceOld implements OnInit {
 
   user: User | undefined;
   isAuthenticated = false;
@@ -28,7 +28,6 @@ export class AuthenticationService implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private loginResponseAdapter: LoginResponseAdapter,
     private apiRoutes: ApiRoutes,
     private profileService: ProfileService
     ) { }
@@ -38,30 +37,23 @@ export class AuthenticationService implements OnInit {
 
     //try authorization by refresh token if possible
     if (this.refresh_token != null && this.refresh_token.length > 0) {
-      this.tryRefreshToken();
+      //this.tryRefreshToken();
     }
   }
 
+  /*
   tryRefreshToken() {
     this.http
   }
+  */
 
+  /*
   tryGoogleAuth() {
     //window.location.href=this.apiRoutes.apiUrl + "/login/oauth2/code/google";
     window.location.href=this.apiRoutes.apiUrl +"/oauth2/authorization/google";
-    
-    /*
-    this.http.get(this.apiRoutes.apiUrl + "/login/oauth2/code/google").subscribe(
-      response => {
-        console.log("tryGoogleAuth() response: " + response);
-      },
-      error => {
-        console.log("tryGoogleAuth() error: " + error);
-      }
-    );
-    */
   }
-
+*/
+  /*
   trySignIn_ByEmail(email: string, password: string) {
 
     if (this.isAuthenticating || this.isAuthenticated)
@@ -74,7 +66,7 @@ export class AuthenticationService implements OnInit {
       password: password
     };
 
-    this.http.post(this.apiRoutes.signIn_Email(), requestBody, { observe: 'response' }).subscribe(
+    this.http.post(this.apiRoutes.loginWithEmailPassword(), requestBody, { observe: 'response' }).subscribe(
       response => {
         const loginResponse: LoginResponseDto = this.loginResponseAdapter.adapt(response.body);
         console.log("status: " + loginResponse.status);
@@ -114,7 +106,7 @@ export class AuthenticationService implements OnInit {
       }
     )
   }
-
+*/
   logOut() {
     this.user = undefined;
     this.isAuthenticated = false;

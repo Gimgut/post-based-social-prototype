@@ -16,6 +16,6 @@ public interface UserCredentialsEmailRepository extends JpaRepository<UserCreden
     @Query("SELECT u FROM UserCredentialsEmail u JOIN FETCH u.userInfo WHERE u.email=:email")
     UserCredentialsEmailRegistration findByEmail_Eager(String email);
 
-    @Query("SELECT u FROM UserCredentialsEmail u JOIN FETCH u.userInfo WHERE u.userInfo=:uiid")
+    @Query("SELECT u FROM UserCredentialsEmail u JOIN FETCH u.userInfo WHERE u.userInfo.id=:uiid")
     UserCredentialsEmailRegistration findByUserInfoId_Eager(Long uiid);
 }

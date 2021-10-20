@@ -32,7 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 !user.getUserInfo().isLocked(),
                 true,
                 user.getUserInfo().isActivated(),
-                Collections.singleton(Roles.valueOf(user.getUserInfo().getRole().getName()))
+                Collections.singleton(Roles.valueOf(user.getUserInfo().getRole().getName())),
+                user.getUserInfo()
         );
         return userDetails;
     }

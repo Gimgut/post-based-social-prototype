@@ -13,9 +13,6 @@ spring:
       hibernate:
         globally_quoted_identifiers: true
 
-  profiles:
-    active: DbRandomPopulation
-
   security:
     oauth2:
       client:
@@ -23,7 +20,10 @@ spring:
           google:
             client-id: 568593949275-lrg41604loib2nhqbju58bha470ja32r.apps.googleusercontent.com
             client-secret: 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
-            redirectUri: http://localhost:4200/auth/callback
+            redirectUri: http://localhost:4200/auth/oauth2/callback
+
+  profiles:
+    active: DbRandomPopulation
 
 app:
   security:

@@ -29,6 +29,6 @@
       Don't have an account? <a [routerLink]="['/auth/signup']">Sign Up</a>
     </div>
   
-    <div *ngIf="authenticationService.isAuthenticating" class="loader overlay">Loading...</div>
+    <div *ngIf="isAuthenticating" class="loader overlay">Loading...</div>
   </div>
   

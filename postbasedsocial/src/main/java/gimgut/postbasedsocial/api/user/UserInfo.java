@@ -27,7 +27,7 @@ public class UserInfo {
 
     /**
      * Contains picture url
-     * TODO: add service that shortens picture url
+     * TODO: add a service that shortens picture url
      */
     private String picture;
 

@@ -19,19 +19,22 @@ import java.util.Collection;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final String AUTH_LOGIN;
+    private final String AUTH_LOGIN_URL;
+    private final String REFRESH_TOKEN_URL;
     private JwtService jwtService;
 
-    public JwtAuthorizationFilter(String auth_login, JwtService jwtService) {
-        AUTH_LOGIN = auth_login;
+    public JwtAuthorizationFilter(String auth_login_url, String refresh_token_url, JwtService jwtService) {
+        this.AUTH_LOGIN_URL = auth_login_url;
+        this.REFRESH_TOKEN_URL = refresh_token_url;
         this.jwtService = jwtService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("Enter JwtAuthorizationFilter...");
-        if (request.getServletPath().equals(AUTH_LOGIN)) {
-            logger.info("Skipping JwtAuthorizationFilter because path is " + AUTH_LOGIN);
+        String servletPath = request.getServletPath();
+        if (servletPath.equals(AUTH_LOGIN_URL) || servletPath.equals(REFRESH_TOKEN_URL)) {
+            logger.info("Skipping JwtAuthorizationFilter because path is " + AUTH_LOGIN_URL + "or" + REFRESH_TOKEN_URL);
             filterChain.doFilter(request, response);
         } else {
             logger.info("Try authorization...");

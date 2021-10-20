@@ -22,8 +22,11 @@ export class ApiRoutes {
   createNewAccount = () =>
     `${this.apiUrl}/api/auth/signup`;
 
-  signIn_Email = () =>
+  loginWithEmailPassword = () =>
     `${this.apiUrl}/api/auth/signin`;
+
+  loginWithGoogle = () =>
+   `${this.apiUrl}/oauth2/authorization/google`;
 
   refreshToken = () =>
     `${this.apiUrl}/api/auth/refresh_token`;

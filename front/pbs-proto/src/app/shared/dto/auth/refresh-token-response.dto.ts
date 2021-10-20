@@ -15,6 +15,7 @@ export class RefreshTokenResponseDto {
   ) { }
 }
 
+/*
 @Injectable({
   providedIn: "root",
 })
@@ -33,3 +34,4 @@ export class RefreshTokenResponseAdapter implements Adapter<RefreshTokenResponse
     );
   }
 }
+*/

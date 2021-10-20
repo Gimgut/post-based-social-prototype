@@ -9,10 +9,13 @@ export enum LoginResponseStatus {
 export class LoginResponseDto {
   constructor(
     public status: LoginResponseStatus,
+    public accessToken: string,
+    public refreshToken: string,
     public userInfo: User
   ) { }
 }
 
+/*
 @Injectable({
   providedIn: "root",
 })
@@ -23,6 +26,7 @@ export class LoginResponseAdapter implements Adapter<LoginResponseDto> {
   }
 
   adapt(item: any): LoginResponseDto {
-    return new LoginResponseDto(item.status as LoginResponseStatus, this.userAdapter.adapt(item.userInfo == undefined ? '' : item.userInfo));
+    return new LoginResponseDto(item.status as LoginResponseStatus, this.userAdapter.adapt(item.userInfo === undefined ? null : item.userInfo));
   }
 }
+*/

@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { RefreshTokenResponseAdapter, RefreshTokenResponseDto, RefreshTokenResponseStatus } from '../../dto/auth/refresh-token-response.dto';
+import { Observable } from 'rxjs';
+import { RefreshTokenResponseDto, RefreshTokenResponseStatus } from '../../dto/auth/refresh-token-response.dto';
 import { User } from '../../models/user.model';
 import { ApiRoutes } from '../api.routes';
 import { ProfileService } from '../profile.service';
@@ -19,11 +20,11 @@ export class SecurityService implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private apiRoutes: ApiRoutes,
-    private refreshTokenResponseAdapter: RefreshTokenResponseAdapter
+    private apiRoutes: ApiRoutes
   ) { }
 
   ngOnInit(): void {
+    /*
     console.log('Security service init');
 
     this.isAuthenticating = true;
@@ -52,8 +53,10 @@ export class SecurityService implements OnInit {
         this.isAuthenticating = false;
       }
     )
+    */
   }
 
+/*
   public getAuthenticatedProfile() {
     return this.authenticatedUser;
   }
@@ -67,10 +70,11 @@ export class SecurityService implements OnInit {
     this.access_token = null;
   }
 
-  private callRefreshToken(refresh_token: String) {
+  private callRefreshToken(refresh_token: String): Observable<any> {
     const requestBody = {
       refreshToken: refresh_token
     };
-    return this.http.post(this.apiRoutes.signIn_Email(), requestBody, { observe: 'response' });
+    return this.http.post(this.apiRoutes.refreshToken(), requestBody, { observe: 'response' });
   }
+  */
 }

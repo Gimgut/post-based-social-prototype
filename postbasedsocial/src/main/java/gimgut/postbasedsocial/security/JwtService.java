@@ -13,6 +13,8 @@ import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRepository;
 import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
 import gimgut.util.Pair;
 import gimgut.util.Triplet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
+    private final Log logger = LogFactory.getLog(this.getClass());
     private final String secret;
     private final long accessTokenExpiryTimeMs;
     private final long refreshTokenExpiryTimeMs;
@@ -127,7 +130,8 @@ public class JwtService {
                 .withPayload(Map.of(
                         "role", role,
                         "ap", authenticationType.name(), //ap - authentication provider/type
-                        "uiid", uiid
+                        "uiid", uiid,
+                        "aexp", this.accessTokenExpiryTimeMs //access token expiry time
                 ))
                 .sign(refreshTokenAlgorithm);
         return refresh_token;
@@ -145,7 +149,18 @@ public class JwtService {
         Map<String, String> payload;
         try {
             payload = mapper.readValue(decoder.decode(chunks[1]), HashMap.class);
-            Long uiid = Long.parseLong(payload.get("uiid"));
+
+            Long uiid;
+            Object uiidObj = payload.get("uiid");
+            if (uiidObj.getClass() == Integer.class) {
+                uiid = ((Integer) uiidObj).longValue();
+            } else if (uiidObj.getClass() == Long.class) {
+                uiid = (Long)uiidObj;
+            } else {
+                return null;
+            }
+
+            //Long uiid = Long.parseLong(new String(payload.get("uiid")));
             AuthenticationType authenticationType = AuthenticationType.valueOf(payload.get("ap"));
             SecuredUser securedUser;
             switch (authenticationType) {
@@ -155,7 +170,7 @@ public class JwtService {
                     return null;
                 }
             }
-
+            
             verifyRefreshToken(refreshToken, securedUser.getPassword());
 
             String access_token = getAccessToken(

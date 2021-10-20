@@ -2,7 +2,6 @@ package gimgut.postbasedsocial.security.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.util.Pair;
@@ -24,13 +23,11 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
-    private final UserInfoRepository userInfoRepository;
 
-    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService, UserInfoRepository userInfoRepository) {
+    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
-        this.userInfoRepository = userInfoRepository;
     }
 
     @Override
@@ -58,12 +55,12 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
         Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
-        response.setHeader("access_token", tokens.getFirst());
-        response.setHeader("refresh_token", tokens.getSecond());
+        //response.setHeader("access_token", tokens.getFirst());
+        //response.setHeader("refresh_token", tokens.getSecond());
 
         response.setContentType("application/json");
         objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.SUCCESS, userInfoRepository.findById(userDetails.getId()).orElse(null))
+                new LoginResponseDto(LoginResponseStatus.SUCCESS, tokens.getFirst(), tokens.getSecond(), userDetails.getUserInfo())
         );
     }
 
@@ -73,7 +70,7 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
         response.setStatus(200);
         response.setContentType("application/json");
         objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.FAILED, null)
+                new LoginResponseDto(LoginResponseStatus.FAILED, null, null, null)
         );
     }
 }

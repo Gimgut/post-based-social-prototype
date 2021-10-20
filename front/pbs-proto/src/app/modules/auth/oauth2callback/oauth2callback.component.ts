@@ -12,15 +12,24 @@ export class Oauth2callbackComponent  implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient) { }
+    private http: HttpClient
+  ) { }
 
   ngOnInit(): void {
     console.log('nginit oauth2callback');
+    /*
+    const params = this.route.snapshot.params;
+    this.fetchToken(params.code, params.state).subscribe(data => {
+      console.log('FETCH TOKEN CALL RESULT = ' + (data as any).userInfo.username);
+    });
+    */
+    
     this.route.queryParams.subscribe( p => {
       this.fetchToken(p.code, p.state).subscribe(data => {
         console.log('FETCH TOKEN CALL RESULT = ' + (data as any).userInfo.username);
       })
     });
+    
   }
 
   fetchToken(code: string, state: string) {

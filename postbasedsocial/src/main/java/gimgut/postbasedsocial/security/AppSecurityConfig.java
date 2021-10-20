@@ -1,7 +1,6 @@
 package gimgut.postbasedsocial.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
 import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
 import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
@@ -30,7 +29,6 @@ import org.springframework.web.filter.CorsFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -47,20 +45,18 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final String AUTH_REGISTER = "/api/auth/signup";
     private final String AUTH_REFRESH_TOKEN = "/api/auth/refresh_token";
     private final GoogleRegistrationService googleRegistrationService;
-    private final UserInfoRepository userInfoRepository;
 
     public AppSecurityConfig(ObjectMapper mapper,
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
-                             GoogleRegistrationService googleRegistrationService,
-                             UserInfoRepository userInfoRepository) {
+                             GoogleRegistrationService googleRegistrationService
+    ) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
         this.googleRegistrationService = googleRegistrationService;
-        this.userInfoRepository = userInfoRepository;
     }
 
 
@@ -73,7 +69,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
-                authenticationManagerBean(), mapper, jwtService, userInfoRepository);
+                authenticationManagerBean(), mapper, jwtService);
         jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
@@ -88,29 +84,33 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
-        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, jwtService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService), UsernamePasswordAuthenticationFilter.class);
+
+        //Called after auth fail on ".authenticated()" matcher, no mapping for this request url. f.e. /api/r
+        //Default spring implementation: redirect to login page
+        http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
 
         http.oauth2Login()
-                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService))
-                .and()
-                .exceptionHandling().authenticationEntryPoint(this::authenticationEntryPoint);
+                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService));
         http.oauth2Login()
                 .authorizationEndpoint()
                     .authorizationRequestRepository(new InMemoryRequestRepository());
         http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
 
 
+        //http.oauth2Login().loginPage("http://localhost:8080/login");
         //http.oauth2Login().loginPage("http://localhost:4200/auth").successHandler(new Oauth2AuthenticationSuccess());
         //http.oauth2Client().disable();
         //http.oauth2Login().disable();
 
     }
 
-    private void authenticationEntryPoint(HttpServletRequest request, HttpServletResponse response,
+    private void authenticationExceptionEntryPoint(HttpServletRequest request,
+                                          HttpServletResponse response,
                                           AuthenticationException authException ) throws IOException {
         logger.info("authentication exception entry point");
         response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
-        response.getWriter().write( mapper.writeValueAsString( Collections.singletonMap( "error", "Unauthenticated" ) ) );
+        //response.getWriter().write( mapper.writeValueAsString( Collections.singletonMap( "error", "unauthenticated" ) ) );
     }
 
     @Bean

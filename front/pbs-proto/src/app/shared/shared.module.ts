@@ -6,6 +6,7 @@ import { HeaderMainComponent } from './components/header-main/header-main.compon
 import { PostComponent } from './components/post/post.component';
 import { RouterModule } from '@angular/router';
 import { ProfileService } from './services/profile.service';
+import { AuthenticationService } from './services/auth/authentication.service';
 
 
 
@@ -21,7 +22,8 @@ import { ProfileService } from './services/profile.service';
   ],
   providers: [
     PostService,
-    ProfileService
+    ProfileService,
+    AuthenticationService
   ],
   exports: [
     FeedComponent,

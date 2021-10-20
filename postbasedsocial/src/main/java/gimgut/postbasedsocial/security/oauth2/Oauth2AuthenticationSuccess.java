@@ -16,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 @Component
 public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler {
@@ -53,12 +52,12 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
 
                 Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
 
-                httpServletResponse.setHeader("access_token", tokens.getFirst());
-                httpServletResponse.setHeader("refresh_token", tokens.getSecond());
+                //httpServletResponse.setHeader("access_token", tokens.getFirst());
+                //httpServletResponse.setHeader("refresh_token", tokens.getSecond());
 
                 httpServletResponse.setContentType("application/json");
                 objectMapper.writeValue(httpServletResponse.getOutputStream(),
-                        new LoginResponseDto(LoginResponseStatus.SUCCESS, registeredUser.getUserInfo())
+                        new LoginResponseDto(LoginResponseStatus.SUCCESS, tokens.getFirst(), tokens.getSecond(), registeredUser.getUserInfo())
                 );
             } else {
                 failed = true;
@@ -70,7 +69,7 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
         if (failed) {
             httpServletResponse.setStatus(200);
             objectMapper.writeValue(httpServletResponse.getOutputStream(),
-                    new LoginResponseDto(LoginResponseStatus.FAILED, null));
+                    new LoginResponseDto(LoginResponseStatus.FAILED, null, null, null));
         }
     }
 }
