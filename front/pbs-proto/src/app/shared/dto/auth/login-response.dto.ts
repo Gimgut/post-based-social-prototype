@@ -15,7 +15,7 @@ export class LoginResponseDto {
   ) { }
 }
 
-/*
+
 @Injectable({
   providedIn: "root",
 })
@@ -26,7 +26,9 @@ export class LoginResponseAdapter implements Adapter<LoginResponseDto> {
   }
 
   adapt(item: any): LoginResponseDto {
-    return new LoginResponseDto(item.status as LoginResponseStatus, this.userAdapter.adapt(item.userInfo === undefined ? null : item.userInfo));
+    return new LoginResponseDto(item.status as LoginResponseStatus, 
+      item.accessToken,
+      item.refreshToken,
+      this.userAdapter.adapt(item.userInfo ?? null));
   }
 }
-*/

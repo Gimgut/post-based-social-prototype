@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { LoginResponseDto, LoginResponseStatus } from '../../dto/auth/login-response.dto';
-import { RefreshTokenResponseDto, RefreshTokenResponseStatus } from '../../dto/auth/refresh-token-response.dto';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { LoginResponseAdapter, LoginResponseDto, LoginResponseStatus } from '../../dto/auth/login-response.dto';
+import { RefreshTokenResponseAdapter, RefreshTokenResponseDto, RefreshTokenResponseStatus } from '../../dto/auth/refresh-token-response.dto';
 import { User } from '../../models/user.model';
 import { ApiRoutes } from '../api.routes';
 
@@ -21,7 +21,9 @@ export class AuthenticationService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private apiRoutes: ApiRoutes
+    private apiRoutes: ApiRoutes,
+    private loginResponseAdapter: LoginResponseAdapter,
+    private refreshTokenResponseAdapter: RefreshTokenResponseAdapter
   ) { 
     this.userSubject = new BehaviorSubject<User|null>(null);
     console.log('AuthenticationService constructor')
@@ -57,18 +59,38 @@ export class AuthenticationService {
       password: password
     };
 
-    return this.http.post<LoginResponseDto>(this.apiRoutes.loginWithEmailPassword(), requestBody)
-      .pipe(map(
-        res => {
+    return this.http.post(this.apiRoutes.loginWithEmailPassword(), requestBody)
+      .pipe(
+        map( r=> { return this.loginResponseAdapter.adapt(r) }),
+        map( res => {
+          console.log('loginWithEmailPassword pipe enter');
           if (res.status === LoginResponseStatus.SUCCESS) {
+            console.log('loginWithEmailPassword success');
             this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
           }
+          console.log('loginWithEmailPassword pipe return');
           return res;
         }));
   }
 
   loginWithGoogle() {
     window.location.href=this.apiRoutes.loginWithGoogle();
+  }
+
+  authenticateWithGoogle(code: string, state: string) : Observable<LoginResponseDto> {
+    console.log('url for code = ' + `${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
+    return this.http.get(`${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
+      .pipe(
+        map( r=> {return this.loginResponseAdapter.adapt(r)}),
+        map(
+        res => {
+          if (res.status === LoginResponseStatus.SUCCESS) {
+            console.log('authenticateWithGoogle success');
+            this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
+          }
+          return res;
+        })
+      );
   }
 
   logout() {
@@ -79,16 +101,27 @@ export class AuthenticationService {
     this.router.navigate(['/recent']);
   }
 
+  private handleRefreshTokenError() {
+    localStorage.removeItem('rt');
+    return throwError('refreshToken server refuse');
+  }
+ 
   callRefreshToken(refreshToken: string) : Observable<RefreshTokenResponseDto> {
-    return this.http.post<RefreshTokenResponseDto>(this.apiRoutes.refreshToken(), refreshToken)
-      .pipe(map(
-        res => {
-          if (res.status === RefreshTokenResponseStatus.SUCCESS) {
-            console.log('callRefreshToken success')
-            this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
-          }
-          return res;
-        }));
+    return this.http.post(this.apiRoutes.refreshToken(), refreshToken)
+      .pipe(
+        catchError(this.handleRefreshTokenError),
+        map( r=> {return this.refreshTokenResponseAdapter.adapt(r)}),
+        map(
+          res => {
+            if (res.status === RefreshTokenResponseStatus.SUCCESS) {
+              console.log('callRefreshToken success')
+              this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
+            } else {
+              localStorage.removeItem('rt');
+            }
+            return res;
+          })
+        );
   }
   
   startRefreshTokenEventTimer(refreshToken: string) {

@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoginResponseStatus } from 'src/app/shared/dto/auth/login-response.dto';
+import { ApiRoutes } from 'src/app/shared/services/api.routes';
+import { AuthenticationService } from 'src/app/shared/services/auth/authentication.service';
 
 @Component({
   selector: 'app-oauth2callback',
@@ -9,10 +12,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class Oauth2callbackComponent  implements OnInit {
 
+
+  isAuthenticating = true;
+  isFailed = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private authenticationService: AuthenticationService
   ) { }
 
   ngOnInit(): void {
@@ -25,16 +32,26 @@ export class Oauth2callbackComponent  implements OnInit {
     */
     
     this.route.queryParams.subscribe( p => {
-      this.fetchToken(p.code, p.state).subscribe(data => {
-        console.log('FETCH TOKEN CALL RESULT = ' + (data as any).userInfo.username);
-      })
+      const code = p.code;
+      const state = p.state;
+      if (code && state) {
+        this.authenticationService.authenticateWithGoogle(p.code, p.state).subscribe(
+          data => {
+            if (data.status === LoginResponseStatus.SUCCESS) {
+              this.router.navigate(['/recent']);
+            } else {
+              this.router.navigate(['/auth']);
+            }
+          },
+          error => {
+            this.router.navigate(['/auth']);
+          }
+        );
+      } else {
+
+      }
     });
     
-  }
-
-  fetchToken(code: string, state: string) {
-    const tokenEndpoint = 'http://localhost:8080/login/oauth2/code/google';
-    return this.http.get(tokenEndpoint+'?code='+code+'&state='+state);
   }
 
 }

@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   isAuthenticating = false;
   isAuthenticationFailed = false;
+  isServerError = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,6 +51,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.isAuthenticating = true;
+    this.isAuthenticationFailed = false;
+    this.isServerError = false;
     this.loginForm.disable();
     this.authenticationService.loginWithEmailPassword(this.getEmail()?.value, this.getPassword()?.value).subscribe(
       next => {
@@ -61,13 +64,20 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        this.isAuthenticationFailed = true;
+        console.log('error');
+        this.isServerError = true;
+        this.afterSubmit();
       },
       () => {
-        //default
-        this.isAuthenticating = false;
-        this.loginForm.enable();
+        //complete
+        console.log('complete!');
+        this.afterSubmit();
       });
+  }
+
+  private afterSubmit() {
+    this.isAuthenticating = false;
+    this.loginForm.enable();
   }
 
 }

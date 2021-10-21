@@ -2,6 +2,7 @@ package gimgut.postbasedsocial.security.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.util.Pair;
@@ -23,11 +24,13 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
+    private final UserInfoMapper userInfoMapper;
 
-    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService) {
+    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService, UserInfoMapper userInfoMapper) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
+        this.userInfoMapper = userInfoMapper;
     }
 
     @Override
@@ -60,7 +63,9 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
         response.setContentType("application/json");
         objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.SUCCESS, tokens.getFirst(), tokens.getSecond(), userDetails.getUserInfo())
+                new LoginResponseDto(LoginResponseStatus.SUCCESS,
+                        tokens.getFirst(), tokens.getSecond(),
+                        userInfoMapper.toUserInfoDto(userDetails.getUserInfo()))
         );
     }
 

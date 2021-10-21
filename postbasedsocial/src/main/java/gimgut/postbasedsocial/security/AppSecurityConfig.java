@@ -1,6 +1,7 @@
 package gimgut.postbasedsocial.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
 import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
 import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
@@ -40,6 +41,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtService jwtService;
+    private final UserInfoMapper userInfoMapper;
 
     private final String AUTH_LOGIN = "/api/auth/signin";
     private final String AUTH_REGISTER = "/api/auth/signup";
@@ -50,12 +52,13 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
-                             GoogleRegistrationService googleRegistrationService
+                             UserInfoMapper userInfoMapper, GoogleRegistrationService googleRegistrationService
     ) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
+        this.userInfoMapper = userInfoMapper;
         this.googleRegistrationService = googleRegistrationService;
     }
 
@@ -69,7 +72,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
-                authenticationManagerBean(), mapper, jwtService);
+                authenticationManagerBean(), mapper, jwtService, userInfoMapper);
         jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
@@ -91,7 +94,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
 
         http.oauth2Login()
-                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService));
+                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService, userInfoMapper));
         http.oauth2Login()
                 .authorizationEndpoint()
                     .authorizationRequestRepository(new InMemoryRequestRepository());

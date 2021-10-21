@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../../services/auth/authentication.service';
 import { ProfileService } from '../../services/profile.service';
 
 
@@ -10,7 +11,7 @@ import { ProfileService } from '../../services/profile.service';
 export class HeaderMainComponent implements OnInit {
 
   constructor(
-    public profileService: ProfileService
+    public authenticationService: AuthenticationService
   ) { }
 
   ngOnInit(): void {

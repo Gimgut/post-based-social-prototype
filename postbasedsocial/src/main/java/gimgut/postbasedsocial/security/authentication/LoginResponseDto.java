@@ -1,14 +1,15 @@
 package gimgut.postbasedsocial.security.authentication;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.api.user.UserInfoDto;
 
 public class LoginResponseDto {
     private LoginResponseStatus status;
     private String accessToken;
     private String refreshToken;
-    private UserInfo userInfo;
+    private UserInfoDto userInfo;
 
-    public LoginResponseDto(LoginResponseStatus status, String accessToken, String refreshToken, UserInfo userInfo) {
+    public LoginResponseDto(LoginResponseStatus status, String accessToken, String refreshToken, UserInfoDto userInfo) {
         this.status = status;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -39,11 +40,11 @@ public class LoginResponseDto {
         this.refreshToken = refreshToken;
     }
 
-    public UserInfo getUserInfo() {
+    public UserInfoDto getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
+    public void setUserInfo(UserInfoDto userInfo) {
         this.userInfo = userInfo;
     }
 }

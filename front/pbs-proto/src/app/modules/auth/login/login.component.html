@@ -20,6 +20,7 @@
       <button type="submit" mat-flat-button [disabled]="loginForm.invalid || loginForm.disabled" color="primary">Log In</button>
   
       <mat-error *ngIf="isAuthenticationFailed">Wrong e-mail and/or password</mat-error>
+      <mat-error *ngIf="isServerError">Server error</mat-error>
     </form>
   
     <div class="middlebox white-bg">

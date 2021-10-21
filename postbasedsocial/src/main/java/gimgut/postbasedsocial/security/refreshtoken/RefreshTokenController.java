@@ -1,6 +1,7 @@
 package gimgut.postbasedsocial.security.refreshtoken;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.util.Triplet;
 import org.apache.commons.logging.Log;
@@ -9,17 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-
 @RestController
 @RequestMapping("api/auth/refresh_token")
 public class RefreshTokenController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
     private final JwtService jwtService;
+    private final UserInfoMapper userInfoMapper;
 
-    public RefreshTokenController(JwtService jwtService) {
+    public RefreshTokenController(JwtService jwtService, UserInfoMapper userInfoMapper) {
         this.jwtService = jwtService;
+        this.userInfoMapper = userInfoMapper;
     }
 
     @PostMapping("")
@@ -31,7 +32,7 @@ public class RefreshTokenController {
                 return new ResponseEntity<>(
                         new RefreshTokenResponseDto(
                                 RefreshTokenStatus.SUCCESS,
-                                tokens.getThird(),
+                                userInfoMapper.toUserInfoDto(tokens.getThird()),
                                 tokens.getFirst(),
                                 tokens.getSecond()),
                                 HttpStatus.OK

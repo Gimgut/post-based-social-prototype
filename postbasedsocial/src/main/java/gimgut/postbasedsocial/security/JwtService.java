@@ -170,7 +170,9 @@ public class JwtService {
                     return null;
                 }
             }
-            
+            if (securedUser == null)
+                return null;
+
             verifyRefreshToken(refreshToken, securedUser.getPassword());
 
             String access_token = getAccessToken(

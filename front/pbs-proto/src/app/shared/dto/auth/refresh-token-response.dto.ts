@@ -15,7 +15,7 @@ export class RefreshTokenResponseDto {
   ) { }
 }
 
-/*
+
 @Injectable({
   providedIn: "root",
 })
@@ -28,10 +28,9 @@ export class RefreshTokenResponseAdapter implements Adapter<RefreshTokenResponse
   adapt(item: any): RefreshTokenResponseDto {
     return new RefreshTokenResponseDto(
         item.status as RefreshTokenResponseStatus, 
-        this.userAdapter.adapt(item.userInfo == undefined ? '' : item.userInfo),
+        this.userAdapter.adapt(item.userInfo ?? null),
         item.accessToken as string,
         item.refreshToken as string
     );
   }
 }
-*/

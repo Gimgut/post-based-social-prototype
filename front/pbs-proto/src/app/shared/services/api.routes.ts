@@ -30,4 +30,7 @@ export class ApiRoutes {
 
   refreshToken = () =>
     `${this.apiUrl}/api/auth/refresh_token`;
+
+  authExchangeEndpointForGoogle = () => 
+    `${this.apiUrl}/login/oauth2/code/google`;
 }
