@@ -19,7 +19,7 @@ public class PostService {
 
     @Transactional
     public Post createNewPost(CreatePostDto newPostDto) {
-        Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(), timeService.getUtcNowTS());
+        Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(), timeService.getUtcNowLDT());
         entityManager.persist(post);
         return post;
     }

@@ -15,13 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final String AUTH_LOGIN_URL;
     private final String REFRESH_TOKEN_URL;
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     public JwtAuthorizationFilter(String auth_login_url, String refresh_token_url, JwtService jwtService) {
         this.AUTH_LOGIN_URL = auth_login_url;
@@ -45,18 +46,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     DecodedJWT decodedJWT = jwtService.verifyAccessToken(accessToken);
 
-                    String username = decodedJWT.getSubject();
+                    //String username = decodedJWT.getSubject();
+                    Long principalUserInfoId = decodedJWT.getClaim("uiid").asLong();
                     String role = decodedJWT.getClaim("role").asString();
-                    Collection<SimpleGrantedAuthority> authorityCollection = new ArrayList<>();
-                    authorityCollection.add(new SimpleGrantedAuthority(role));
 
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(username, null, authorityCollection);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            principalUserInfoId, null, Arrays.asList(new SimpleGrantedAuthority(role)));
+
+                    //suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     SecurityContext context = SecurityContextHolder.createEmptyContext();
                     context.setAuthentication(usernamePasswordAuthenticationToken);
                     SecurityContextHolder.setContext(context);
-                    //SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    logger.info("Authorization is successful for user: " + username + " with role: " + role);
+                    logger.info("Authorization is successful for user uiid: " + principalUserInfoId + " with role: " + role);
 
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {

@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 public class TimeService {
@@ -17,11 +18,11 @@ public class TimeService {
         return LocalDateTime.now(utcZone);
     }
 
-    /*
-    public OffsetDateTime getUtcNowODT() {
-        return OffsetDateTime.now(utcZone);
+
+    public ZonedDateTime getUtcNowZDT() {
+        return ZonedDateTime.now(utcZone);
     }
-*/
+
     public Timestamp getUtcNowTS() {
         return Timestamp.valueOf(LocalDateTime.now(utcZone));
     }

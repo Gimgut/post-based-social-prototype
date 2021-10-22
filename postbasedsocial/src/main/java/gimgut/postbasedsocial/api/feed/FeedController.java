@@ -1,7 +1,8 @@
 package gimgut.postbasedsocial.api.feed;
 
 import gimgut.postbasedsocial.api.post.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,12 @@ import java.util.List;
 @RequestMapping("/api/feed")
 public class FeedController {
 
-    @Autowired
-    private FeedRecentRepository feedRecentRepository;
+    private final Log logger = LogFactory.getLog(this.getClass());
+    private final FeedRecentRepository feedRecentRepository;
+
+    public FeedController(FeedRecentRepository feedRecentRepository) {
+        this.feedRecentRepository = feedRecentRepository;
+    }
 
     @GetMapping("/recent")
     public ResponseEntity<List<Post>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {

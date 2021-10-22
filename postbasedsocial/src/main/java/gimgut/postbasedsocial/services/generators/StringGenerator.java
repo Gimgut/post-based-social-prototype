@@ -6,15 +6,15 @@ public abstract class StringGenerator {
 
     protected Random random = new Random();
 
+    abstract public String generateWord(int minLength, int maxLength, boolean capital);
+    abstract public String generateWord(int minLength, int maxLength);
+
     /**
      * @param min inclusive
      * @param max inclusive
      * @return random int in uniform distribution
      */
     public int generateRandomInt(int min, int max) { return min + random.nextInt(max - min + 1); }
-
-    abstract public String generateWord(int minLength, int maxLength, boolean capital);
-    abstract public String generateWord(int minLength, int maxLength);
 
     /**
      * @param minWordCount inclusive

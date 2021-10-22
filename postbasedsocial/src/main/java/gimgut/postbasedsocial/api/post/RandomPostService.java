@@ -30,7 +30,7 @@ public class RandomPostService {
                     stringGenerator.generateSentence(1,4),
                     stringGenerator.generateParagraph(1,10),
                     i+1,
-                    Timestamp.valueOf(rndLdt)
+                    rndLdt
             );
             entityManager.persist(publication);
         }

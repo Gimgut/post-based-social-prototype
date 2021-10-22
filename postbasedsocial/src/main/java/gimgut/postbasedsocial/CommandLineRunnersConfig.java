@@ -34,7 +34,7 @@ public class CommandLineRunnersConfig {
             randomPublicationService.addRandomPublications(10);
             List<Post> allPublications = publicationRepository.findAll();
             allPublications.forEach((x) -> logger.info(x.toString()));
-            allPublications = publicationRepository.findAllByOrderByDatetimeDesc();
+            allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
             allPublications.forEach((x) -> logger.info(x.toString()));
         };
     }

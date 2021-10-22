@@ -12,6 +12,7 @@ public class UserInfo {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     @ManyToOne(fetch = FetchType.EAGER)

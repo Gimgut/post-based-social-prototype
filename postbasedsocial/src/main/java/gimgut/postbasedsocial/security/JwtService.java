@@ -41,7 +41,10 @@ public class JwtService {
 
     public JwtService(@Value("${app.security.secret}") String secret,
                       @Value("${app.security.accessTokenExpiryTimeMs}") Long accessTokenExpiryTimeMs,
-                      @Value("${app.security.refreshTokenExpiryTimeMs}") Long refreshTokenExpiryTimeMs, ObjectMapper mapper, UserCredentialsEmailRepository userCredentialsEmailRepository, UserCredentialsGoogleRepository userCredentialsGoogleRepository) {
+                      @Value("${app.security.refreshTokenExpiryTimeMs}") Long refreshTokenExpiryTimeMs,
+                      ObjectMapper mapper,
+                      UserCredentialsEmailRepository userCredentialsEmailRepository,
+                      UserCredentialsGoogleRepository userCredentialsGoogleRepository) {
         this.secret = secret;
         this.accessTokenExpiryTimeMs = accessTokenExpiryTimeMs;
         this.refreshTokenExpiryTimeMs = refreshTokenExpiryTimeMs;
@@ -82,9 +85,7 @@ public class JwtService {
     }
 
     public Pair<String, String> getAccessAndRefreshTokens(UserDetailsImpl userDetails, AuthenticationType authenticationType) {
-        //TODO: check these 2 implementations
-        //String role = userDetails.getAuthorities().stream().toList().get(0).toString();
-        String role = userDetails.getAuthorities().toArray()[0].toString();
+        String role = userDetails.getUserInfo().getRole().getName();
 
         String access_token = getAccessToken(userDetails.getUsername(), role, userDetails.getId(), authenticationType);
         String refresh_token = getRefreshToken(userDetails.getUsername(), userDetails.getPassword(), role, userDetails.getId(), authenticationType);
@@ -160,7 +161,6 @@ public class JwtService {
                 return null;
             }
 
-            //Long uiid = Long.parseLong(new String(payload.get("uiid")));
             AuthenticationType authenticationType = AuthenticationType.valueOf(payload.get("ap"));
             SecuredUser securedUser;
             switch (authenticationType) {

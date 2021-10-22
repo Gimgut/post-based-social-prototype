@@ -1,7 +1,7 @@
 package gimgut.postbasedsocial.api.post;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 public class Post {
@@ -19,30 +19,30 @@ public class Post {
     private String content;
 
     private int rating;
-    private Timestamp datetime;
+    private LocalDateTime createdAt;
 
     public Post() {
     }
 
-    public Post(long id, String title, String content, int rating, Timestamp datetime) {
+    public Post(long id, String title, String content, int rating, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.rating = rating;
-        this.datetime = datetime;
+        this.createdAt = createdAt;
     }
 
-    public Post(String title, String content, int rating, Timestamp datetime) {
+    public Post(String title, String content, int rating, LocalDateTime createdAt) {
         this.title = title;
         this.content = content;
         this.rating = rating;
-        this.datetime = datetime;
+        this.createdAt = createdAt;
     }
 
-    public Post(String title, String content, Timestamp datetime) {
+    public Post(String title, String content, LocalDateTime createdAt) {
         this.title = title;
         this.content = content;
-        this.datetime = datetime;
+        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -77,12 +77,12 @@ public class Post {
         this.rating = rating;
     }
 
-    public Timestamp getDatetime() {
-        return datetime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDatetime(Timestamp datetime) {
-        this.datetime = datetime;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Post {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", rating=" + rating +
-                ", datetime=" + datetime +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }
