@@ -1,5 +1,7 @@
 package gimgut.postbasedsocial.api.post;
 
+import gimgut.postbasedsocial.api.user.UserInfo;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,28 +23,28 @@ public class Post {
     private int rating;
     private LocalDateTime createdAt;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_info_id")
+    private UserInfo author;
+
     public Post() {
     }
 
-    public Post(long id, String title, String content, int rating, LocalDateTime createdAt) {
+    public Post(long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
+        this.author = author;
     }
 
-    public Post(String title, String content, int rating, LocalDateTime createdAt) {
+    public Post(String title, String content, int rating, LocalDateTime createdAt, UserInfo author) {
         this.title = title;
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
-    }
-
-    public Post(String title, String content, LocalDateTime createdAt) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
+        this.author = author;
     }
 
     public long getId() {
@@ -85,9 +87,17 @@ public class Post {
         this.createdAt = createdAt;
     }
 
+    public UserInfo getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserInfo author) {
+        this.author = author;
+    }
+
     @Override
     public String toString() {
-        return "Publication{" +
+        return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +

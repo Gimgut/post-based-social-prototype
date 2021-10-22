@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Post } from 'src/app/shared/models/post.model';
+import { User } from 'src/app/shared/models/user.model';
 import { PostService } from 'src/app/shared/services/post.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { PostService } from 'src/app/shared/services/post.service';
 export class PostPageComponent implements OnInit {
 
   public parameterId!: string;
-  public post: Post = { id: 8, title: 'default post title', content: 'default post content', author_id: 0, author_name: 'no_author' };
+  public post: Post|null = null;//= { id: 8, title: 'default post title', content: 'default post content' , author: new User(0, 'NOT_FOUND', '', 'NONE', new Date(0)) };
 
   constructor(
     private activatedRoute: ActivatedRoute,

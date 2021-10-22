@@ -8,8 +8,8 @@ import gimgut.postbasedsocial.api.user.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRegistration;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
 import gimgut.postbasedsocial.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +31,7 @@ public class CommandLineRunnersConfig {
     @Bean
     public CommandLineRunner run(RandomPostService randomPublicationService, PostRepository publicationRepository) {
         return args -> {
-            randomPublicationService.addRandomPublications(10);
+            randomPublicationService.addRandomPublications(100);
             List<Post> allPublications = publicationRepository.findAll();
             allPublications.forEach((x) -> logger.info(x.toString()));
             allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();

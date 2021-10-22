@@ -1,7 +1,5 @@
-package gimgut.postbasedsocial.security.registration;
+package gimgut.postbasedsocial.api.emailregistration;
 
-import gimgut.postbasedsocial.security.SecuredUser;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

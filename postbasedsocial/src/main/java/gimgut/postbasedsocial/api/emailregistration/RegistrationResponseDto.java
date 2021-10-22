@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.security.registration;
+package gimgut.postbasedsocial.api.emailregistration;
 
 public class RegistrationResponseDto {
 

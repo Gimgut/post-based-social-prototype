@@ -13,23 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/feed")
+@RequestMapping("/api/v1/feed")
 public class FeedController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
-    private final FeedRecentRepository feedRecentRepository;
+    private final FeedService feedService;
 
-    public FeedController(FeedRecentRepository feedRecentRepository) {
-        this.feedRecentRepository = feedRecentRepository;
+    public FeedController(FeedService feedService) {
+        this.feedService = feedService;
     }
 
     @GetMapping("/recent")
     public ResponseEntity<List<Post>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {
-        List<Post> result = null;
-        if (lastPostId == null)
-            result = feedRecentRepository.findNewestPosts(20);
-        else
-            result = feedRecentRepository.findNewestPostsAfterId(lastPostId, 20);
+        logger.info("last post id =" + lastPostId);
+        List<Post> result = feedService.getRecentPosts(lastPostId);
         return result == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

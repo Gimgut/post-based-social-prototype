@@ -21,4 +21,8 @@ export class FeedRecentComponent implements OnInit {
     this.posts = this.feedRecentService.getPosts();
   }
 
+  fetchMore() {
+    this.feedRecentService.tryFetchMore();
+  }
+
 }

@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -33,7 +34,7 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -43,9 +44,9 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
 
-    private final String AUTH_LOGIN = "/api/auth/signin";
-    private final String AUTH_REGISTER = "/api/auth/signup";
-    private final String AUTH_REFRESH_TOKEN = "/api/auth/refresh_token";
+    private final String AUTH_LOGIN = "/api/v1/auth/signin";
+    private final String AUTH_REGISTER = "/api/v1/auth/signup";
+    private final String AUTH_REFRESH_TOKEN = "/api/v1/auth/refresh_token";
     private final GoogleRegistrationService googleRegistrationService;
 
     public AppSecurityConfig(ObjectMapper mapper,
@@ -79,18 +80,19 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //public endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/feed/**" , "/api/user/**", "/api/post/**", "/login/**", "/oauth2/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/**/feed/**" , "/api/**/user/**", "/api/**/post/**", "/login/**", "/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER, AUTH_REFRESH_TOKEN).permitAll();
         //authenticated endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
+        //http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
-        http.authorizeRequests().antMatchers("/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
         http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService), UsernamePasswordAuthenticationFilter.class);
 
-        //Called after auth fail on ".authenticated()" matcher, no mapping for this request url. f.e. /api/r
-        //Default spring implementation: redirect to login page
+        //Called after auth fail on ".authenticated()" matcher with no mapping for this request url. f.e. /api/r
+        //Or if authenticated but doesn't have a necessary authority
+        //Default spring implementation: redirect to oauth login page
         http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
 
         http.oauth2Login()

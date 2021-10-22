@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.security.registration;
+package gimgut.postbasedsocial.api.emailregistration;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

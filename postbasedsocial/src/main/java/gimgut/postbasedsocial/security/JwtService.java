@@ -10,7 +10,7 @@ import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.security.authentication.UserDetailsImpl;
 import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRegistration;
 import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRepository;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
 import gimgut.util.Pair;
 import gimgut.util.Triplet;
 import org.apache.commons.logging.Log;

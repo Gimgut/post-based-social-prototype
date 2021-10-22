@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/auth/refresh_token")
+@RequestMapping("api/v1/auth/refresh_token")
 public class RefreshTokenController {
 
     private final Log logger = LogFactory.getLog(this.getClass());

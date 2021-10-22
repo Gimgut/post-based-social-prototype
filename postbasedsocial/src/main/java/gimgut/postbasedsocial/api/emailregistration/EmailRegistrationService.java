@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.security.registration;
+package gimgut.postbasedsocial.api.emailregistration;
 
 import gimgut.postbasedsocial.api.user.Role;
 import gimgut.postbasedsocial.api.user.RoleRepository;

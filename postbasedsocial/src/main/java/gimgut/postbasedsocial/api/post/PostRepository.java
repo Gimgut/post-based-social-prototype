@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public interface PostRepository extends JpaRepository<Post, Long> {
-
-    List<Post> findAll();
 
     List<Post> findAllByOrderByCreatedAtDesc();
 

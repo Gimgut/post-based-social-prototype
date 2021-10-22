@@ -9,7 +9,7 @@ import { Post } from '../../models/post.model';
 export class PostComponent implements OnInit {
 
   @Input()
-  post!: Post;
+  post: Post|null = null;
 
   constructor() { }
 

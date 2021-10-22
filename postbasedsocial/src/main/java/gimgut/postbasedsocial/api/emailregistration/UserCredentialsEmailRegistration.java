@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.security.registration;
+package gimgut.postbasedsocial.api.emailregistration;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.security.SecuredUser;

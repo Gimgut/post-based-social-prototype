@@ -7,29 +7,31 @@ import { environment } from "../../../environments/environment"
 export class ApiRoutes {
 
   apiUrl: string;
+  apiVersion: string;
 
   constructor() {
     this.apiUrl = environment.urlApi;
+    this.apiVersion = environment.apiVersion;
   }
 
   getPost = (postId: string) =>
-    `${this.apiUrl}/api/post/${postId}`;
+    `${this.apiUrl}/api/${this.apiVersion}/post/${postId}`;
 
   //Submit lastPostId = ''; to show first posts
   getFeedRecent = (lastPostId: string) =>
-    `${this.apiUrl}/api/feed/recent/${lastPostId}`;
+    `${this.apiUrl}/api/${this.apiVersion}/feed/recent?lastPostId=${lastPostId}`;
 
   createNewAccount = () =>
-    `${this.apiUrl}/api/auth/signup`;
+    `${this.apiUrl}/api/${this.apiVersion}/auth/signup`;
 
   loginWithEmailPassword = () =>
-    `${this.apiUrl}/api/auth/signin`;
+    `${this.apiUrl}/api/${this.apiVersion}/auth/signin`;
 
   loginWithGoogle = () =>
    `${this.apiUrl}/oauth2/authorization/google`;
 
   refreshToken = () =>
-    `${this.apiUrl}/api/auth/refresh_token`;
+    `${this.apiUrl}/api/${this.apiVersion}/auth/refresh_token`;
 
   authExchangeEndpointForGoogle = () => 
     `${this.apiUrl}/login/oauth2/code/google`;
