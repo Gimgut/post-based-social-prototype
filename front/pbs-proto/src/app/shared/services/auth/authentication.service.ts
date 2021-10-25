@@ -47,7 +47,9 @@ export class AuthenticationService {
     this.accessToken = accessToken;
   }
 
-  private authenticate(userInfo: User, accessToken:string, refreshToken:string) {
+  private authenticate(userInfo: User|undefined, accessToken:string|undefined, refreshToken:string|undefined) {
+    if (!(userInfo && accessToken && refreshToken))
+      throw Error('Error on success');
     this.userSubject.next(userInfo);
     this.applyAccessToken(accessToken);
     this.applyRefreshToken(refreshToken);
@@ -61,12 +63,15 @@ export class AuthenticationService {
 
     return this.http.post(this.apiRoutes.loginWithEmailPassword(), requestBody)
       .pipe(
-        map( r=> { return this.loginResponseAdapter.adapt(r) }),
+        map( r => {
+          return this.loginResponseAdapter.adapt(r);
+         }),
         map( res => {
           console.log('loginWithEmailPassword pipe enter');
           if (res.status === LoginResponseStatus.SUCCESS) {
             console.log('loginWithEmailPassword success');
             this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
+
           }
           console.log('loginWithEmailPassword pipe return');
           return res;

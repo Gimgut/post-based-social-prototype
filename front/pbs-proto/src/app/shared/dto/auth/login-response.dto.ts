@@ -9,9 +9,9 @@ export enum LoginResponseStatus {
 export class LoginResponseDto {
   constructor(
     public status: LoginResponseStatus,
-    public accessToken: string,
-    public refreshToken: string,
-    public userInfo: User
+    public accessToken?: string,
+    public refreshToken?: string,
+    public userInfo?: User
   ) { }
 }
 
@@ -26,9 +26,13 @@ export class LoginResponseAdapter implements Adapter<LoginResponseDto> {
   }
 
   adapt(item: any): LoginResponseDto {
-    return new LoginResponseDto(item.status as LoginResponseStatus, 
+    const status = item.status as LoginResponseStatus;
+    if (status === LoginResponseStatus.FAILED) {
+      return new LoginResponseDto(status);
+    }
+    return new LoginResponseDto(status, 
       item.accessToken,
       item.refreshToken,
-      this.userAdapter.adapt(item.userInfo ?? null));
+      this.userAdapter.adapt(item.userInfo));
   }
 }

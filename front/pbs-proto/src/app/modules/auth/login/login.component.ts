@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        console.log('error');
+        console.log('error: ' + error);
         this.isServerError = true;
         this.afterSubmit();
       },

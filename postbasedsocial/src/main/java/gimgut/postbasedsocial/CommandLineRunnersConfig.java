@@ -31,7 +31,8 @@ public class CommandLineRunnersConfig {
     @Bean
     public CommandLineRunner run(RandomPostService randomPublicationService, PostRepository publicationRepository) {
         return args -> {
-            randomPublicationService.addRandomPublications(100);
+            //randomPublicationService.addRandomPublications(100);
+            randomPublicationService.add1984(100);
             List<Post> allPublications = publicationRepository.findAll();
             allPublications.forEach((x) -> logger.info(x.toString()));
             allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();

@@ -1,11 +1,12 @@
-package gimgut.postbasedsocial.services.generators;
+package gimgut.postbasedsocial.services.generators.randomstring;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 @Qualifier("RandomStringGenerator")
-public class RandomStringGenerator extends StringGenerator {
+public class FullRandomRandomStringGenerator extends RandomStringGenerator {
 
     public final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     public final char[] alphabetExtended = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();

@@ -1,17 +1,32 @@
 package gimgut.postbasedsocial.api.emailregistration;
 
-public class EmailRegistrationRequestDto {
-    private String email;
-    private String username;
-    private String password;
+import org.jsoup.Jsoup;
 
-    public EmailRegistrationRequestDto() {
-    }
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+public class EmailRegistrationRequestDto {
+
+    @NotNull
+    @Email
+    private String email;
+
+    @NotNull
+    @Pattern(regexp = "[a-zA-Z0-9а-яА-Я-_]{4,32}")
+    private String username;
+
+    @NotNull
+    @Pattern(regexp = "[a-zA-Z0-9а-яА-Я-_]{8,32}")
+    private String password;
+    //Advanced: Checks that a password has a minimum of 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number with no spaces.
+    //^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$
 
     public EmailRegistrationRequestDto(String email, String username, String password) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
+        this.email = email.trim();
+        this.username = username.trim();
+        this.password = password.trim();
     }
 
     public String getEmail() {

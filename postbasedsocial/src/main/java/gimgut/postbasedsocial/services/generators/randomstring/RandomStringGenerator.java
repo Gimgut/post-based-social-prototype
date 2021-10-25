@@ -1,8 +1,8 @@
-package gimgut.postbasedsocial.services.generators;
+package gimgut.postbasedsocial.services.generators.randomstring;
 
 import java.util.Random;
 
-public abstract class StringGenerator {
+public abstract class RandomStringGenerator {
 
     protected Random random = new Random();
 

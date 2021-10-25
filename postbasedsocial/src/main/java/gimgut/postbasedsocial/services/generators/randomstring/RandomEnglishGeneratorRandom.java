@@ -1,10 +1,11 @@
-package gimgut.postbasedsocial.services.generators;
+package gimgut.postbasedsocial.services.generators.randomstring;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -14,17 +15,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 @Primary
-@Qualifier("RandomEnglishGenerator")
-public class RandomEnglishGenerator extends StringGenerator {
+@Qualifier("RandomEnglishGeneratorRandom")
+public class RandomEnglishGeneratorRandom extends RandomStringGenerator {
 
     private ArrayList<String> words;
 
-    @Value("classpath:data/words.txt")
-    private Resource resourceWords;
-
-    public RandomEnglishGenerator() {
+    public RandomEnglishGeneratorRandom() {
 
         File resource = null;
         try {

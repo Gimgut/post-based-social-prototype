@@ -25,11 +25,10 @@ export class UserAdapter implements Adapter<User> {
 
   adapt(item: any): User {
     const dtoDate = new Date(item.registrationTime);
-    
     return new User(item.id, item.username, item.picture, item.role, this.dateAdapter.adapt(item.registrationTime));
   }
 
-  adaptArr(arr: any[]): User[] {
+  adaptArr(arr: any[]): (User)[] {
     return arr.map(item => this.adapt(item));
   }
 }
