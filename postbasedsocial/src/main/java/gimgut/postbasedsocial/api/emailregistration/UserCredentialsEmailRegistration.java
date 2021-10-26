@@ -71,7 +71,6 @@ public class UserCredentialsEmailRegistration implements SecuredUser {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", userInfo=" + userInfo.toString() +
                 '}';
     }
 }

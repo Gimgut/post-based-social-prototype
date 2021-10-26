@@ -8,8 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -27,21 +25,26 @@ public class PostController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) { //@RequestParam Long id
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
 
-        Optional<Post> optPost = postRepository.findById(id);
-        return optPost.isPresent() ?
-                new ResponseEntity<>(optPost.get(), HttpStatus.OK)
+        Optional<Post> post = postRepository.findById(id);
+        return post.isPresent() ?
+                new ResponseEntity<>(post.get(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
+    /**
+     * On success returns created Post.id
+     * @param newPostDto
+     * @param principal
+     * @return
+     */
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity createNewPost(@RequestBody CreatePostDto newPostDto, Principal principal) {
+    public ResponseEntity<Long> createNewPost(@RequestBody @Valid CreatePostRequestDto newPostDto, Principal principal) {
         logger.info("principal id = " + principal.getName());
         Long uiid = Long.valueOf(principal.getName());
-        postService.createNewPost(newPostDto, uiid);
-        return new ResponseEntity(HttpStatus.OK);
+        Long postId = postService.createNewPost(newPostDto, uiid);
+        return new ResponseEntity(postId,HttpStatus.OK);
     }
 }

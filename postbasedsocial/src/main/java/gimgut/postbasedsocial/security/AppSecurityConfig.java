@@ -83,7 +83,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/**/feed/**" , "/api/**/user/**", "/api/**/post/**", "/login/**", "/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER, AUTH_REFRESH_TOKEN).permitAll();
         //authenticated endpoints
-        //http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/**/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/**").permitAll();
 

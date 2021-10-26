@@ -23,7 +23,7 @@ public class UserInfo {
 
     private boolean locked;
 
-    @Column(name = "dt_registration")
+    @Column(name = "registration_dt")
     private LocalDateTime registrationTime;
 
     /**

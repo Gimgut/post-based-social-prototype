@@ -5,3 +5,5 @@
 <p>Role: {{user?.role}}</p>
 <p>Reg time: {{user?.registrationTime | date: 'medium' }}</p>
 <button (click)="logout()">Logout</button>
+<a routerLink="create/post">Create post</a>
+<router-outlet></router-outlet>

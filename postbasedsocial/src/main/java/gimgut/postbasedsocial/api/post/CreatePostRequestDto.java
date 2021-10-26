@@ -5,17 +5,17 @@ import org.jsoup.safety.Safelist;
 
 import javax.validation.constraints.Size;
 
-public class CreatePostDto {
+public class CreatePostRequestDto {
 
-    @Size(min = 3, max = 256)
+    @Size(min = 1, max = 256)
     private String title;
 
-    @Size(min = 3, max = 10000)
+    @Size(min = 1, max = 10000)
     private String content;
 
-    public CreatePostDto(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public CreatePostRequestDto(String title, String content) {
+        this.title = title.trim();
+        this.content = content.trim();
         Jsoup.clean(title, Safelist.none());
         Jsoup.clean(content, Safelist.basicWithImages());
     }

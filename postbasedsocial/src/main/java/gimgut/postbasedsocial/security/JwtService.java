@@ -87,8 +87,8 @@ public class JwtService {
     public Pair<String, String> getAccessAndRefreshTokens(UserDetailsImpl userDetails, AuthenticationType authenticationType) {
         String role = userDetails.getUserInfo().getRole().getName();
 
-        String access_token = getAccessToken(userDetails.getUsername(), role, userDetails.getId(), authenticationType);
-        String refresh_token = getRefreshToken(userDetails.getUsername(), userDetails.getPassword(), role, userDetails.getId(), authenticationType);
+        String access_token = getAccessToken(userDetails.getUsername(), role, userDetails.getUserInfo().getId(), authenticationType);
+        String refresh_token = getRefreshToken(userDetails.getUsername(), userDetails.getPassword(), role, userDetails.getUserInfo().getId(), authenticationType);
 
         return new Pair<>(access_token, refresh_token);
     }

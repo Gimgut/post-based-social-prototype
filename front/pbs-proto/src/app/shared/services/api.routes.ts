@@ -8,31 +8,52 @@ export class ApiRoutes {
 
   apiUrl: string;
   apiVersion: string;
+  apiFullPath : string;
 
   constructor() {
     this.apiUrl = environment.urlApi;
     this.apiVersion = environment.apiVersion;
+    this.apiFullPath = `${this.apiUrl}/api/${this.apiVersion}`
   }
 
-  getPost = (postId: string) =>
-    `${this.apiUrl}/api/${this.apiVersion}/post/${postId}`;
 
-  //Submit lastPostId = ''; to show first posts
+  //#region POST CRUD
+
+  getPost = (postId: string) =>
+    `${this.apiFullPath}/post/${postId}`;
+
+  createPost = () =>
+    `${this.apiFullPath}/post/create`;
+  //#endregion
+
+  //#region FEED
+
+  /**
+   * Submit lastPostId = '' to show first posts
+   * @param lastPostId 
+   * @returns 
+   */
   getFeedRecent = (lastPostId: string) =>
-    `${this.apiUrl}/api/${this.apiVersion}/feed/recent?lastPostId=${lastPostId}`;
+    `${this.apiFullPath}/feed/recent?lastPostId=${lastPostId}`;
+
+  //#endregion
+
+  //#region AUTH
 
   createNewAccount = () =>
-    `${this.apiUrl}/api/${this.apiVersion}/auth/signup`;
+    `${this.apiFullPath}/auth/signup`;
 
   loginWithEmailPassword = () =>
-    `${this.apiUrl}/api/${this.apiVersion}/auth/signin`;
+    `${this.apiFullPath}/auth/signin`;
 
   loginWithGoogle = () =>
    `${this.apiUrl}/oauth2/authorization/google`;
 
   refreshToken = () =>
-    `${this.apiUrl}/api/${this.apiVersion}/auth/refresh_token`;
+    `${this.apiFullPath}/auth/refresh_token`;
 
   authExchangeEndpointForGoogle = () => 
     `${this.apiUrl}/login/oauth2/code/google`;
+  
+  //#endregion
 }

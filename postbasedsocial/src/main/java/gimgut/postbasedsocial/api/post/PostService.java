@@ -21,10 +21,10 @@ public class PostService {
     }
 
     @Transactional
-    public Post createNewPost(CreatePostDto newPostDto, Long authorId) {
+    public Long createNewPost(CreatePostRequestDto newPostDto, Long authorId) {
         UserInfo author = entityManager.getReference(UserInfo.class, authorId);
         Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(),0, timeService.getUtcNowLDT(), author);
-        postRepository.save(post);
-        return post;
+        entityManager.persist(post);
+        return post.getId();
     }
 }
