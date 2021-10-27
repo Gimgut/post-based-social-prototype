@@ -21,6 +21,7 @@ import { JwtInterceptor } from './shared/services/auth/jwt.interceptor';
     AppRoutingModule,
     RouterModule,
     SharedModule,
+    SharedModule.forRoot(),
     BrowserAnimationsModule
   ],
   providers: [

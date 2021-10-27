@@ -2,9 +2,9 @@ package gimgut.postbasedsocial.api.post;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
-import gimgut.postbasedsocial.services.TimeService;
-import gimgut.postbasedsocial.services.generators.go1984.Generator1984;
-import gimgut.postbasedsocial.services.generators.randomstring.RandomStringGenerator;
+import gimgut.postbasedsocial.shared.services.TimeService;
+import gimgut.postbasedsocial.shared.services.generators.go1984.Generator1984;
+import gimgut.postbasedsocial.shared.services.generators.randomstring.RandomStringGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +45,8 @@ public class RandomPostService {
                     randomStringGenerator.generateParagraph(1,10),
                     i+1,
                     rndLdt,
-                    userInfo);
+                    userInfo,
+                    true);
             entityManager.persist(publication);
         }
     }
@@ -67,7 +68,8 @@ public class RandomPostService {
                     pagedText.get(i),
                     100500,
                     rndLdt,
-                    userInfo);
+                    userInfo,
+                    true);
             entityManager.persist(publication);
         }
     }

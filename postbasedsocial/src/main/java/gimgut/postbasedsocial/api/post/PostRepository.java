@@ -1,5 +1,6 @@
 package gimgut.postbasedsocial.api.post;
 
+import gimgut.postbasedsocial.shared.jpa.SoftJpaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends SoftJpaRepository<Post, Long> {
 
-    List<Post> findAllByOrderByCreatedAtDesc();
 
-    //Slice<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    //List<Post> findAllByOrderByCreatedAtDesc();
 }

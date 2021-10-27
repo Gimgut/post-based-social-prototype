@@ -1,14 +1,17 @@
 package gimgut.postbasedsocial.api.post;
 
+import gimgut.postbasedsocial.security.Roles;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +31,7 @@ public class PostController {
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
 
         Optional<Post> post = postRepository.findById(id);
+        logger.info("post visible = " + post.get().isVisible());
         return post.isPresent() ?
                 new ResponseEntity<>(post.get(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -42,9 +46,30 @@ public class PostController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
     public ResponseEntity<Long> createNewPost(@RequestBody @Valid CreatePostRequestDto newPostDto, Principal principal) {
-        logger.info("principal id = " + principal.getName());
         Long uiid = Long.valueOf(principal.getName());
         Long postId = postService.createNewPost(newPostDto, uiid);
         return new ResponseEntity(postId,HttpStatus.OK);
+    }
+
+    @PostMapping("/edit")
+    @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
+    public ResponseEntity editPost(@RequestBody @Valid EditPostRequestDto postDto, Authentication authentication) {
+        Long uiid = Long.valueOf(authentication.getName());
+        Roles role = (Roles) authentication.getAuthorities().iterator().next();
+        EditPostResponseStatus status = postService.editPost(postDto, uiid, role);
+        return status == EditPostResponseStatus.SUCCESS ?
+                new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/delete")
+    //@PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
+    public ResponseEntity editPost(@RequestBody @Valid DeletePostRequestDto dto, Authentication authentication) {
+        Long uiid = Long.valueOf(authentication.getName());
+        Roles role = (Roles) authentication.getAuthorities().iterator().next();
+        EditPostResponseStatus status = postService.deletePost(dto, uiid, role);
+        return status == EditPostResponseStatus.SUCCESS ?
+                new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
     }
 }

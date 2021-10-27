@@ -24,6 +24,12 @@ export class ApiRoutes {
 
   createPost = () =>
     `${this.apiFullPath}/post/create`;
+
+  editPost = () =>
+    `${this.apiFullPath}/post/edit`;
+
+  deletePost = () =>
+    `${this.apiFullPath}/post/delete`;
   //#endregion
 
   //#region FEED

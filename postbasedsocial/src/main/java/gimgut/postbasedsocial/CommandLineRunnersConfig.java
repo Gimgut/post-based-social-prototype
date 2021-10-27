@@ -10,7 +10,7 @@ import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
 import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
-import gimgut.postbasedsocial.services.TimeService;
+import gimgut.postbasedsocial.shared.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +35,7 @@ public class CommandLineRunnersConfig {
             randomPublicationService.add1984(100);
             List<Post> allPublications = publicationRepository.findAll();
             allPublications.forEach((x) -> logger.info(x.toString()));
-            allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
+            //allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
             allPublications.forEach((x) -> logger.info(x.toString()));
         };
     }

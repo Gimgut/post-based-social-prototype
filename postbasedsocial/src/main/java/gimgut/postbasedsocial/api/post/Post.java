@@ -1,12 +1,20 @@
 package gimgut.postbasedsocial.api.post;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.shared.jpa.Hideable;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Post {
+@SQLDelete(sql = "UPDATE post SET visible = false WHERE id = ?")
+@FilterDef(name = "visiblePostFilter", parameters = @ParamDef(name = "isVisible", type = "boolean"))
+@Filter(name = "visiblePostFilter", condition = "visible :isVisible")
+public class Post implements Hideable {
 
     @Id
     @SequenceGenerator(name = "publication_sequence", sequenceName = "publication_sequence", allocationSize = 1)
@@ -27,24 +35,28 @@ public class Post {
     @JoinColumn(name = "user_info_id")
     private UserInfo author;
 
+    private boolean visible;
+
     public Post() {
     }
 
-    public Post(long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author) {
+    public Post(long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
         this.author = author;
+        this.visible = visible;
     }
 
-    public Post(String title, String content, int rating, LocalDateTime createdAt, UserInfo author) {
+    public Post(String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
         this.title = title;
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
         this.author = author;
+        this.visible = visible;
     }
 
     public long getId() {
@@ -104,6 +116,14 @@ public class Post {
                 ", rating=" + rating +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
 

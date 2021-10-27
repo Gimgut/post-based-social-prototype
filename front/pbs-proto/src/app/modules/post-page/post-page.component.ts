@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Post } from 'src/app/shared/models/post.model';
-import { User } from 'src/app/shared/models/user.model';
+import { User, Roles } from 'src/app/shared/models/user.model';
+import { AuthenticationService } from 'src/app/shared/services/auth/authentication.service';
 import { PostService } from 'src/app/shared/services/post.service';
 
 @Component({
@@ -16,12 +17,21 @@ export class PostPageComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private postService: PostService
+    private postService: PostService,
+    public authService: AuthenticationService
   ) { }
+
+  canEdit() : boolean {
+    if (this.authService.authenticatedUserValue?.id === this.post?.author.id 
+      || this.authService.authenticatedUserValue?.role === Roles.ADMIN)
+       return true;
+    else
+      return false;
+  }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(parameter => {
-      this.parameterId = parameter.parameter
+      this.parameterId = parameter.parameter;
       //console.log(this.parameterId)
       this.postService.getPost(this.parameterId).subscribe(data => this.post = data);
     })

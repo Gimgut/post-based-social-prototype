@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.services.generators.randomstring;
+package gimgut.postbasedsocial.shared.services.generators.randomstring;
 
 import java.util.Random;
 

@@ -15,7 +15,6 @@ export class ProfileComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {
     this.user = authenticationService.authenticatedUserValue;
-    console.log('typeof date:' + typeof(this.user?.registrationTime));
    }
 
   ngOnInit(): void {

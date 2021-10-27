@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostService } from './services/post.service';
 import { FeedComponent } from './components/feed/feed.component';
@@ -20,15 +20,23 @@ import { AuthenticationService } from './services/auth/authentication.service';
     CommonModule,
     RouterModule
   ],
-  providers: [
-    PostService,
-    ProfileService,
-    AuthenticationService
-  ],
   exports: [
     FeedComponent,
     HeaderMainComponent,
     PostComponent
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+
+  static forRoot() {
+    return {
+      ngModule: SharedModule,
+      providers: [
+        PostService,
+        ProfileService,
+        AuthenticationService
+      ]
+    }
+  }
+  
+}

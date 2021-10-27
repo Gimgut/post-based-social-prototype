@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.services.generators.go1984;
+package gimgut.postbasedsocial.shared.services.generators.go1984;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;

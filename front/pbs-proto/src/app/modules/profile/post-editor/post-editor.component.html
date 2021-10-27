@@ -1,0 +1,13 @@
+<form [formGroup]="createPostForm">
+    <h2 class="margin-zero">Editor</h2>
+    
+    <mat-form-field class="full-width">
+        <mat-label>Title</mat-label>
+        <input formControlName="title" matInput #title maxlength="256" placeholder="Write your title here">
+        <mat-hint align="start">{{title.value.length}} / 256</mat-hint>
+    </mat-form-field>
+</form>
+
+<div class="post-editor">
+    <angular-editor id="editor1" [(ngModel)]="postHtmlContent" [config]="config1"></angular-editor>
+</div>

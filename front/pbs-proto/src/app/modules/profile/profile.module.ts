@@ -8,12 +8,16 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { PostEditorComponent } from './post-editor/post-editor.component';
+import { PostEditComponent } from './post-edit/post-edit.component';
 
 
 @NgModule({
   declarations: [
     ProfileComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    PostEditorComponent,
+    PostEditComponent
   ],
   imports: [
     CommonModule,

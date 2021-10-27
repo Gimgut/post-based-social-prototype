@@ -1,12 +1,9 @@
-package gimgut.postbasedsocial.services.generators.randomstring;
+package gimgut.postbasedsocial.shared.services.generators.randomstring;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;

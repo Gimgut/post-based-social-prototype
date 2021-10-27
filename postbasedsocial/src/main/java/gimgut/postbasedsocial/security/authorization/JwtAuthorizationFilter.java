@@ -2,6 +2,7 @@ package gimgut.postbasedsocial.security.authorization;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import gimgut.postbasedsocial.security.JwtService;
+import gimgut.postbasedsocial.security.Roles;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -50,8 +51,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     Long principalUserInfoId = decodedJWT.getClaim("uiid").asLong();
                     String role = decodedJWT.getClaim("role").asString();
 
+                    //new SimpleGrantedAuthority(role) changed to Roles.valueOf(role)
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            principalUserInfoId, null, Arrays.asList(new SimpleGrantedAuthority(role)));
+                            principalUserInfoId, null, Arrays.asList(Roles.valueOf(role)));
 
                     //suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     SecurityContext context = SecurityContextHolder.createEmptyContext();
