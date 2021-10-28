@@ -7,6 +7,14 @@ import { PostComponent } from './components/post/post.component';
 import { RouterModule } from '@angular/router';
 import { ProfileService } from './services/profile.service';
 import { AuthenticationService } from './services/auth/authentication.service';
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import {MatListModule} from '@angular/material/list';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatMenuModule} from '@angular/material/menu';
+import { InfoComponent } from './components/info/info.component';
 
 
 
@@ -14,11 +22,20 @@ import { AuthenticationService } from './services/auth/authentication.service';
   declarations: [
     FeedComponent,
     HeaderMainComponent,
-    PostComponent
+    PostComponent,
+    InfoComponent
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    FlexLayoutModule
   ],
   exports: [
     FeedComponent,

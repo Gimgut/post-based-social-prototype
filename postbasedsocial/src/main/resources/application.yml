@@ -16,6 +16,11 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+        #generate_statistics: true
+        #cache:
+        #  use_second_level_cache: true
+        #  region:
+        #    factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
 
   security:
     oauth2:

@@ -1,6 +1,25 @@
-<div class="header-main">
+<div class="header-main bg-c-blue">
     <div class="header-content">
-  
+
+      <div class="menu-max ">
+        <a routerLink="/" class="center-vert"><h1 class="white-text">Prototype</h1></a>
+        <a routerLink="/recent" class="menu-item center-vert"><h2 class="white-text center-vert">Recent</h2></a>
+      </div>
+
+      <div class="menu-min">
+        <a routerLink="/" class="center-vert"><h1 class="white-text">Prototype</h1></a>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu" class="menu-spacer center-vert" color="white">
+          <mat-icon class="txt-c-white">menu</mat-icon>
+        </button>
+      </div>
+
+
+      <div class="center-vert">
+        <a class="white-text menu-item" *ngIf="!authenticationService.authenticatedUserValue" routerLink="/auth">Sign In</a>
+        <a class="white-text menu-item" *ngIf="authenticationService.authenticatedUserValue" routerLink="/profile">{{authenticationService.authenticatedUserValue.username}}</a>
+      </div>
+      <!--
       <div class="header-logo div-horizontal">
         <a routerLink="/recent"><h1 class="white-text">Prototype</h1></a>
       </div>
@@ -9,6 +28,13 @@
         <a *ngIf="!authenticationService.authenticatedUserValue" routerLink="/auth" class="white-text">Sign In</a>
         <a *ngIf="authenticationService.authenticatedUserValue" routerLink="/profile" class="white-text">{{authenticationService.authenticatedUserValue.username}}</a>
       </div>
+      -->
     </div>
   </div>
+
+  <mat-menu #menu="matMenu">
+    <a mat-menu-item routerLink="/recent">
+      <span>Recent</span>
+    </a>
+  </mat-menu>
   

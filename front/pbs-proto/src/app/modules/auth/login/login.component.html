@@ -11,7 +11,10 @@
   
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input type="password" formControlName="password" matInput placeholder="Example: lkj3n9db,mj2">
+        <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" matInput placeholder="Example: lkj3n9db,mj2">
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
         <mat-error *ngIf="getPassword()?.hasError('minlength')">Password is too short (minimum is 1)</mat-error>
         <mat-error *ngIf="getPassword()?.hasError('maxlength')">Password is too long (maximum is 64)</mat-error>
         <mat-error *ngIf="getPassword()?.hasError('required')">Password is required</mat-error>

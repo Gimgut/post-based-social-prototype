@@ -17,6 +17,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: ['', Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(64)])]
   });
 
+  hidePassword = true;
+
   isAuthenticating = false;
   isAuthenticationFailed = false;
   isServerError = false;
