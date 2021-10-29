@@ -9,67 +9,88 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/post")
 public class PostController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
+    private final PostMapper postMapper;
     private final PostRepository postRepository;
     private final PostService postService;
+    private final Validator validator;
+    private final PostCleaner postCleaner;
 
-    public PostController(PostRepository postRepository, PostService postService) {
+    public PostController(PostMapper postMapper, PostRepository postRepository, PostService postService, Validator validator, PostCleaner postCleaner) {
+        this.postMapper = postMapper;
         this.postRepository = postRepository;
         this.postService = postService;
+        this.validator = validator;
+        this.postCleaner = postCleaner;
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-
-        Optional<Post> post = postRepository.findById(id);
-        logger.info("post visible = " + post.get().isVisible());
-        return post.isPresent() ?
-                new ResponseEntity<>(post.get(), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
+        Optional<Post> post = postRepository.findByIdVisible(id);
+        if (!post.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        PostDto postDto = postMapper.toPostDto(post.get());
+        return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
     /**
-     * On success returns created Post.id
-     * @param newPostDto
+     * @param postDto
      * @param principal
-     * @return
+     * @return  created post id
      */
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity<Long> createNewPost(@RequestBody @Valid CreatePostRequestDto newPostDto, Principal principal) {
-        Long uiid = Long.valueOf(principal.getName());
-        Long postId = postService.createNewPost(newPostDto, uiid);
+    public ResponseEntity createNewPost(@RequestBody CreatePostRequestDto postDto, Principal principal) {
+        postCleaner.clean(postDto);
+
+        Set<ConstraintViolation<CreatePostRequestDto>> violations = validator.validate(postDto);
+        if (!violations.isEmpty()) {
+            return new ResponseEntity<>("BAD_PARAMETERS", HttpStatus.BAD_REQUEST);
+        }
+
+        Long userInfoId = Long.valueOf(principal.getName());
+        Long postId = postService.createNewPost(postDto, userInfoId);
         return new ResponseEntity(postId,HttpStatus.OK);
     }
 
     @PostMapping("/edit")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity editPost(@RequestBody @Valid EditPostRequestDto postDto, Authentication authentication) {
-        Long uiid = Long.valueOf(authentication.getName());
-        Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        EditPostResponseStatus status = postService.editPost(postDto, uiid, role);
-        return status == EditPostResponseStatus.SUCCESS ?
-                new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity editPost(@RequestBody EditPostRequestDto postDto, Authentication authentication) {
+        postCleaner.clean(postDto);
+
+        Set<ConstraintViolation<CreatePostRequestDto>> violations = validator.validate(postDto);
+        if (!violations.isEmpty()) {
+            return new ResponseEntity<>("BAD_PARAMETERS", HttpStatus.BAD_REQUEST);
+        }
+
+        EditPostResponseStatus status = postService.editPost(postDto, authentication);
+        if (status == EditPostResponseStatus.SUCCESS) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/delete")
-    //@PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity editPost(@RequestBody @Valid DeletePostRequestDto dto, Authentication authentication) {
-        Long uiid = Long.valueOf(authentication.getName());
-        Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        EditPostResponseStatus status = postService.deletePost(dto, uiid, role);
-        return status == EditPostResponseStatus.SUCCESS ?
-                new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
+    @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
+    public ResponseEntity deletePost(@RequestBody DeletePostRequestDto postDto, Authentication authentication) {
+        EditPostResponseStatus status = postService.deletePost(postDto, authentication);
+        if (status == EditPostResponseStatus.SUCCESS) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(status.name(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

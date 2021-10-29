@@ -13,12 +13,17 @@ public class CreatePostRequestDto {
     @Size(min = 1, max = 10000)
     private String content;
 
-    //TODO: Tune JSoup.clean to be more restrictive to content, and make it synch-ed with front-end post editor
     public CreatePostRequestDto(String title, String content) {
-        this.title = title.trim();
-        this.content = content.trim();
-        Jsoup.clean(title, Safelist.none());
-        Jsoup.clean(content, Safelist.basicWithImages());
+        this.title = title;
+        this.content = content;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getTitle() {

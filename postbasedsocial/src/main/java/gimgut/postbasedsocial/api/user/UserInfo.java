@@ -26,23 +26,20 @@ public class UserInfo {
     @Column(name = "registration_dt")
     private LocalDateTime registrationTime;
 
-    /**
-     * Contains picture url
-     * TODO: shorten url before saving/use cdn/use cloud storage
-     */
-    private String picture;
+    //TODO: shorten url before saving / use cdn / use cloud storage / etc.
+    private String pictureUrl;
 
     public UserInfo() {
     }
 
-    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime, String picture) {
+    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.activated = activated;
         this.locked = locked;
         this.registrationTime = registrationTime;
-        this.picture = picture;
+        this.pictureUrl = pictureUrl;
     }
 
     public Long getId() {
@@ -105,11 +102,11 @@ public class UserInfo {
                 '}';
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

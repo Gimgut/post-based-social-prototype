@@ -20,7 +20,7 @@ public class Post implements Hideable {
     @SequenceGenerator(name = "publication_sequence", sequenceName = "publication_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "publication_sequence")
     @Column(name = "id", updatable = false)
-    private long id;
+    private Long id;
 
     @Column(length = 128)
     private String title;
@@ -31,7 +31,7 @@ public class Post implements Hideable {
     private int rating;
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_info_id")
     private UserInfo author;
 
@@ -40,7 +40,7 @@ public class Post implements Hideable {
     public Post() {
     }
 
-    public Post(long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
+    public Post(Long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -59,11 +59,11 @@ public class Post implements Hideable {
         this.visible = visible;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

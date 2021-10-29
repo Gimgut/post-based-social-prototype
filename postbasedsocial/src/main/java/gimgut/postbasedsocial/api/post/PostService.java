@@ -3,6 +3,7 @@ package gimgut.postbasedsocial.api.post;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.security.Roles;
 import gimgut.postbasedsocial.shared.services.TimeService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,34 +31,69 @@ public class PostService {
     }
 
     @Transactional
-    public EditPostResponseStatus editPost(EditPostRequestDto postDto, Long uiid, Roles role) {
+    public EditPostResponseStatus editPost(EditPostRequestDto postDto, Authentication authentication) {
         Post post = postRepository.getById(postDto.getPostId());
-        if (post == null) return EditPostResponseStatus.POST_NOT_FOUND;
+        if (post == null) {
+            return EditPostResponseStatus.POST_NOT_FOUND;
+        }
 
-        //1.Admin can edit every post
-        //2.User can edit only his own posts
-        if (role == Roles.ADMIN || post.getAuthor().getId() == uiid) {
+        if (canEdit(post, authentication)) {
             post.setTitle(postDto.getTitle());
             post.setContent(postDto.getContent());
-        } else { return EditPostResponseStatus.NO_AUTHORITY; }
+        } else {
+            return EditPostResponseStatus.NO_AUTHORITY;
+        }
 
         return EditPostResponseStatus.SUCCESS;
     }
 
-    @Transactional
-    public EditPostResponseStatus deletePost(DeletePostRequestDto dto, Long uiid, Roles role) {
-        Post post = postRepository.getById(dto.getPostId());
-        if (post == null) return EditPostResponseStatus.POST_NOT_FOUND;
+    /**
+     * 1.Admin can edit every post
+     * 2.User can edit only his own posts
+     * @param post
+     * @param authentication
+     * @return
+     */
+    private boolean canEdit(Post post, Authentication authentication) {
+        Long userInfoId = Long.valueOf(authentication.getName());
+        Roles role = (Roles) authentication.getAuthorities().iterator().next();
+        if (role == Roles.ADMIN || post.getAuthor().getId() == userInfoId) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        //1.Admin can delete any post
-        //2.User can delete only his own posts
-        if (role == Roles.ADMIN || post.getAuthor().getId() == uiid) {
-            //TODO: Delete
-            //postRepository.softDelete(post.getId());
-            post.setVisible(false);
-            System.out.println("DELETED!");
-        } else { return EditPostResponseStatus.NO_AUTHORITY; }
+    @Transactional
+    public EditPostResponseStatus deletePost(DeletePostRequestDto postDto, Authentication authentication) {
+        Post post = postRepository.getById(postDto.getPostId());
+        if (post == null) {
+            return EditPostResponseStatus.POST_NOT_FOUND;
+        }
+
+        if (canDelete(post, authentication)) {
+            postRepository.softDelete(post.getId());
+        } else {
+            return EditPostResponseStatus.NO_AUTHORITY;
+        }
 
         return EditPostResponseStatus.SUCCESS;
+    }
+
+    /**
+     * 1.Admin can delete every post
+     * 2.User can delete only his own posts
+     * @param post
+     * @param authentication
+     * @return
+     */
+    private boolean canDelete(Post post, Authentication authentication) {
+        Long userInfoId = Long.valueOf(authentication.getName());
+        Roles role = (Roles) authentication.getAuthorities().iterator().next();
+        if (role == Roles.ADMIN || post.getAuthor().getId() == userInfoId) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

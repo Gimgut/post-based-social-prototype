@@ -1,7 +1,9 @@
 package gimgut.postbasedsocial.api.post;
 
+import gimgut.postbasedsocial.api.user.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
+import gimgut.postbasedsocial.security.Roles;
 import gimgut.postbasedsocial.shared.services.TimeService;
 import gimgut.postbasedsocial.shared.services.generators.go1984.Generator1984;
 import gimgut.postbasedsocial.shared.services.generators.randomstring.RandomStringGenerator;
@@ -20,13 +22,15 @@ public class RandomPostService {
     private final TimeService timeService;
     private final UserInfoRepository userInfoRepository;
     private final Generator1984 go1984;
+    private final RoleRepository roleRepository;
 
-    public RandomPostService(EntityManager entityManager, RandomStringGenerator randomStringGenerator, TimeService timeService, UserInfoRepository userInfoRepository, Generator1984 go1984) {
+    public RandomPostService(EntityManager entityManager, RandomStringGenerator randomStringGenerator, TimeService timeService, UserInfoRepository userInfoRepository, Generator1984 go1984, RoleRepository roleRepository) {
         this.entityManager = entityManager;
         this.randomStringGenerator = randomStringGenerator;
         this.timeService = timeService;
         this.userInfoRepository = userInfoRepository;
         this.go1984 = go1984;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -60,6 +64,7 @@ public class RandomPostService {
         userInfo.setLocked(false);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+        userInfo.setRole(roleRepository.findByName("WRITER"));
         userInfoRepository.save(userInfo);
         for (int i = realPages-1; i > -1; i--) {
             LocalDateTime rndLdt = timeService.getUtcNowLDT().plusSeconds(randomStringGenerator.generateRandomInt(20 * i, 20 * (i + 1)));

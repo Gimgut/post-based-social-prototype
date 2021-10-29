@@ -51,7 +51,7 @@ public class GoogleRegistrationService {
             userInfo.setLocked(false);
             userInfo.setActivated(true);
             userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-            userInfo.setPicture(oidcUser.getPicture());
+            userInfo.setPictureUrl(oidcUser.getPicture());
             String generatedUsername;
             do {
                 generatedUsername =

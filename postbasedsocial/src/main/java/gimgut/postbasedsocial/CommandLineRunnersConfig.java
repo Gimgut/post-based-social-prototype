@@ -28,18 +28,6 @@ public class CommandLineRunnersConfig {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    @Bean
-    public CommandLineRunner run(RandomPostService randomPublicationService, PostRepository publicationRepository) {
-        return args -> {
-            //randomPublicationService.addRandomPublications(100);
-            randomPublicationService.add1984(100);
-            List<Post> allPublications = publicationRepository.findAll();
-            allPublications.forEach((x) -> logger.info(x.toString()));
-            //allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
-            allPublications.forEach((x) -> logger.info(x.toString()));
-        };
-    }
-
     @Bean("createAppRoles")
     public CommandLineRunner createAppRoles(RoleRepository roleRepository) {
         return args -> {
@@ -64,7 +52,18 @@ public class CommandLineRunnersConfig {
     }
 
     @Bean
-    @DependsOn("createAppRoles")
+    public CommandLineRunner run(RandomPostService randomPublicationService, PostRepository publicationRepository) {
+        return args -> {
+            //randomPublicationService.addRandomPublications(100);
+            randomPublicationService.add1984(100);
+            List<Post> allPublications = publicationRepository.findAll();
+            allPublications.forEach((x) -> logger.info(x.toString()));
+            //allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
+            allPublications.forEach((x) -> logger.info(x.toString()));
+        };
+    }
+
+    @Bean
     public CommandLineRunner createDefaultUsers(UserInfoRepository userInfoRepository,
                                                 UserCredentialsEmailRepository userCredentialsEmailRepository,
                                                 PasswordEncoder passwordEncoder,
