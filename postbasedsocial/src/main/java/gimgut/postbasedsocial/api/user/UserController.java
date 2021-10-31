@@ -22,7 +22,17 @@ public class UserController {
         this.userInfoMapper = userInfoMapper;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/name/{name}")
+    public ResponseEntity getUserByName(@PathVariable @NotNull String name) {
+        UserInfo userInfo = userInfoRepository.findByUsername(name);
+        if (userInfo == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        UserInfoDto userDto = userInfoMapper.toUserInfoDto(userInfo);
+        return new ResponseEntity(userDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/id/{id}")
     public ResponseEntity getUserById(@PathVariable @NotNull Long id) {
         Optional<UserInfo> userInfo = userInfoRepository.findById(id);
         if (!userInfo.isPresent()) {
@@ -31,4 +41,6 @@ public class UserController {
         UserInfoDto userDto = userInfoMapper.toUserInfoDto(userInfo.get());
         return new ResponseEntity(userDto, HttpStatus.OK);
     }
+
+
 }

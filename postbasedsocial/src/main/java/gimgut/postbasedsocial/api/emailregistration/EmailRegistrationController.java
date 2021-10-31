@@ -23,7 +23,8 @@ public class EmailRegistrationController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<RegistrationResponseDto> registerNewUser(@RequestBody @Valid EmailRegistrationRequestDto emailRegistrationRequestDto) {
+    public ResponseEntity<RegistrationResponseDto> registerNewUser(
+            @RequestBody @Valid EmailRegistrationRequestDto emailRegistrationRequestDto) {
         UserCredentialsEmailRegistration userCredentials =
                 userCredentialsEmailRegistrationMapper.fromDto(emailRegistrationRequestDto);
         RegistrationResponseStatus registrationStatus = emailRegistrationService.registerNewUser(userCredentials);
