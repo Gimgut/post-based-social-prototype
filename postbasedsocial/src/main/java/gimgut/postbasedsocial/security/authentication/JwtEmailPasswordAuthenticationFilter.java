@@ -2,10 +2,11 @@ package gimgut.postbasedsocial.security.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.user.UserInfoDto;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
-import gimgut.util.Pair;
+import gimgut.postbasedsocial.security.Tokens;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,10 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
 
-    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtService jwtService, UserInfoMapper userInfoMapper) {
+    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+                                                ObjectMapper objectMapper,
+                                                JwtService jwtService,
+                                                UserInfoMapper userInfoMapper) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
@@ -56,14 +60,16 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
+        Tokens tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
+        UserInfoDto responseUserInfo = userInfoMapper.toUserInfoDto(userDetails.getUserInfo());
+        LoginResponseDto loginResponse = new LoginResponseDto(
+                LoginResponseStatus.SUCCESS,
+                tokens.getAccessToken(),
+                tokens.getRefreshToken(),
+                responseUserInfo);
         response.setContentType("application/json");
-        objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.SUCCESS,
-                        tokens.getFirst(), tokens.getSecond(),
-                        userInfoMapper.toUserInfoDto(userDetails.getUserInfo()))
-        );
+        objectMapper.writeValue(response.getOutputStream(), loginResponse);
     }
 
     @Override
@@ -71,8 +77,8 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
         logger.info("Authentication unsuccessful");
         response.setStatus(200);
         response.setContentType("application/json");
-        objectMapper.writeValue(response.getOutputStream(),
-                new LoginResponseDto(LoginResponseStatus.FAILED, null, null, null)
-        );
+        LoginResponseDto loginResponse = new LoginResponseDto();
+        loginResponse.setStatus(LoginResponseStatus.FAILED);
+        objectMapper.writeValue(response.getOutputStream(), loginResponse);
     }
 }

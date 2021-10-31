@@ -25,7 +25,13 @@ public class PostService {
     @Transactional
     public Long createNewPost(CreatePostRequestDto newPostDto, Long authorId) {
         UserInfo author = entityManager.getReference(UserInfo.class, authorId);
-        Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(),0, timeService.getUtcNowLDT(), author, true);
+        Post post = new Post(
+                newPostDto.getTitle(),
+                newPostDto.getContent(),
+                0,
+                timeService.getUtcNowLDT(),
+                author,
+                true);
         entityManager.persist(post);
         return post.getId();
     }
@@ -57,7 +63,7 @@ public class PostService {
     private boolean canEdit(Post post, Authentication authentication) {
         Long userInfoId = Long.valueOf(authentication.getName());
         Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        if (role == Roles.ADMIN || post.getAuthor().getId() == userInfoId) {
+        if ((role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId)) {
             return true;
         } else {
             return false;
@@ -90,7 +96,7 @@ public class PostService {
     private boolean canDelete(Post post, Authentication authentication) {
         Long userInfoId = Long.valueOf(authentication.getName());
         Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        if (role == Roles.ADMIN || post.getAuthor().getId() == userInfoId) {
+        if ((role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId)) {
             return true;
         } else {
             return false;

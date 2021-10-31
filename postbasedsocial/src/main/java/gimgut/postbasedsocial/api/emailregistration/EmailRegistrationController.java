@@ -16,15 +16,18 @@ public class EmailRegistrationController {
     private final EmailRegistrationService emailRegistrationService;
     private final UserCredentialsEmailRegistrationMapper userCredentialsEmailRegistrationMapper;
 
-    public EmailRegistrationController(EmailRegistrationService emailRegistrationService, UserCredentialsEmailRegistrationMapper userCredentialsEmailRegistrationMapper) {
+    public EmailRegistrationController(EmailRegistrationService emailRegistrationService,
+                                       UserCredentialsEmailRegistrationMapper userCredentialsEmailRegistrationMapper) {
         this.emailRegistrationService = emailRegistrationService;
         this.userCredentialsEmailRegistrationMapper = userCredentialsEmailRegistrationMapper;
     }
 
     @PostMapping("signup")
     public ResponseEntity<RegistrationResponseDto> registerNewUser(@RequestBody @Valid EmailRegistrationRequestDto emailRegistrationRequestDto) {
-        UserCredentialsEmailRegistration user = userCredentialsEmailRegistrationMapper.toUserCredentialsEmailRegistration(emailRegistrationRequestDto);
-        RegistrationResponseDto registrationResponseDto = new RegistrationResponseDto(emailRegistrationService.registerNewUser(user).name());
+        UserCredentialsEmailRegistration userCredentials =
+                userCredentialsEmailRegistrationMapper.fromDto(emailRegistrationRequestDto);
+        RegistrationResponseStatus registrationStatus = emailRegistrationService.registerNewUser(userCredentials);
+        RegistrationResponseDto registrationResponseDto = new RegistrationResponseDto(registrationStatus);
         return new ResponseEntity(registrationResponseDto, HttpStatus.OK);
     }
 }

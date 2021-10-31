@@ -1,11 +1,12 @@
 package gimgut.postbasedsocial.security.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.user.UserInfoDto;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.JwtService;
+import gimgut.postbasedsocial.security.Tokens;
 import gimgut.postbasedsocial.security.authentication.LoginResponseDto;
 import gimgut.postbasedsocial.security.authentication.LoginResponseStatus;
-import gimgut.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
@@ -36,45 +37,22 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        logger.info("successful auth for " + authentication.getName()
-                + "\n principal: " + authentication.getPrincipal()
-                + "\n credentials: " + authentication.getCredentials());
-        logger.info("principal class: " +authentication.getPrincipal().getClass());
-
-        //1. get email
-        //2. if email is missing then httpservletresponse authentication error
-        //3. check if email exists in the UserCredentialsGoogleRepositoty
-        //4. if does not exist, then register new user. UserInfo.username = "Username"+(10000+id)
-        //5. httpservletresponse return access token and refresh token
-
-        DefaultOidcUser user = (DefaultOidcUser) authentication.getPrincipal();
-        boolean failed = false;
-        if (user.getEmail() != null) {
-            UserCredentialsGoogleRegistration registeredUser = googleRegistrationService.getUserByEmailOrRegisterAsNew(user);
-            if (registeredUser != null) {
-
-                Pair<String, String> tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
-
-                //httpServletResponse.setHeader("access_token", tokens.getFirst());
-                //httpServletResponse.setHeader("refresh_token", tokens.getSecond());
-
-                httpServletResponse.setContentType("application/json");
-                objectMapper.writeValue(httpServletResponse.getOutputStream(),
-                        new LoginResponseDto(LoginResponseStatus.SUCCESS,
-                                tokens.getFirst(), tokens.getSecond(),
-                                userInfoMapper.toUserInfoDto(registeredUser.getUserInfo()))
-                );
-            } else {
-                failed = true;
-            }
-        } else {
-            failed = true;
+        DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+        if (oidcUser.getEmail() == null) {
+            httpServletResponse.setStatus(400);
+            httpServletResponse.getOutputStream().write("NO_EMAIL_PROVIDED".getBytes());
+            return;
         }
+        UserCredentialsGoogleRegistration registeredUser = googleRegistrationService.getUserByEmailOrRegisterAsNew(oidcUser);
+        Tokens tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
+        UserInfoDto userInfoDto = userInfoMapper.toUserInfoDto(registeredUser.getUserInfo());
+        LoginResponseDto loginResponse = new LoginResponseDto(
+                LoginResponseStatus.SUCCESS,
+                tokens.getAccessToken(),
+                tokens.getRefreshToken(),
+                userInfoDto);
 
-        if (failed) {
-            httpServletResponse.setStatus(200);
-            objectMapper.writeValue(httpServletResponse.getOutputStream(),
-                    new LoginResponseDto(LoginResponseStatus.FAILED, null, null, null));
-        }
+        httpServletResponse.setContentType("application/json");
+        objectMapper.writeValue(httpServletResponse.getOutputStream(), loginResponse);
     }
 }

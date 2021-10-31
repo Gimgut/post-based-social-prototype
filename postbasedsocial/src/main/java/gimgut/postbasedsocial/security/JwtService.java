@@ -6,19 +6,18 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.api.user.UserInfo;
-import gimgut.postbasedsocial.security.authentication.UserDetailsImpl;
-import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRegistration;
 import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRepository;
 import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
-import gimgut.util.Pair;
-import gimgut.util.Triplet;
+import gimgut.postbasedsocial.security.refreshtoken.RefreshToken;
+import gimgut.postbasedsocial.security.refreshtoken.RefreshTokenStatus;
+import gimgut.postbasedsocial.security.refreshtoken.TypeConversionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,136 +60,108 @@ public class JwtService {
         return accessTokenVerifier.verify(accessToken);
     }
 
-    public DecodedJWT verifyRefreshToken(String refreshToken, String password) throws JWTVerificationException {
+    private DecodedJWT verifyRefreshToken(String refreshToken, String password) throws JWTVerificationException {
         JWTVerifier refreshTokenVerifier = JWT.require(Algorithm.HMAC256(secret + password)).build();
         return refreshTokenVerifier.verify(refreshToken);
     }
 
-    public Pair<String, String> getAccessAndRefreshTokens(UserCredentialsGoogleRegistration userCredentialsGoogleRegistration) {
-        String role = userCredentialsGoogleRegistration.getUserInfo().getRole().getName();
-
-        String access_token = getAccessToken(
-                userCredentialsGoogleRegistration.getUserInfo().getUsername(),
-                role,
-                userCredentialsGoogleRegistration.getUserInfo().getId(),
-                AuthenticationType.GOOGLE);
-        String refresh_token = getRefreshToken(
-                userCredentialsGoogleRegistration.getUserInfo().getUsername(),
-                userCredentialsGoogleRegistration.getPassword(),
-                role,
-                userCredentialsGoogleRegistration.getUserInfo().getId(),
-                AuthenticationType.GOOGLE);
-
-        return new Pair<>(access_token, refresh_token);
+    public Tokens getAccessAndRefreshTokens(SecuredUser securedUser) {
+        return getAccessAndRefreshTokens(securedUser, AuthenticationType.GOOGLE);
     }
 
-    public Pair<String, String> getAccessAndRefreshTokens(UserDetailsImpl userDetails, AuthenticationType authenticationType) {
-        String role = userDetails.getUserInfo().getRole().getName();
-
-        String access_token = getAccessToken(userDetails.getUsername(), role, userDetails.getUserInfo().getId(), authenticationType);
-        String refresh_token = getRefreshToken(userDetails.getUsername(), userDetails.getPassword(), role, userDetails.getUserInfo().getId(), authenticationType);
-
-        return new Pair<>(access_token, refresh_token);
+    public Tokens getAccessAndRefreshTokens(SecuredUser securedUser, AuthenticationType authenticationType) {
+        String accessToken = getAccessToken(securedUser, authenticationType);
+        String refreshToken = getRefreshToken(securedUser, authenticationType);
+        return new Tokens(accessToken, refreshToken);
     }
 
-    /**
-     * @param username
-     * @param role
-     * @param uiid UserInfo id
-     * @param authenticationType
-     * @return
-     */
-    public String getAccessToken(String username, String role, Long uiid, AuthenticationType authenticationType) {
-        String access_token = JWT.create()
-                .withSubject(username)
+    public String getAccessToken(SecuredUser securedUser, AuthenticationType authenticationType) {
+        String accessToken = JWT.create()
+                .withSubject(securedUser.getUserInfo().getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiryTimeMs))
                 .withPayload(Map.of(
-                        "role", role,
+                        "role", securedUser.getUserInfo().getRole().getName(),
                         "ap", authenticationType.name(), //ap - authentication provider/type
-                        "uiid", uiid
+                        "uiid", securedUser.getUserInfo().getId()
                 ))
                 .sign(accessTokenAlgorithm);
 
-        return access_token;
+        return accessToken;
     }
 
-    /**
-     * @param username
-     * @param password
-     * @param role
-     * @param uiid UserInfo id
-     * @param authenticationType
-     * @return
-     */
-    public String getRefreshToken(String username, String password, String role, Long uiid, AuthenticationType authenticationType) {
-        Algorithm refreshTokenAlgorithm = Algorithm.HMAC256(secret + password);
+    public String getRefreshToken(SecuredUser securedUser, AuthenticationType authenticationType) {
+        Algorithm refreshTokenAlgorithm = Algorithm.HMAC256(secret + securedUser.getPassword());
 
-        String refresh_token = JWT.create()
-                .withSubject(username)
+        String refreshToken = JWT.create()
+                .withSubject(securedUser.getUserInfo().getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpiryTimeMs))
                 .withPayload(Map.of(
-                        "role", role,
+                        "role", securedUser.getUserInfo().getRole().getName(),
                         "ap", authenticationType.name(), //ap - authentication provider/type
-                        "uiid", uiid,
+                        "uiid", securedUser.getUserInfo().getId(),
                         "aexp", this.accessTokenExpiryTimeMs //access token expiry time
                 ))
                 .sign(refreshTokenAlgorithm);
-        return refresh_token;
+        return refreshToken;
     }
 
-    /**
-     * @param refreshToken
-     * @return Pair<access_token, refresh_token>, or null if error
-     */
     @Transactional(readOnly = true)
-    public Triplet<String, String, UserInfo> refreshToken(String refreshToken) {
-        if (refreshToken == null)
-            return null;
+    public RefreshToken refreshToken(String refreshToken) {
         String[] chunks = refreshToken.split("\\.");
-        Map<String, String> payload;
+        //TODO: make payload as class?
+        Map<String, String> payload = this.payloadToMap(chunks[1]);
+        if (payload.isEmpty()) {
+            return new RefreshToken(RefreshTokenStatus.BAD_TOKEN);
+        }
+
+        Long userInfoId = this.objectToLong(payload.get("uiid"));
+        AuthenticationType authenticationType = AuthenticationType.valueOf(payload.get("ap"));
+        SecuredUser securedUser = this.findUserByAuthenticationType(userInfoId, authenticationType);
+        if (securedUser == null) {
+            return new RefreshToken(RefreshTokenStatus.USER_NOT_FOUND);
+        }
+
         try {
-            payload = mapper.readValue(decoder.decode(chunks[1]), HashMap.class);
-
-            Long uiid;
-            Object uiidObj = payload.get("uiid");
-            if (uiidObj.getClass() == Integer.class) {
-                uiid = ((Integer) uiidObj).longValue();
-            } else if (uiidObj.getClass() == Long.class) {
-                uiid = (Long)uiidObj;
-            } else {
-                return null;
-            }
-
-            AuthenticationType authenticationType = AuthenticationType.valueOf(payload.get("ap"));
-            SecuredUser securedUser;
-            switch (authenticationType) {
-                case EMAIL -> securedUser = userCredentialsEmailRepository.findByUserInfoId_Eager(uiid);
-                case GOOGLE -> securedUser = userCredentialsGoogleRepository.findByUserInfoId_Eager(uiid);
-                default -> {
-                    return null;
-                }
-            }
-            if (securedUser == null)
-                return null;
-
             verifyRefreshToken(refreshToken, securedUser.getPassword());
-
-            String access_token = getAccessToken(
-                    securedUser.getUserInfo().getUsername(),
-                    securedUser.getUserInfo().getRole().getName(),
-                    securedUser.getUserInfo().getId(),
-                    authenticationType);
-
-            String refresh_token = getRefreshToken(
-                    securedUser.getUserInfo().getUsername(),
-                    securedUser.getPassword(),
-                    securedUser.getUserInfo().getRole().getName(),
-                    securedUser.getUserInfo().getId(),
-                    authenticationType);
-
-            return new Triplet<String, String, UserInfo>(access_token, refresh_token, securedUser.getUserInfo());
         } catch (Exception e) {
-            return null;
+            return new RefreshToken(RefreshTokenStatus.VERIFICATION_FAILED);
+        }
+
+        String newAccessToken = this.getAccessToken(securedUser, authenticationType);
+        String newRefreshToken = this.getRefreshToken(securedUser, authenticationType);
+        RefreshToken refreshResponse = new RefreshToken();
+        refreshResponse.setStatus(RefreshTokenStatus.SUCCESS);
+        refreshResponse.setAccessToken(newAccessToken);
+        refreshResponse.setRefreshToken(newRefreshToken);
+        refreshResponse.setUserInfo(securedUser.getUserInfo());
+        return refreshResponse;
+    }
+
+    @Transactional(readOnly = true)
+    private SecuredUser findUserByAuthenticationType(Long userInfoId, AuthenticationType authenticationType) {
+        if (authenticationType == AuthenticationType.EMAIL) {
+            return userCredentialsEmailRepository.findByUserInfoId_Eager(userInfoId);
+        } else if (authenticationType == AuthenticationType.GOOGLE) {
+            return userCredentialsGoogleRepository.findByUserInfoId_Eager(userInfoId);
+        }
+        return null;
+    }
+
+    private Map<String, String> payloadToMap(String payload) {
+        try {
+            return mapper.readValue(decoder.decode(payload), HashMap.class);
+        } catch (IOException e) {
+            return Map.of();
+        }
+    }
+
+    private Long objectToLong(Object object) {
+        if (object.getClass() == Integer.class) {
+            return ((Integer) object).longValue();
+        } else if (object.getClass() == Long.class) {
+            return (Long)object;
+        } else {
+            throw new TypeConversionException("Failed to convert Object to Long");
         }
     }
 }

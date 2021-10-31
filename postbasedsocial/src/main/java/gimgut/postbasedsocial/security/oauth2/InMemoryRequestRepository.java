@@ -12,41 +12,30 @@ import java.util.Map;
 
 public class InMemoryRequestRepository implements AuthorizationRequestRepository< OAuth2AuthorizationRequest > {
     private final Log logger = LogFactory.getLog(this.getClass());
-    private final Map< String, OAuth2AuthorizationRequest > cache = new HashMap<>();
+    //TODO: remove element after T time elapsed
+    private final Map<String, OAuth2AuthorizationRequest> requests = new HashMap<>();
 
     @Override
-    public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request ) {
-        logger.info("loadAuthorizationRequest");
+    public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
         String state = request.getParameter( "state" );
-        if ( state != null ) {
+        if (state != null) {
             return removeAuthorizationRequest( request );
         }
         return null;
     }
 
     @Override
-    public void saveAuthorizationRequest( OAuth2AuthorizationRequest authorizationRequest,
-                                          HttpServletRequest request, HttpServletResponse response ) {
+    public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         String state = authorizationRequest.getState();
-        logger.info("saveAuthorizationRequest. state: " + state
-                +"\nclient scopes: " + authorizationRequest.getScopes()
-                +"\nclient id: "+ authorizationRequest.getClientId()
-        +"\nredirect uri: " + authorizationRequest.getRedirectUri());
-        //logger.info("request url: " + request.getRequestURL());
-        //logger.info("response header names: " + response.getHeaderNames());
-
-        cache.put( state, authorizationRequest );
+        requests.put(state, authorizationRequest);
     }
 
     @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest( HttpServletRequest request ) {
-
-        logger.info("removeAuthorizationRequest");
-        String state = request.getParameter( "state" );
-        if ( state != null ) {
-            return cache.remove( state );
+    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
+        String state = request.getParameter("state");
+        if (state != null) {
+            return requests.remove( state );
         }
-
         return null;
     }
 }

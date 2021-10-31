@@ -13,7 +13,7 @@ public class JacksonConfig {
 
     @Bean
     public ObjectMapper getJacksonObjectMapper() {
-        ObjectMapper mapper = JsonMapper.builder() // or different mapper for other format
+        ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new ParameterNamesModule())
                 .addModule(new Jdk8Module())
                 .addModule(new JavaTimeModule())

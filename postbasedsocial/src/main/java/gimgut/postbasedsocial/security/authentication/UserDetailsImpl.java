@@ -1,6 +1,7 @@
 package gimgut.postbasedsocial.security.authentication;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.security.SecuredUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails, SecuredUser {
 
     private Long id;
     private String username;

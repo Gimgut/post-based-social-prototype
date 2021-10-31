@@ -38,7 +38,7 @@ public class RandomPostService {
         //create random user info
         UserInfo userInfo = new UserInfo();
         userInfo.setUsername("Random01");
-        userInfo.setLocked(false);
+        userInfo.setUnlocked(false);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
         userInfoRepository.save(userInfo);
@@ -61,7 +61,7 @@ public class RandomPostService {
         int realPages = Math.min(pagedText.size(), pages);
         UserInfo userInfo = new UserInfo();
         userInfo.setUsername("Random02");
-        userInfo.setLocked(false);
+        userInfo.setUnlocked(true);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
         userInfo.setRole(roleRepository.findByName("WRITER"));

@@ -21,23 +21,24 @@ public class UserInfo {
 
     private boolean activated;
 
-    private boolean locked;
+    private boolean unlocked;
 
     @Column(name = "registration_dt")
     private LocalDateTime registrationTime;
 
     //TODO: shorten url before saving / use cdn / use cloud storage / etc.
+    @Column(name = "picture_url")
     private String pictureUrl;
 
     public UserInfo() {
     }
 
-    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime, String pictureUrl) {
+    public UserInfo(Long id, String username, Role role, boolean activated, boolean unlocked, LocalDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.activated = activated;
-        this.locked = locked;
+        this.unlocked = unlocked;
         this.registrationTime = registrationTime;
         this.pictureUrl = pictureUrl;
     }
@@ -74,12 +75,12 @@ public class UserInfo {
         this.activated = activated;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public boolean isUnlocked() {
+        return unlocked;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 
     public LocalDateTime getRegistrationTime() {
@@ -97,7 +98,7 @@ public class UserInfo {
                 ", username='" + username + '\'' +
                 ", role=" + role +
                 ", activated=" + activated +
-                ", locked=" + locked +
+                ", unlocked=" + unlocked +
                 ", registrationTime=" + registrationTime +
                 '}';
     }

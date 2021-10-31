@@ -2,13 +2,13 @@ package gimgut.postbasedsocial.api.emailregistration;
 
 public class RegistrationResponseDto {
 
-    private final String status;
+    private final RegistrationResponseStatus status;
 
-    public RegistrationResponseDto(String status) {
+    public RegistrationResponseDto(RegistrationResponseStatus status) {
         this.status = status;
     }
 
-    public String getStatus() {
+    public RegistrationResponseStatus getStatus() {
         return status;
     }
 }

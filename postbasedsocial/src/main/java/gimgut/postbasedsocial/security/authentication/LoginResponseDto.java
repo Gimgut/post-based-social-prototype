@@ -9,6 +9,9 @@ public class LoginResponseDto {
     private String refreshToken;
     private UserInfoDto userInfo;
 
+    public LoginResponseDto() {
+    }
+
     public LoginResponseDto(LoginResponseStatus status, String accessToken, String refreshToken, UserInfoDto userInfo) {
         this.status = status;
         this.accessToken = accessToken;

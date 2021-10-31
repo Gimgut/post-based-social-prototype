@@ -5,7 +5,6 @@ import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Roles;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,9 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -44,22 +41,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     String accessToken = authorizationHeader.substring(7);
-
                     DecodedJWT decodedJWT = jwtService.verifyAccessToken(accessToken);
 
-                    //String username = decodedJWT.getSubject();
-                    Long principalUserInfoId = decodedJWT.getClaim("uiid").asLong();
-                    String role = decodedJWT.getClaim("role").asString();
+                    Long userInfoId = decodedJWT.getClaim("uiid").asLong();
+                    String userRole = decodedJWT.getClaim("role").asString();
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                            new UsernamePasswordAuthenticationToken(userInfoId, null, Arrays.asList(Roles.valueOf(userRole)));
 
-                    //new SimpleGrantedAuthority(role) changed to Roles.valueOf(role)
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            principalUserInfoId, null, Arrays.asList(Roles.valueOf(role)));
-
-                    //suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    //Suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     SecurityContext context = SecurityContextHolder.createEmptyContext();
                     context.setAuthentication(usernamePasswordAuthenticationToken);
                     SecurityContextHolder.setContext(context);
-                    logger.info("Authorization is successful for user uiid: " + principalUserInfoId + " with role: " + role);
+                    logger.info("Authorization is successful for user uiid: " + userInfoId + " with role: " + userRole);
 
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {

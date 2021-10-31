@@ -1,41 +1,23 @@
 package gimgut.postbasedsocial.security.refreshtoken;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
-import gimgut.postbasedsocial.api.user.UserInfoDto;
 
-public class RefreshTokenResponseDto {
+public class RefreshToken {
     private RefreshTokenStatus status;
-    private UserInfoDto userInfo;
     private String accessToken;
     private String refreshToken;
+    private UserInfo userInfo;
 
-    public RefreshTokenResponseDto() {
+    public RefreshToken() {
     }
 
-    public RefreshTokenResponseDto(RefreshTokenStatus status) {
+    public RefreshToken(RefreshTokenStatus status) {
         this.status = status;
     }
 
-    public RefreshTokenResponseDto(RefreshTokenStatus status, UserInfoDto userInfo, String accessToken, String refreshToken) {
-        this.status = status;
-        this.userInfo = userInfo;
+    public RefreshToken(String accessToken, String refreshToken, UserInfo userInfo) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-    }
-
-    public RefreshTokenStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RefreshTokenStatus status) {
-        this.status = status;
-    }
-
-    public UserInfoDto getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(UserInfoDto userInfo) {
         this.userInfo = userInfo;
     }
 
@@ -53,5 +35,21 @@ public class RefreshTokenResponseDto {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public RefreshTokenStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RefreshTokenStatus status) {
+        this.status = status;
     }
 }

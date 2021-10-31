@@ -13,11 +13,9 @@ public class HollowOauth2AuthorizedClientService implements OAuth2AuthorizedClie
 
     @Override
     public void saveAuthorizedClient(OAuth2AuthorizedClient oAuth2AuthorizedClient, Authentication authentication) {
-
     }
 
     @Override
     public void removeAuthorizedClient(String s, String s1) {
-
     }
 }

@@ -79,7 +79,7 @@ public class CommandLineRunnersConfig {
             UserInfo userInfo = new UserInfo();
             userInfo.setUsername("admin");
             userInfo.setActivated(true);
-            userInfo.setLocked(false);
+            userInfo.setUnlocked(true);
             Role role = roleRepository.findByName(Roles.ADMIN.name());
             userInfo.setRole(role);
             userInfo.setRegistrationTime(timeService.getUtcNowLDT());

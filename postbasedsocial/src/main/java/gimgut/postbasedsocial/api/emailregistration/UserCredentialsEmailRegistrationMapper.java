@@ -7,5 +7,5 @@ import org.mapstruct.Mapping;
 public interface UserCredentialsEmailRegistrationMapper {
 
     @Mapping(target = "userInfo.username", source = "username")
-    UserCredentialsEmailRegistration toUserCredentialsEmailRegistration(EmailRegistrationRequestDto emailRegistrationRequestDto);
+    UserCredentialsEmailRegistration fromDto(EmailRegistrationRequestDto emailRegistrationRequestDto);
 }

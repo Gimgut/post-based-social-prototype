@@ -19,7 +19,11 @@ public class EmailRegistrationService {
     private final UserInfoRepository userInfoRepository;
     private final TimeService timeService;
 
-    public EmailRegistrationService(RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserCredentialsEmailRepository userCredentialsEmailRepository, UserInfoRepository userInfoRepository, TimeService timeService) {
+    public EmailRegistrationService(RoleRepository roleRepository,
+                                    PasswordEncoder passwordEncoder,
+                                    UserCredentialsEmailRepository userCredentialsEmailRepository,
+                                    UserInfoRepository userInfoRepository,
+                                    TimeService timeService) {
         this.userCredentialsEmailRepository = userCredentialsEmailRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -28,34 +32,34 @@ public class EmailRegistrationService {
     }
 
     @Transactional
-    public RegistrationResponseStatus registerNewUser(UserCredentialsEmailRegistration user) {
-        //TODO: validate userCredentials fields
+    public RegistrationResponseStatus registerNewUser(UserCredentialsEmailRegistration userCredentials) {
 
-        if (userCredentialsEmailRepository.findByEmail(user.getEmail()) != null)
+        if (userCredentialsEmailRepository.findByEmail(userCredentials.getEmail()) != null) {
             return RegistrationResponseStatus.EMAIL_EXISTS;
+        }
 
-        if (userInfoRepository.findByUsername(user.getUserInfo().getUsername()) != null)
+        if (userInfoRepository.findByUsername(userCredentials.getUserInfo().getUsername()) != null) {
             return RegistrationResponseStatus.USERNAME_EXISTS;
+        }
 
-        //set UserCredentialsEmailRegistration parameters
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userCredentials.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
 
-        //set UserInfo parameters
-        UserInfo userInfo = user.getUserInfo();
+        UserInfo userInfo = userCredentials.getUserInfo();
         Role role = roleRepository.findByName(Roles.USER.name());
-        if (role == null)
+        if (role == null) {
             return RegistrationResponseStatus.FAILED;
+        }
         userInfo.setRole(role);
-        userInfo.setLocked(false);
+        userInfo.setUnlocked(true);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
 
         try {
             userInfoRepository.save(userInfo);
-            userCredentialsEmailRepository.save(user);
+            userCredentialsEmailRepository.save(userCredentials);
+            return RegistrationResponseStatus.SUCCESS;
         } catch (Exception e) {
             return RegistrationResponseStatus.FAILED;
         }
-        return RegistrationResponseStatus.SUCCESS;
     }
 }

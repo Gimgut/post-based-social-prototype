@@ -44,6 +44,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
 
+    //TODO: move to configuration file
     private final String AUTH_LOGIN = "/api/v1/auth/signin";
     private final String AUTH_REGISTER = "/api/v1/auth/signup";
     private final String AUTH_REFRESH_TOKEN = "/api/v1/auth/refresh_token";
@@ -53,8 +54,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
-                             UserInfoMapper userInfoMapper, GoogleRegistrationService googleRegistrationService
-    ) {
+                             UserInfoMapper userInfoMapper,
+                             GoogleRegistrationService googleRegistrationService) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -67,28 +68,45 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-        //auth.authenticationProvider(emailPasswordAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
-                authenticationManagerBean(), mapper, jwtService, userInfoMapper);
+        JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter =
+                new JwtEmailPasswordAuthenticationFilter(
+                        authenticationManagerBean(),
+                        mapper,
+                        jwtService,
+                        userInfoMapper);
         jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //public endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/**/feed/**" , "/api/**/user/**", "/api/**/post/**", "/login/**", "/oauth2/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER, AUTH_REFRESH_TOKEN).permitAll();
+        http.authorizeRequests().antMatchers(
+                HttpMethod.GET,
+                "/api/**/feed/**" ,
+                "/api/**/user/**",
+                "/api/**/post/**",
+                "/login/**",
+                "/oauth2/**").permitAll();
+        http.authorizeRequests().antMatchers(
+                HttpMethod.POST,
+                AUTH_LOGIN,
+                AUTH_REGISTER,
+                AUTH_REFRESH_TOKEN).permitAll();
         //authenticated endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/**/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
+        http.authorizeRequests().antMatchers(
+                HttpMethod.POST,
+                "/api/**/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
-        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+                new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService),
+                UsernamePasswordAuthenticationFilter.class);
 
         //Called after auth fail on ".authenticated()" matcher with no mapping for this request url. f.e. /api/r
         //Or if authenticated but doesn't have a necessary authority
@@ -96,26 +114,25 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
 
         http.oauth2Login()
-                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService, userInfoMapper));
-        http.oauth2Login()
                 .authorizationEndpoint()
                     .authorizationRequestRepository(new InMemoryRequestRepository());
         http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
+        http.oauth2Login().successHandler(
+                new Oauth2AuthenticationSuccess(
+                        mapper,
+                        googleRegistrationService,
+                        jwtService,
+                        userInfoMapper));
 
 
-        //http.oauth2Login().loginPage("http://localhost:8080/login");
-        //http.oauth2Login().loginPage("http://localhost:4200/auth").successHandler(new Oauth2AuthenticationSuccess());
-        //http.oauth2Client().disable();
-        //http.oauth2Login().disable();
-
+        //TODO: change oauth paths to api-ish
     }
 
     private void authenticationExceptionEntryPoint(HttpServletRequest request,
                                           HttpServletResponse response,
                                           AuthenticationException authException ) throws IOException {
         logger.info("authentication exception entry point");
-        response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
-        //response.getWriter().write( mapper.writeValueAsString( Collections.singletonMap( "error", "unauthenticated" ) ) );
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Bean
@@ -128,9 +145,6 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
-        //config.addAllowedOrigin("http://localhost:4200");
-        //config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");

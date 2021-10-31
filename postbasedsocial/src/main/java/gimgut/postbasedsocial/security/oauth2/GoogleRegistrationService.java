@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 @Service
 public class GoogleRegistrationService {
 
@@ -20,15 +22,18 @@ public class GoogleRegistrationService {
     private final UserCredentialsGoogleRepository userCredentialsGoogleRepository;
     private final RoleRepository roleRepository;
     private final TimeService timeService;
+    private final EntityManager entityManager;
 
     public GoogleRegistrationService(UserInfoRepository userInfoRepository,
                                      UserCredentialsGoogleRepository userCredentialsGoogleRepository,
                                      RoleRepository roleRepository,
-                                     TimeService timeService) {
+                                     TimeService timeService,
+                                     EntityManager entityManager) {
         this.userInfoRepository = userInfoRepository;
         this.userCredentialsGoogleRepository = userCredentialsGoogleRepository;
         this.roleRepository = roleRepository;
         this.timeService = timeService;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -37,76 +42,44 @@ public class GoogleRegistrationService {
         if (user != null) {
             return user;
         } else {
-            //create google user credentials
-            UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
-            newGoogleUser.setEmail(oidcUser.getEmail());
-            newGoogleUser.setPassword(Integer.toString(("g"+oidcUser.getEmail()).hashCode()));
-
-            //create user info
-            UserInfo userInfo = new UserInfo();
-            Role role = roleRepository.findByName(Roles.USER.name());
-            if (role == null)
-                return null;
-            userInfo.setRole(role);
-            userInfo.setLocked(false);
-            userInfo.setActivated(true);
-            userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-            userInfo.setPictureUrl(oidcUser.getPicture());
-            String generatedUsername;
-            do {
-                generatedUsername =
-                        "User"
-                        + Math.abs(("g" + oidcUser.getEmail()).hashCode())
-                        + ("g" + oidcUser.getName()).hashCode();
-            } while (userInfoRepository.findIdByUsername(generatedUsername) != null);
-            userInfo.setUsername(generatedUsername);
-
-            newGoogleUser.setUserInfo(userInfo);
-
-            //save
-            try {
-                userInfoRepository.save(userInfo);
-                userCredentialsGoogleRepository.save(newGoogleUser);
-            } catch (Exception e) {
-                logger.error("Failed userInfoRepository.save(userInfo)");
-                return null;
-            }
-            return newGoogleUser;
+            return registerNewUser(oidcUser);
         }
     }
 
-    /*
     @Transactional
-    public RegistrationResponseStatus registerNewUser(UserCredentialsEmailRegistration user) {
-        //TODO: validate userCredentials fields
+    public UserCredentialsGoogleRegistration registerNewUser(DefaultOidcUser oidcUser) {
+        UserCredentialsGoogleRegistration newGoogleUser = this.createUserCredentials(oidcUser);
+        UserInfo userInfo = this.createDefaultUserInfo(oidcUser, newGoogleUser);
+        newGoogleUser.setUserInfo(userInfo);
+        return newGoogleUser;
+    }
 
-        if (userCredentialsGoogleRepository.findByEmail(user.getEmail()) != null)
-            return RegistrationResponseStatus.EMAIL_EXISTS;
+    @Transactional
+    private UserCredentialsGoogleRegistration createUserCredentials(DefaultOidcUser oidcUser) {
+        UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
+        newGoogleUser.setEmail(oidcUser.getEmail());
+        newGoogleUser.setPassword(this.generateRandomPassword(oidcUser));
+        return userCredentialsGoogleRepository.save(newGoogleUser);
+    }
 
-        if (userInfoRepository.findByUsername(user.getUserInfo().getUsername()) != null)
-            return RegistrationResponseStatus.USERNAME_EXISTS;
+    private String generateRandomPassword(DefaultOidcUser oidcUser) {
+        return Integer.toString(("g"+oidcUser.getEmail()).hashCode());
+    }
 
-        //set UserCredentialsEmailRegistration parameters
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        //set UserInfo parameters
-        UserInfo userInfo = user.getUserInfo();
-        Role role = roleRepository.findByName(Roles.USER.name());
-        if (role == null)
-            return RegistrationResponseStatus.FAILED;
+    @Transactional
+    private UserInfo createDefaultUserInfo(DefaultOidcUser oidcUser, UserCredentialsGoogleRegistration userCredentials) {
+        UserInfo userInfo = new UserInfo();
+        String defaultRole = Roles.USER.name();
+        Role role = roleRepository.findByName(defaultRole);
+        if (role == null) {
+            throw new GoogleRegistrationException("Role " + defaultRole + " was not found in the database");
+        }
         userInfo.setRole(role);
-        userInfo.setLocked(false);
+        userInfo.setUnlocked(true);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-
-        try {
-            userInfoRepository.save(userInfo);
-            userCredentialsEmailRepository.save(user);
-        } catch (Exception e) {
-            return RegistrationResponseStatus.FAILED;
-        }
-        return RegistrationResponseStatus.SUCCESS;
+        userInfo.setPictureUrl(oidcUser.getPicture());
+        userInfo.setUsername("User"+userCredentials.getId()+"g");
+        return userInfoRepository.save(userInfo);
     }
-
-     */
 }
