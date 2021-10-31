@@ -33,8 +33,16 @@ export class RegistrationComponent implements OnInit {
 
   regForm = new FormGroup({
     email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-    username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(this.USERNAME_MIN_LENGTH), Validators.maxLength(this.USERNAME_MAX_LENGTH), Validators.pattern('[a-zA-Z0-9а-яА-Я-_]{4,32}')])),
-    password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(this.PASSWORD_MIN_LENGTH), Validators.maxLength(this.PASSWORD_MAX_LENGTH), Validators.pattern('[a-zA-Z0-9а-яА-Я-_]{8,32}')])),
+    username: new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(this.USERNAME_MIN_LENGTH), 
+      Validators.maxLength(this.USERNAME_MAX_LENGTH), 
+      Validators.pattern('[a-zA-Z0-9-_]{4,32}')])),
+    password: new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(this.PASSWORD_MIN_LENGTH), 
+      Validators.maxLength(this.PASSWORD_MAX_LENGTH), 
+      Validators.pattern('[a-zA-Z0-9а-яА-Я-_]{8,32}')])),
     passwordRepeat: new FormControl('', Validators.compose([Validators.required])),
   }, this.passwordMatchValidator );
 
