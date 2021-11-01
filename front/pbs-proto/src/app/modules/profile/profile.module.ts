@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { PostEditorComponent } from './post-editor/post-editor.component';
 import { PostEditComponent } from './post-edit/post-edit.component';
+import { InfoComponent } from './info/info.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { PostEditComponent } from './post-edit/post-edit.component';
     ProfileComponent,
     CreatePostComponent,
     PostEditorComponent,
-    PostEditComponent
+    PostEditComponent,
+    InfoComponent
   ],
   imports: [
     CommonModule,

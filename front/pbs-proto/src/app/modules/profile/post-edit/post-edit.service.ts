@@ -24,9 +24,6 @@ export class PostEditService {
 
   deletePost(postId: number) {
     console.log("typeof postId = " +typeof(postId));
-    const requestBody = {
-      postId: postId
-    }
-    return this.http.post(this.apiRoutes.deletePost(), requestBody);
+    return this.http.delete(this.apiRoutes.deletePost(postId.toString()));
   }
 }

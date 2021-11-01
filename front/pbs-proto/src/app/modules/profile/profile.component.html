@@ -1,18 +1,10 @@
 <div class="menu">
     <div class="menu-container">
-        <button mat-button>Info</button>
-        <button mat-button>Subscriptions</button>
-        <button mat-button>My posts</button>
-        <button mat-button>Create post</button>
-        <button mat-button>Log out</button>
+        <a mat-button>Info</a>
+        <a mat-button>Subscriptions</a>
+        <a mat-button>My posts</a>
+        <a routerLink="create/post" mat-button>Create post</a>
+        <button (click)="logout()" mat-button>Log out</button>
     </div>
 </div>
-<h1>Profile</h1>
-<p>Id: {{user?.id}}</p>
-<p>Username: {{user?.username}}</p>
-<p>Img:<img [src]="user?.picture"></p>
-<p>Role: {{user?.role}}</p>
-<p>Reg time: {{user?.registrationTime | date: 'medium' }}</p>
-<button (click)="logout()">Logout</button>
-<a routerLink="create/post">Create post</a>
 <router-outlet></router-outlet>

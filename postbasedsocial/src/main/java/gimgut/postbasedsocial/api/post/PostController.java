@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class PostController {
     /**
      * @param postDto
      * @param principal
-     * @return  created post id
+     * @return  created post id on success
      */
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
@@ -83,10 +84,10 @@ public class PostController {
         }
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("{id}")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity deletePost(@RequestBody DeletePostRequestDto postDto, Authentication authentication) {
-        EditPostResponseStatus status = postService.deletePost(postDto, authentication);
+    public ResponseEntity deletePost(@PathVariable @NotNull Long id, Authentication authentication) {
+        EditPostResponseStatus status = postService.deletePost(id, authentication);
         if (status == EditPostResponseStatus.SUCCESS) {
             return new ResponseEntity(HttpStatus.OK);
         } else {

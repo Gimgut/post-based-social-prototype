@@ -28,8 +28,8 @@ export class ApiRoutes {
   editPost = () =>
     `${this.apiFullPath}/post/edit`;
 
-  deletePost = () =>
-    `${this.apiFullPath}/post/delete`;
+  deletePost = (postId: string) =>
+    `${this.apiFullPath}/post/${postId}`;
   //#endregion
 
   //#region FEED

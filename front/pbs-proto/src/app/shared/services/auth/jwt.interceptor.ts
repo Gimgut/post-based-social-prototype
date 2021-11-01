@@ -18,7 +18,7 @@ export class JwtInterceptor implements HttpInterceptor {
             request = request.clone({
                 setHeaders: { Authorization: `Bearer ${this.authenticationService.accessToken}` }
             });
-            console.log('access token set')
+            console.log('header access token set')
         }
 
         return next.handle(request);

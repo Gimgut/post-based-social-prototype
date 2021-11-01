@@ -71,19 +71,18 @@ public class PostService {
     }
 
     @Transactional
-    public EditPostResponseStatus deletePost(DeletePostRequestDto postDto, Authentication authentication) {
-        Post post = postRepository.getById(postDto.getPostId());
+    public EditPostResponseStatus deletePost(Long postId, Authentication authentication) {
+        Post post = postRepository.getById(postId);
         if (post == null) {
             return EditPostResponseStatus.POST_NOT_FOUND;
         }
 
         if (canDelete(post, authentication)) {
             postRepository.softDelete(post.getId());
+            return EditPostResponseStatus.SUCCESS;
         } else {
             return EditPostResponseStatus.NO_AUTHORITY;
         }
-
-        return EditPostResponseStatus.SUCCESS;
     }
 
     /**
