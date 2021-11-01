@@ -18,7 +18,6 @@ export class ApiRoutes {
 
 
   //#region POST CRUD
-
   getPost = (postId: string) =>
     `${this.apiFullPath}/post/${postId}`;
 
@@ -32,8 +31,18 @@ export class ApiRoutes {
     `${this.apiFullPath}/post/${postId}`;
   //#endregion
 
-  //#region FEED
+  //#region SUBSCRIPTION
+  subscribe = (idPublisher: number) =>
+    `${this.apiFullPath}/subscription/subscribe/${idPublisher}`
 
+  unsubscribe = (idPublisher: number) =>
+    `${this.apiFullPath}/subscription/unsubscribe/${idPublisher}`
+
+  getSubscriptions = () =>
+    `${this.apiFullPath}/subscription`
+  //#endregion
+
+  //#region FEED
   /**
    * Submit lastPostId = '' to show first posts
    * @param lastPostId 

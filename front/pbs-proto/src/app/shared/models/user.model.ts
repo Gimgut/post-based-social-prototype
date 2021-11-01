@@ -34,8 +34,8 @@ export class UserAdapter implements Adapter<User> {
     return new User(item.id, item.username, item.pictureUrl, <Roles>item.role, this.dateAdapter.adapt(item.registrationTime));
   }
 
-  adaptArr(arr: any[]): (User)[] {
-    return arr.map(item => this.adapt(item));
+  adaptArr(arr: any): User[] {
+    return arr.map((item: any) => this.adapt(item));
   }
 }
 

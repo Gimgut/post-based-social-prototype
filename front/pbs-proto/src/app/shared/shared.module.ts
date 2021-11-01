@@ -15,6 +15,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
 import { InfoComponent } from './components/info/info.component';
+import { SubscriptionService } from './services/subscription.service';
 
 
 
@@ -51,7 +52,8 @@ export class SharedModule {
       providers: [
         PostService,
         ProfileService,
-        AuthenticationService
+        AuthenticationService, 
+        SubscriptionService
       ]
     }
   }

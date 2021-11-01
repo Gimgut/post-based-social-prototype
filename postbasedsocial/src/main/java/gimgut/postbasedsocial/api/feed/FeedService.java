@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
+/*
  * TODO: If the project expands, replace query creation
  * TODO: into builder/chain/decorator with
  * TODO: query modification register/unregister

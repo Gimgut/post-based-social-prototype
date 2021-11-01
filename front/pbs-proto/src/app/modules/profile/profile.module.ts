@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PostEditorComponent } from './post-editor/post-editor.component';
 import { PostEditComponent } from './post-edit/post-edit.component';
 import { InfoComponent } from './info/info.component';
+import { SubscriptionsComponent } from './subscriptions/subscriptions.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { InfoComponent } from './info/info.component';
     CreatePostComponent,
     PostEditorComponent,
     PostEditComponent,
-    InfoComponent
+    InfoComponent,
+    SubscriptionsComponent
   ],
   imports: [
     CommonModule,

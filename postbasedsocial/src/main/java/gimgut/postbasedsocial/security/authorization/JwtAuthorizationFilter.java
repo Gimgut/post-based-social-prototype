@@ -39,27 +39,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             logger.info("Try authorization...");
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                DecodedJWT decodedJWT;
                 try {
                     String accessToken = authorizationHeader.substring(7);
-                    DecodedJWT decodedJWT = jwtService.verifyAccessToken(accessToken);
-
-                    Long userInfoId = decodedJWT.getClaim("uiid").asLong();
-                    String userRole = decodedJWT.getClaim("role").asString();
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userInfoId, null, Arrays.asList(Roles.valueOf(userRole)));
-
-                    //Suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    SecurityContext context = SecurityContextHolder.createEmptyContext();
-                    context.setAuthentication(usernamePasswordAuthenticationToken);
-                    SecurityContextHolder.setContext(context);
-                    logger.info("Authorization is successful for user uiid: " + userInfoId + " with role: " + userRole);
-
-                    filterChain.doFilter(request, response);
+                    decodedJWT = jwtService.verifyAccessToken(accessToken);
                 } catch (Exception e) {
                     logger.info("Authorization failed");
                     response.setHeader("error", "Authorization failed");
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    return;
                 }
+                Long userInfoId = decodedJWT.getClaim("uiid").asLong();
+                String userRole = decodedJWT.getClaim("role").asString();
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(userInfoId, null, Arrays.asList(Roles.valueOf(userRole)));
+
+                //Suggestion from spring security doc because of race condition with the following implementation: SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContextHolder.setContext(context);
+                logger.info("Authorization is successful for user uiid: " + userInfoId + " with role: " + userRole);
+
+                filterChain.doFilter(request, response);
             } else {
                 logger.info("Unauthorized access");
                 filterChain.doFilter(request, response);

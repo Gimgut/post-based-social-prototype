@@ -33,6 +33,10 @@ export class AuthenticationService {
     return this.userSubject.getValue();
   }
 
+  public get isAuthenticated() : boolean {
+    return this.authenticatedUserValue?.id ? true : false;
+  }
+
   public getRtStorageKey(): string {
     return this.refreshTokenStorageKey.toString();
   }
@@ -63,17 +67,13 @@ export class AuthenticationService {
 
     return this.http.post(this.apiRoutes.loginWithEmailPassword(), requestBody)
       .pipe(
-        map( r => {
-          return this.loginResponseAdapter.adapt(r);
-         }),
+        map( r => { return this.loginResponseAdapter.adapt(r); }),
         map( res => {
-          console.log('loginWithEmailPassword pipe enter');
           if (res.status === LoginResponseStatus.SUCCESS) {
             console.log('loginWithEmailPassword success');
             this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
 
           }
-          console.log('loginWithEmailPassword pipe return');
           return res;
         }));
   }
