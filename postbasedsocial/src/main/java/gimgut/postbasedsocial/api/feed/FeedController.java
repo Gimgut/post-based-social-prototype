@@ -1,15 +1,15 @@
 package gimgut.postbasedsocial.api.feed;
 
 import gimgut.postbasedsocial.api.post.Post;
+import gimgut.postbasedsocial.api.post.PostDto;
+import gimgut.postbasedsocial.api.post.PostMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -18,15 +18,22 @@ public class FeedController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
     private final FeedService feedService;
+    private final PostMapper postMapper;
 
-    public FeedController(FeedService feedService) {
+    public FeedController(FeedService feedService, PostMapper postMapper) {
         this.feedService = feedService;
+        this.postMapper = postMapper;
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<List<Post>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {
-        logger.info("last post id =" + lastPostId);
-        List<Post> result = feedService.getRecentPosts(lastPostId);
-        return result == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<List<PostDto>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {
+        List<Post> posts = feedService.getRecentPosts(lastPostId);
+        return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
+    }
+
+    @GetMapping("/recent/user/{id}")
+    public ResponseEntity<List<PostDto>> getUserRecentPosts(@PathVariable @NotNull Long id, @RequestParam(required = false) Long lastPostId) {
+        List<Post> posts = feedService.getRecentPostsOfUser(id, lastPostId);
+        return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }
 }

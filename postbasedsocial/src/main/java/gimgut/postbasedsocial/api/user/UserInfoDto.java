@@ -9,7 +9,7 @@ public class UserInfoDto {
     private String username;
     private String role;
     private boolean activated;
-    private boolean locked;
+    private boolean unlocked;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime registrationTime;
     private String pictureUrl;
@@ -17,12 +17,12 @@ public class UserInfoDto {
     public UserInfoDto() {
     }
 
-    public UserInfoDto(Long id, String username, String role, boolean activated, boolean locked, LocalDateTime registrationTime, String pictureUrl) {
+    public UserInfoDto(Long id, String username, String role, boolean activated, boolean unlocked, LocalDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.activated = activated;
-        this.locked = locked;
+        this.unlocked = unlocked;
         this.registrationTime = registrationTime;
         this.pictureUrl = pictureUrl;
     }
@@ -59,12 +59,12 @@ public class UserInfoDto {
         this.activated = activated;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public boolean isUnlocked() {
+        return unlocked;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 
     public LocalDateTime getRegistrationTime() {

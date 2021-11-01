@@ -88,7 +88,7 @@ a {
 }
 
 
-@media screen and (max-width: $width-transition) {
+@media screen and (max-width: $width-transition+20px) {
 
   .container {
     width: 100%;

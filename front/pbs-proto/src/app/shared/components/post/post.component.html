@@ -3,7 +3,7 @@
   
       <div class="post-author"><a [routerLink]="['/user', post?.author?.id]"><h5>{{post?.author?.username}}</h5></a></div>
   
-      <div class="post-date"><h5 class="txt-normal">1 hour inthefuture</h5></div>
+      <div class="post-date"><h5 class="txt-normal">{{post?.createdAt | date:'short'}}</h5></div>
   
       <div class="post-title">
         <h2><a [routerLink]="['/post', post?.id]">{{post?.title}}</a></h2>

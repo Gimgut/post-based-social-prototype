@@ -34,16 +34,17 @@ public class Generator1984 {
         int charsPerPage = 2000;
         int pagesLimit = 100;
         StringBuilder currentPage = new StringBuilder();
-        for (int i = 0; i < nLines; i++) {
-            if (currentPage.length() < charsPerPage || lines.get(i).length() > 0) {
-                currentPage.append(lines.get(i) + " ");
+        String lineSeparator = "<br>";//System.lineSeparator();
+        for (int line = 0; line < nLines; line++) {
+            if (currentPage.length() < charsPerPage || lines.get(line).length() > 0) {
+                currentPage.append(lines.get(line) + " ");
 
-                if (lines.get(i).length() > 0 && lines.get(i + 1).length() < 1)
-                    currentPage.append(System.lineSeparator() + System.lineSeparator());
+                if (lines.get(line).length() > 0 && lines.get(line + 1).length() < 1)
+                    currentPage.append(lineSeparator+lineSeparator);
             } else {
                 pseudoPages.add(currentPage.toString());
                 currentPage = new StringBuilder();
-                i-=1;
+                line -=1;
             }
 
             if (pseudoPages.size() >= pagesLimit)
