@@ -17,6 +17,8 @@ export class PostPageComponent implements OnInit {
   public post: Post|null = null;//= { id: 8, title: 'default post title', content: 'default post content' , author: new User(0, 'NOT_FOUND', '', 'NONE', new Date(0)) };
 
   public authorized:boolean;
+  public isSubscribed:boolean = false;
+  public subscriptionStatusDefined = true;
 
 
   constructor(
@@ -40,21 +42,27 @@ export class PostPageComponent implements OnInit {
     this.activatedRoute.params.subscribe(parameter => {
       this.parameterId = parameter.parameter;
       //console.log(this.parameterId)
-      this.postService.getPost(this.parameterId).subscribe(data => this.post = data);
+      this.postService.getPost(this.parameterId).subscribe(data => {
+        this.post = data;
+        this.updateSubscriptionStatus(this.post.author.id);
+      });
     })
   }
 
+  private updateSubscriptionStatus(idPublisher: number) {
+    this.isSubscribed = this.subscriptionService.checkIsSubscribed(idPublisher);
+    this.subscriptionStatusDefined = true;
+  }
+
   subscribe() {
-    const authorId = this.post?.author.id;
-    if (!authorId) {
+    const author = this.post?.author;
+    if (!author) {
       return;
     }
-    this.subscriptionService.subscribe(authorId)?.subscribe(
+    this.subscriptionService.subscribe(author)?.subscribe(
       data => {
-        const author = this.post?.author;
-        if (author) {
-          this.subscriptionService.addSubscription(author);
-        }
+        //this.subscriptionService.addSubscription(author);
+        this.updateSubscriptionStatus(author.id);
       },
       error => {
 
@@ -63,16 +71,14 @@ export class PostPageComponent implements OnInit {
   }
 
   unsubscribe() {
-    const authorId = this.post?.author.id;
-    if (!authorId) {
+    const author = this.post?.author;
+    if (!author) {
       return;
     }
-    this.subscriptionService.unsubscribe(authorId)?.subscribe(
+    this.subscriptionService.unsubscribe(author)?.subscribe(
       data => {
-        const author = this.post?.author;
-        if (author) {
-          this.subscriptionService.removeSubscription(author);
-        }
+        //this.subscriptionService.removeSubscription(author);
+        this.updateSubscriptionStatus(author.id);
       },
       error => {
 

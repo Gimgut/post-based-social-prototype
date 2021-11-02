@@ -19,12 +19,17 @@ export class SubscriptionsComponent implements OnInit {
     private subscriptionService: SubscriptionService,
     private subscriptionFeedService: SubscriptionFeedService
   ) { 
+    /*
+      if (this.subscriptionService.subscriptionsChanged === true) {
+       this.subscriptionFeedService.reloadFeed();
+       this.subscriptionService.subscriptionsChanged = false;
+       }
+     */  
     this.recentPosts = subscriptionFeedService.getRecentPosts();
+    this.subscriptions = this.subscriptionService.getSubscriptions();
   }
 
   ngOnInit(): void {
-    console.log('SubscriptionsComponent oninit')
-    this.subscriptions = this.subscriptionService.getSubscriptions();
   }
 
   fetchMore() {

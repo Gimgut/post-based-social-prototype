@@ -12,7 +12,6 @@ import { AuthenticationService } from './auth/authentication.service';
 export class SubscriptionService implements OnInit {
 
   private subscriptions : User[] = [];
-  private subscriptionsPosts: Post[] = [];
 
   constructor(
     private authService: AuthenticationService,
@@ -31,10 +30,6 @@ export class SubscriptionService implements OnInit {
     return this.subscriptions;
   }
 
-  public getSubscriptionPosts() {
-    return this.subscriptionsPosts;
-  }
-
   fetchSubscriptions() {
     if (!this.authService.isAuthenticated) {
       return;
@@ -50,25 +45,43 @@ export class SubscriptionService implements OnInit {
     );
   }
 
-  subscribe(idPublisher:number) {
+  //TODO: Change array to dictionary/add dictionary
+  checkIsSubscribed(idPublisher: number) : boolean {
+    for (var u of this.subscriptions) {
+      if (u.id === idPublisher) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  subscribe(publisher: User) {
     if (!this.authService.isAuthenticated) {
       return;
     }
-    return this.http.post(this.apiRoutes.subscribe(idPublisher),"");
+    return this.http.post(this.apiRoutes.subscribe(publisher.id),"").pipe(
+      map(res => {
+        this.addSubscription(publisher);
+      })
+    );
   }
 
-  unsubscribe(idPublisher:number) {
+  unsubscribe(publisher:User) {
     if (!this.authService.isAuthenticated) {
       return;
     }
-    return this.http.post(this.apiRoutes.unsubscribe(idPublisher),"");
+    return this.http.post(this.apiRoutes.unsubscribe(publisher.id),"").pipe(
+      map(res => {
+        this.removeSubscription(publisher);
+      })
+    );
   }
 
-  addSubscription(user: User) {
+  private addSubscription(user: User) {
     this.subscriptions.push(user);
   }
 
-  removeSubscription(user: User) {
+  private removeSubscription(user: User) {
     this.removeUserById(this.subscriptions, user.id);
   }
 
