@@ -48,12 +48,17 @@ public class SubscriptionService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserInfo> getSubscriptions(Long idSubscriber) {
-        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscriber);
+    public List<UserInfo> getSubscriptionsUsersInfo(Long idSubscriber) {
+        Optional<Subscription> subscription = getSubscription(idSubscriber);
         if (subscription.isEmpty()) {
             return List.of();
         } else {
             return userInfoRepository.findByIdsFromCollection(subscription.get().getSubscriptions());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Subscription> getSubscription(Long idSubscriber) {
+        return subscriptionRepository.findById(idSubscriber);
     }
 }

@@ -97,8 +97,91 @@ a {
   .header-content {
     width: 100%;
   }
-
 }
+
+.margin-centre-horiz {
+  margin: auto;
+}
+
+.div-flex {
+  display: flex;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.bg-green-1 {
+  background-color: #2ea44f;
+}
+
+.bg-green-2 {
+  background-color: #2c974b;
+}
+
+.bg-green-3 {
+  background-color: #298e46;
+}
+
+.bg-green-4 {
+  background-color: #94d3a2;
+}
+
+.bg-blue-1 {
+  background-color: lightblue;
+}
+
+.border-radius-5px {
+  border-radius: 5px;
+}
+
+.bg-gray-1 {
+  background-color: rgb(240, 233, 233);
+}
+
+.txt-white-1 {
+  color: white;
+}
+
+.txt-black-1 {
+  color: black;
+}
+
+.txt-black-2 {
+  color: rgb(31, 30, 30);
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.size-box-max-50px {
+  max-width: 50px;
+  max-height: 50px;
+}
+
+.size-box-max-100px {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.size-box-max-200px {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+.size-box-max-300px {
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.size-box-max-500px {
+  max-width: 500px;
+  max-height: 500px;
+}
+
+
+
 
 
 .button-3 {

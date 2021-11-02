@@ -1,0 +1,29 @@
+.subscriptions-menu {
+    max-width: 10rem;
+    margin-top: 2px;
+    margin-right: 2px;
+    height: 100%;
+    position: sticky;
+    top: 0;
+}
+
+.menu-max {
+    display: block;
+  }
+  
+.menu-min {
+    display: none;
+    position: sticky;
+    top: 0;
+}
+
+@media screen and (max-width: 800px) {
+
+    .menu-max {
+        display: none;
+    }
+
+    .menu-min {
+        display: block;
+    }
+}

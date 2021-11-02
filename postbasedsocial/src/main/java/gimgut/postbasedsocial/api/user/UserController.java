@@ -28,7 +28,7 @@ public class UserController {
         if (userInfo == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        UserInfoDto userDto = userInfoMapper.toUserInfoDto(userInfo);
+        UserInfoDto userDto = userInfoMapper.toDto(userInfo);
         return new ResponseEntity(userDto, HttpStatus.OK);
     }
 
@@ -38,7 +38,7 @@ public class UserController {
         if (!userInfo.isPresent()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        UserInfoDto userDto = userInfoMapper.toUserInfoDto(userInfo.get());
+        UserInfoDto userDto = userInfoMapper.toDto(userInfo.get());
         return new ResponseEntity(userDto, HttpStatus.OK);
     }
 

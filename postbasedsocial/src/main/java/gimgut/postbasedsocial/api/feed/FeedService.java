@@ -26,11 +26,12 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public List<Post> getRecentPosts(Long lastViewedPostId) {
-        if (lastViewedPostId == null) {
-            return feedRecentRepository.findNewestPosts(defaultPage);
-        } else {
-            return feedRecentRepository.findNewestPostsAfterId(defaultPage, lastViewedPostId);
-        }
+        return feedRecentRepository.findNewestPostsAfterId(defaultPage, lastViewedPostId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Post> getRecentPosts() {
+        return feedRecentRepository.findNewestPosts(defaultPage);
     }
 
     @Transactional(readOnly = true)

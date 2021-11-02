@@ -16,6 +16,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
 import { InfoComponent } from './components/info/info.component';
 import { SubscriptionService } from './services/subscription.service';
+import { SubscriptionFeedService } from './services/subscription-feed.service';
 
 
 
@@ -53,7 +54,8 @@ export class SharedModule {
         PostService,
         ProfileService,
         AuthenticationService, 
-        SubscriptionService
+        SubscriptionService,
+        SubscriptionFeedService
       ]
     }
   }

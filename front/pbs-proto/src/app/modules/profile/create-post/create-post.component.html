@@ -1,5 +1,6 @@
 <div class="create-post">
+    <h1>Create post</h1>
     <app-post-editor #postEditor></app-post-editor>
     <p *ngIf='serverError'>Server error</p>
-    <button (click)="createPostButtonClick()">Create new post</button>
+    <button (click)="createPostButtonClick()" mat-stroked-button class="bg-blue-1">Create new post</button>
 </div>

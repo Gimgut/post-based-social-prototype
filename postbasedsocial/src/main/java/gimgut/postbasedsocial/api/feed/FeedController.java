@@ -27,12 +27,19 @@ public class FeedController {
 
     @GetMapping("/recent")
     public ResponseEntity<List<PostDto>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {
-        List<Post> posts = feedService.getRecentPosts(lastPostId);
+        List<Post> posts;
+        if (lastPostId == null) {
+            posts = feedService.getRecentPosts();
+        } else {
+            posts = feedService.getRecentPosts(lastPostId);
+        }
         return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }
 
     @GetMapping("/recent/user/{id}")
-    public ResponseEntity<List<PostDto>> getUserRecentPosts(@PathVariable @NotNull Long id, @RequestParam(required = false) Long lastPostId) {
+    public ResponseEntity<List<PostDto>> getUserRecentPosts(
+            @PathVariable @NotNull Long id,
+            @RequestParam(required = false) Long lastPostId) {
         List<Post> posts = feedService.getRecentPostsOfUser(id, lastPostId);
         return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }

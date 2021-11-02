@@ -12,6 +12,8 @@ import { PostEditorComponent } from './post-editor/post-editor.component';
 import { PostEditComponent } from './post-edit/post-edit.component';
 import { InfoComponent } from './info/info.component';
 import { SubscriptionsComponent } from './subscriptions/subscriptions.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
@@ -26,12 +28,14 @@ import { SubscriptionsComponent } from './subscriptions/subscriptions.component'
   imports: [
     CommonModule,
     ProfileRoutingModule,
+    SharedModule,
 
     AngularEditorModule,
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule
   ]
 })
 export class ProfileModule { }

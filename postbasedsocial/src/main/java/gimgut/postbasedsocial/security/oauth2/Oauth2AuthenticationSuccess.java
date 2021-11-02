@@ -45,7 +45,7 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
         }
         UserCredentialsGoogleRegistration registeredUser = googleRegistrationService.getUserByEmailOrRegisterAsNew(oidcUser);
         Tokens tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
-        UserInfoDto userInfoDto = userInfoMapper.toUserInfoDto(registeredUser.getUserInfo());
+        UserInfoDto userInfoDto = userInfoMapper.toDto(registeredUser.getUserInfo());
         LoginResponseDto loginResponse = new LoginResponseDto(
                 LoginResponseStatus.SUCCESS,
                 tokens.getAccessToken(),

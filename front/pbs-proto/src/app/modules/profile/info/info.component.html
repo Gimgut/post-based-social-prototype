@@ -1,6 +1,17 @@
-<h1>Profile</h1>
-<p>Id: {{user?.id}}</p>
-<p>Username: {{user?.username}}</p>
-<p>Img:<img [src]="user?.picture"></p>
-<p>Role: {{user?.role}}</p>
-<p>Reg time: {{user?.registrationTime | date: 'medium' }}</p>
+<div class="bg-white border-radius-5px">
+    <h1>Profile</h1>
+    <div class="div-flex flex-wrap">
+        <div class="div-profile-image">
+            <img [src]="user?.picture" class="size-box-max-200px">
+        </div>
+        <div class="div-profile-info">
+            <p>Id: {{user?.id}}</p>
+            <p>Username: {{user?.username}}</p>
+            <p>Role: {{user?.role}}</p>
+            <p>Reg time: {{user?.registrationTime | date: 'medium' }}</p>
+        </div>
+    </div>
+    <div>
+        <button (click)="logout()" mat-button class="bg-gray-1">Log out</button>
+    </div>
+</div>

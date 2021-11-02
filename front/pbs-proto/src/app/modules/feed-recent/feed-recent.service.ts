@@ -53,8 +53,10 @@ export class FeedRecentService {
   tryFetchMore(): void {
     if (this.isFetching)
       return;
-    if (this.posts.length < 1)
+    if (this.posts.length < 1) {
       this.fetchFirstPosts();
-    this.fetchMorePosts();
+    } else {
+      this.fetchMorePosts();
+    }
   }
 }

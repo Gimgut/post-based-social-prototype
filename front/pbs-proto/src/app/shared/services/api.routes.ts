@@ -40,6 +40,9 @@ export class ApiRoutes {
 
   getSubscriptions = () =>
     `${this.apiFullPath}/subscription`
+
+  getSubscriptionsFeedRecent = (lastPostId: string) =>
+    `${this.apiFullPath}/subscriptions/feed/recent?lastPostId=${lastPostId}`;
   //#endregion
 
   //#region FEED

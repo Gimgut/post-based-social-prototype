@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { catchError, map } from 'rxjs/operators';
+import { Post } from '../models/post.model';
 import { User, UserAdapter } from '../models/user.model';
 import { ApiRoutes } from './api.routes';
 import { AuthenticationService } from './auth/authentication.service';
@@ -10,7 +11,8 @@ import { AuthenticationService } from './auth/authentication.service';
 })
 export class SubscriptionService implements OnInit {
 
-  public subscriptions : User[] = [];
+  private subscriptions : User[] = [];
+  private subscriptionsPosts: Post[] = [];
 
   constructor(
     private authService: AuthenticationService,
@@ -25,6 +27,14 @@ export class SubscriptionService implements OnInit {
   ngOnInit(): void {
   }
 
+  public getSubscriptions() {
+    return this.subscriptions;
+  }
+
+  public getSubscriptionPosts() {
+    return this.subscriptionsPosts;
+  }
+
   fetchSubscriptions() {
     if (!this.authService.isAuthenticated) {
       return;
@@ -33,7 +43,8 @@ export class SubscriptionService implements OnInit {
       .pipe(
         map(res => {
           const fetchedUsers = this.userAdapter.adaptArr(res);
-          this.subscriptions = fetchedUsers;
+          this.subscriptions.length = 0;
+          this.subscriptions.push(...fetchedUsers);
           return fetchedUsers;
         })
     );

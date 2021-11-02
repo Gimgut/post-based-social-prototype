@@ -6,7 +6,7 @@
       <div class="post-date"><h5 class="txt-normal">{{post?.createdAt | date:'short'}}</h5></div>
   
       <div class="post-title">
-        <h2><a [routerLink]="['/post', post?.id]">{{post?.title}}</a></h2>
+        <h2><a [routerLink]="['/post', post?.id]" class="txt-black-2">{{post?.title}}</a></h2>
       </div>
     </div>
   

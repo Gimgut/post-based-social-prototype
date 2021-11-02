@@ -9,19 +9,10 @@ import { AuthenticationService } from 'src/app/shared/services/auth/authenticati
 })
 export class ProfileComponent implements OnInit {
 
-  user: User|null;
-
-  constructor(
-    private authenticationService: AuthenticationService
-  ) {
-    this.user = authenticationService.authenticatedUserValue;
+  constructor() {
    }
 
   ngOnInit(): void {
-  }
-
-  logout() {
-    this.authenticationService.logout();
   }
 
 }
