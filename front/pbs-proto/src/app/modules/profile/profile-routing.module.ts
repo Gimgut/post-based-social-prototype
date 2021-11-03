@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CreatePostComponent } from './create-post/create-post.component';
 import { InfoComponent } from './info/info.component';
+import { MyPostsComponent } from './my-posts/my-posts.component';
 import { PostEditComponent } from './post-edit/post-edit.component';
 import { ProfileComponent } from './profile.component';
 import { SubscriptionsComponent } from './subscriptions/subscriptions.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
     children : [
       {path: '', component: InfoComponent},
       {path: 'subscriptions', component: SubscriptionsComponent},
+      {path: 'posts', component: MyPostsComponent},
       {path: 'create/post', component: CreatePostComponent},
       {path: 'edit/post/:parameter', component: PostEditComponent}
     ]

@@ -40,7 +40,12 @@ public class FeedController {
     public ResponseEntity<List<PostDto>> getUserRecentPosts(
             @PathVariable @NotNull Long id,
             @RequestParam(required = false) Long lastPostId) {
-        List<Post> posts = feedService.getRecentPostsOfUser(id, lastPostId);
+        List<Post> posts;
+        if (lastPostId == null) {
+            posts = feedService.getRecentPostsOfUser(id);
+        } else {
+            posts = feedService.getRecentPostsOfUser(id, lastPostId);
+        }
         return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }
 }

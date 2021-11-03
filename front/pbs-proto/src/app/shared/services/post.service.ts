@@ -19,4 +19,8 @@ export class PostService {
   getPost(id: string): Observable<Post> {
     return this.http.get(this.apiRoutes.getPost(id)).pipe(map(item => this.postAdapter.adapt(item)));
   }
+
+  getRecentPostsOfUser(userId: string, lastPostId: string): Observable<Post[]> {
+    return this.http.get(this.apiRoutes.getFeedRecentOfUser(userId, lastPostId)).pipe(map((item:any)=>this.postAdapter.adaptArr(item)))
+  }
 }

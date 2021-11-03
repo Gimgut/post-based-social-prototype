@@ -14,6 +14,7 @@ import { InfoComponent } from './info/info.component';
 import { SubscriptionsComponent } from './subscriptions/subscriptions.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatMenuModule } from '@angular/material/menu';
+import { MyPostsComponent } from './my-posts/my-posts.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { MatMenuModule } from '@angular/material/menu';
     PostEditorComponent,
     PostEditComponent,
     InfoComponent,
-    SubscriptionsComponent
+    SubscriptionsComponent,
+    MyPostsComponent
   ],
   imports: [
     CommonModule,

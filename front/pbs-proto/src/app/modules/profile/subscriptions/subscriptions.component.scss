@@ -7,9 +7,17 @@
     top: 0;
 }
 
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.display-block {
+    display: block;
+}
+
 .menu-max {
     display: block;
-  }
+}
   
 .menu-min {
     display: none;
@@ -24,6 +32,10 @@
     }
 
     .menu-min {
+        display: block;
+    }
+
+    .menu-max-block {
         display: block;
     }
 }

@@ -35,11 +35,12 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
+    public List<Post> getRecentPostsOfUser(Long userId) {
+        return feedRecentRepository.findNewestPostsOfUser(defaultPage, userId);
+    }
+
+    @Transactional(readOnly = true)
     public List<Post> getRecentPostsOfUser(Long userId, Long lastViewedPostId) {
-        if (lastViewedPostId == null) {
-            return feedRecentRepository.findNewestPostsOfUser(defaultPage, userId);
-        } else {
-            return feedRecentRepository.findNewestPostsOfUserAfterId(defaultPage, lastViewedPostId, userId);
-        }
+        return feedRecentRepository.findNewestPostsOfUserAfterId(defaultPage, lastViewedPostId, userId);
     }
 }

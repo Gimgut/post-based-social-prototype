@@ -53,6 +53,9 @@ export class ApiRoutes {
   getFeedRecent = (lastPostId: string) =>
     `${this.apiFullPath}/feed/recent?lastPostId=${lastPostId}`;
 
+  getFeedRecentOfUser = (userId: string,lastPostId: string) =>
+    `${this.apiFullPath}/feed/recent/user/${userId}?lastPostId=${lastPostId}`;
+
   getSubscriptionsFeedRecent = (lastPostId: string) =>
     `${this.apiFullPath}/feed/subscriptions/recent?lastPostId=${lastPostId}`;
   //#endregion

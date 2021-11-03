@@ -5,7 +5,6 @@ import { FeedComponent } from './components/feed/feed.component';
 import { HeaderMainComponent } from './components/header-main/header-main.component';
 import { PostComponent } from './components/post/post.component';
 import { RouterModule } from '@angular/router';
-import { ProfileService } from './services/profile.service';
 import { AuthenticationService } from './services/auth/authentication.service';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatButtonModule } from '@angular/material/button';
@@ -52,7 +51,6 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         PostService,
-        ProfileService,
         AuthenticationService, 
         SubscriptionService,
         SubscriptionFeedService

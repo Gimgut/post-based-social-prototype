@@ -1,4 +1,4 @@
 <app-post [post]="post"></app-post>
 <a *ngIf="canEdit()" [routerLink]="['/profile/edit/post',post?.id]">Edit</a>
-<button *ngIf="authorized && subscriptionStatusDefined && !isSubscribed" (click)="subscribe()" mat-button>Subscribe</button>
-<button *ngIf="authorized && subscriptionStatusDefined && isSubscribed" (click)="unsubscribe()" mat-button>Unsubscribe</button>
+<button *ngIf="authorized && subscriptionStatusDefined && !isSubscribed && !isOwner()" (click)="subscribe()" mat-button>Subscribe</button>
+<button *ngIf="authorized && subscriptionStatusDefined && isSubscribed && !isOwner()" (click)="unsubscribe()" mat-button>Unsubscribe</button>

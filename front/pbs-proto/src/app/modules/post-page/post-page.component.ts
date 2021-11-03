@@ -32,10 +32,21 @@ export class PostPageComponent implements OnInit {
 
   canEdit() : boolean {
     if (this.authService.authenticatedUserValue?.id === this.post?.author.id 
-      || this.authService.authenticatedUserValue?.role === Roles.ADMIN)
+      || this.authService.authenticatedUserValue?.role === Roles.ADMIN) {
        return true;
-    else
+    } else {
       return false;
+    }
+  }
+
+  isOwner() {
+    if (!this.authorized) {
+      return false;
+    }
+    if (this.post?.author.id === this.authService.authenticatedUserValue?.id) {
+      return this.post && this.authService.authenticatedUserValue;
+    }
+    return false;
   }
 
   ngOnInit(): void {

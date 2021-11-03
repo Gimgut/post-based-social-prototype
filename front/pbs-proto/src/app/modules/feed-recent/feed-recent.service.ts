@@ -45,14 +45,16 @@ export class FeedRecentService {
   }
 
   getPosts(): Post[] {
-    if (this.posts.length < 1)
+    if (this.posts.length < 1) {
       this.fetchFirstPosts();
+    }
     return this.posts;
   }
 
   tryFetchMore(): void {
-    if (this.isFetching)
+    if (this.isFetching) {
       return;
+    }
     if (this.posts.length < 1) {
       this.fetchFirstPosts();
     } else {
