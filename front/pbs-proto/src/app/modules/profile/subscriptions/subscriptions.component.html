@@ -1,4 +1,4 @@
-<div class="div-flex">
+<div class="div-flex" *ngIf="subscriptions.length!==0">
     <div class="menu-max subscriptions-menu bg-white">
         <h2>Subscriptions</h2>
         <a *ngFor="let sub of subscriptions" mat-button>{{sub.username}}</a>
@@ -19,4 +19,8 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="div-flex" *ngIf="subscriptions.length===0">
+    <p>No subscriptions</p>
 </div>

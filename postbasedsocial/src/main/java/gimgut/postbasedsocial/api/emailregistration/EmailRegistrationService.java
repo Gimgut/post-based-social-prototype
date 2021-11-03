@@ -45,7 +45,7 @@ public class EmailRegistrationService {
         userCredentials.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
 
         UserInfo userInfo = userCredentials.getUserInfo();
-        Role role = roleRepository.findByName(Roles.USER.name());
+        Role role = roleRepository.findByName(Roles.READER.name());
         if (role == null) {
             return RegistrationResponseStatus.FAILED;
         }

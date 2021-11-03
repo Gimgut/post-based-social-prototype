@@ -142,7 +142,7 @@ public class JwtService {
         if (authenticationType == AuthenticationType.EMAIL) {
             return userCredentialsEmailRepository.findByUserInfoId_Eager(userInfoId);
         } else if (authenticationType == AuthenticationType.GOOGLE) {
-            return userCredentialsGoogleRepository.findByUserInfoId_Eager(userInfoId);
+            return userCredentialsGoogleRepository.findByUserInfoId_JoinFetchInfo(userInfoId);
         }
         return null;
     }

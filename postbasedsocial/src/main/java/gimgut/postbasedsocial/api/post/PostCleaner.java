@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class PostCleaner {
 
     //TODO: Tune JSoup.clean to be more restrictive to content, and make it synch-ed with front-end post editor
-    public void clean(CreatePostRequestDto postDto) {
+    public void clean(PostRequestDto postDto) {
         postDto.setTitle(this.cleanTitle(postDto.getTitle()));
         postDto.setContent(this.cleanContent(postDto.getContent()));
     }

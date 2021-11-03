@@ -23,7 +23,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long createNewPost(CreatePostRequestDto newPostDto, Long authorId) {
+    public Long createNewPost(PostRequestDto newPostDto, Long authorId) {
         UserInfo author = entityManager.getReference(UserInfo.class, authorId);
         Post post = new Post(
                 newPostDto.getTitle(),
@@ -37,20 +37,19 @@ public class PostService {
     }
 
     @Transactional
-    public EditPostResponseStatus editPost(EditPostRequestDto postDto, Authentication authentication) {
-        Post post = postRepository.getById(postDto.getPostId());
+    public EditPostResponseStatus editPost(Long postId,PostRequestDto postRequestDto, Authentication authentication) {
+        Post post = postRepository.getById(postId);
         if (post == null) {
             return EditPostResponseStatus.POST_NOT_FOUND;
         }
 
         if (canEdit(post, authentication)) {
-            post.setTitle(postDto.getTitle());
-            post.setContent(postDto.getContent());
+            post.setTitle(postRequestDto.getTitle());
+            post.setContent(postRequestDto.getContent());
+            return EditPostResponseStatus.SUCCESS;
         } else {
             return EditPostResponseStatus.NO_AUTHORITY;
         }
-
-        return EditPostResponseStatus.SUCCESS;
     }
 
     /**

@@ -59,7 +59,7 @@ export class SubscriptionService implements OnInit {
     if (!this.authService.isAuthenticated) {
       return;
     }
-    return this.http.post(this.apiRoutes.subscribe(publisher.id),"").pipe(
+    return this.http.patch(this.apiRoutes.subscribe(publisher.id),"").pipe(
       map(res => {
         this.addSubscription(publisher);
       })
@@ -70,7 +70,7 @@ export class SubscriptionService implements OnInit {
     if (!this.authService.isAuthenticated) {
       return;
     }
-    return this.http.post(this.apiRoutes.unsubscribe(publisher.id),"").pipe(
+    return this.http.patch(this.apiRoutes.unsubscribe(publisher.id),"").pipe(
       map(res => {
         this.removeSubscription(publisher);
       })

@@ -15,11 +15,10 @@ export class PostEditService {
 
   editPost(postId: number, title: string, text: string) {
     const requestBody = {
-      postId: postId,
       title: title,
       content: text
     }
-    return this.http.post(this.apiRoutes.editPost(), requestBody);
+    return this.http.patch(this.apiRoutes.editPost(postId.toString()), requestBody);
   }
 
   deletePost(postId: number) {

@@ -5,7 +5,7 @@ import org.jsoup.safety.Safelist;
 
 import javax.validation.constraints.Size;
 
-public class CreatePostRequestDto {
+public class PostRequestDto {
 
     @Size(min = 1, max = 256)
     private String title;
@@ -13,7 +13,7 @@ public class CreatePostRequestDto {
     @Size(min = 1, max = 10000)
     private String content;
 
-    public CreatePostRequestDto(String title, String content) {
+    public PostRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
     }

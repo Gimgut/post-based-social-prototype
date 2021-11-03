@@ -28,7 +28,9 @@ export class CreatePostComponent implements OnInit {
 
   createPostButtonClick() {
     this.serverError = false;
-    if (!this.postEditor?.validatePost()) return;
+    if (!this.postEditor?.validatePost()) {
+      return;
+    }
     //console.log("title text = " + this.postEditor?.getTitleValue());
     //console.log("content text = " + this.postEditor?.getContentValue());
     
@@ -38,7 +40,7 @@ export class CreatePostComponent implements OnInit {
       }, 
       error => {
         this.serverError = true;
-        console.log('[Create post] Server error');
+        console.log('[Create post] Failed');
       }
     );
   }

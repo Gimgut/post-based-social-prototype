@@ -1,6 +1,7 @@
 package gimgut.postbasedsocial.api.feed.subscriptions;
 
 import gimgut.postbasedsocial.api.post.Post;
+import gimgut.postbasedsocial.api.post.PostDto;
 import gimgut.postbasedsocial.api.post.PostMapper;
 import gimgut.postbasedsocial.api.subscription.Subscription;
 import gimgut.postbasedsocial.api.subscription.SubscriptionService;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/subscriptions/feed")
+@RequestMapping("/api/v1/feed/subscriptions")
 public class SubscriptionsFeedController {
 
     private final SubscriptionsFeedService subscriptionsFeedService;
@@ -31,7 +32,7 @@ public class SubscriptionsFeedController {
     }
 
     @GetMapping("recent")
-    public ResponseEntity getSubscriptionsPosts(
+    public ResponseEntity<List<PostDto>> getSubscriptionsPosts(
             @RequestParam(required = false) Long lastPostId,
             Authentication authentication) {
 

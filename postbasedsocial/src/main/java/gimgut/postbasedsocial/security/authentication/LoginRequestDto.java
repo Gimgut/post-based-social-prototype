@@ -2,8 +2,8 @@ package gimgut.postbasedsocial.security.authentication;
 
 public class LoginRequestDto {
 
-    public String email;
-    public String password;
+    private String email;
+    private String password;
 
     public LoginRequestDto() {
     }

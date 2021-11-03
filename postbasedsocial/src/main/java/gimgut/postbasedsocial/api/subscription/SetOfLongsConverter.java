@@ -20,7 +20,7 @@ public class SetOfLongsConverter implements AttributeConverter<Set<Long>, String
 
     @Override
     public Set<Long> convertToEntityAttribute(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return new HashSet<>();
         }
         String[] split = s.split(SPLITTER);

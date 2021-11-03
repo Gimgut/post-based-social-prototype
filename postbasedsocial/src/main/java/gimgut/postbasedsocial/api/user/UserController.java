@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity getUserByName(@PathVariable @NotNull String name) {
+    public ResponseEntity<UserInfoDto> getUserByName(@PathVariable @NotNull String name) {
         UserInfo userInfo = userInfoRepository.findByUsername(name);
         if (userInfo == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity getUserById(@PathVariable @NotNull Long id) {
+    public ResponseEntity<UserInfoDto> getUserById(@PathVariable @NotNull Long id) {
         Optional<UserInfo> userInfo = userInfoRepository.findById(id);
         if (!userInfo.isPresent()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

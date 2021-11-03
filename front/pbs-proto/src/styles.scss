@@ -131,6 +131,18 @@ a {
   background-color: lightblue;
 }
 
+.border-radius-1rem {
+  border-radius: 1rem;
+}
+
+.border-radius-2rem {
+  border-radius: 1rem;
+}
+
+.border-radius-05rem {
+  border-radius: 0.5rem;
+}
+
 .border-radius-5px {
   border-radius: 5px;
 }
@@ -153,6 +165,56 @@ a {
 
 .flex-wrap {
   flex-wrap: wrap;
+}
+
+.size-box-max-1rem {
+  max-width: 1rem;
+  max-height: 1rem;
+}
+
+.size-box-max-2rem {
+  max-width: 2rem;
+  max-height: 2rem;
+}
+
+.size-box-max-3rem {
+  max-width: 3rem;
+  max-height: 3rem;
+}
+
+.size-box-max-8px {
+  max-width: 8px;
+  max-height: 8px;
+}
+
+.size-box-max-12px {
+  max-width: 12px;
+  max-height: 12px;
+}
+
+.size-box-max-16px {
+  max-width: 16px;
+  max-height: 16px;
+}
+
+.size-box-max-20px {
+  max-width: 20px;
+  max-height: 20px;
+}
+
+.size-box-max-25px {
+  max-width: 25px;
+  max-height: 25px;
+}
+
+.size-box-max-30px {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+.size-box-max-40px {
+  max-width: 40px;
+  max-height: 40px;
 }
 
 .size-box-max-50px {

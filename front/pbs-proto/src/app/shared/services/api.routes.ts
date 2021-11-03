@@ -18,18 +18,19 @@ export class ApiRoutes {
 
 
   //#region POST CRUD
+  createPost = () =>
+    `${this.apiFullPath}/post`;
+
   getPost = (postId: string) =>
     `${this.apiFullPath}/post/${postId}`;
 
-  createPost = () =>
-    `${this.apiFullPath}/post/create`;
-
-  editPost = () =>
-    `${this.apiFullPath}/post/edit`;
+  editPost = (postId: string) =>
+    `${this.apiFullPath}/post/${postId}`;
 
   deletePost = (postId: string) =>
     `${this.apiFullPath}/post/${postId}`;
   //#endregion
+
 
   //#region SUBSCRIPTION
   subscribe = (idPublisher: number) =>
@@ -40,10 +41,8 @@ export class ApiRoutes {
 
   getSubscriptions = () =>
     `${this.apiFullPath}/subscription`
-
-  getSubscriptionsFeedRecent = (lastPostId: string) =>
-    `${this.apiFullPath}/subscriptions/feed/recent?lastPostId=${lastPostId}`;
   //#endregion
+
 
   //#region FEED
   /**
@@ -54,10 +53,12 @@ export class ApiRoutes {
   getFeedRecent = (lastPostId: string) =>
     `${this.apiFullPath}/feed/recent?lastPostId=${lastPostId}`;
 
+  getSubscriptionsFeedRecent = (lastPostId: string) =>
+    `${this.apiFullPath}/feed/subscriptions/recent?lastPostId=${lastPostId}`;
   //#endregion
 
-  //#region AUTH
 
+  //#region AUTH
   createNewAccount = () =>
     `${this.apiFullPath}/auth/signup`;
 
@@ -72,6 +73,5 @@ export class ApiRoutes {
 
   authExchangeEndpointForGoogle = () => 
     `${this.apiUrl}/login/oauth2/code/google`;
-  
   //#endregion
 }

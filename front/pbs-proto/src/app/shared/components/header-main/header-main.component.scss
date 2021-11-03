@@ -12,6 +12,39 @@ h2 {
   font-weight: normal;
 }
 
+.txt-align-center {
+  text-align: center;
+}
+
+.align-vert-center {
+  vertical-align: middle;
+}
+
+.flex {
+  display: flex;
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.margin-vert-center {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.margin-left-03rem {
+  margin-left: 0.3rem;
+}
+
+.margin-left-05rem {
+  margin-left: 0.5rem;
+}
+
+.margin-left-1rem {
+  margin-left: 1rem;
+}
+
 .header-content {
   display: flex;
   justify-content:space-between;

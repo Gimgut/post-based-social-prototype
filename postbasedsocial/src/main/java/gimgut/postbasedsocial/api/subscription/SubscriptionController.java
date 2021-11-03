@@ -1,5 +1,6 @@
 package gimgut.postbasedsocial.api.subscription;
 
+import gimgut.postbasedsocial.api.post.PostDto;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import org.springframework.http.HttpStatus;
@@ -23,20 +24,20 @@ public class SubscriptionController {
     }
 
     @GetMapping("")
-    public ResponseEntity getSubscriptions(Authentication authentication) {
+    public ResponseEntity<List<PostDto>> getSubscriptions(Authentication authentication) {
         Long idSubscriber = Long.valueOf(authentication.getName());
         List<UserInfo> subscriptions = subscriptionService.getSubscriptionsUsersInfo(idSubscriber);
         return new ResponseEntity(userInfoMapper.toListDto(subscriptions), HttpStatus.OK);
     }
 
-    @PostMapping("subscribe/{idPublisher}")
+    @PatchMapping("subscribe/{idPublisher}")
     public ResponseEntity subscribe(@PathVariable @NotNull Long idPublisher, Authentication authentication) {
         Long idSubscriber = Long.valueOf(authentication.getName());
         this.subscriptionService.subscribe(idSubscriber, idPublisher);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("unsubscribe/{idPublisher}")
+    @PatchMapping("unsubscribe/{idPublisher}")
     public ResponseEntity unsubscribe(@PathVariable @NotNull Long idPublisher, Authentication authentication) {
         Long idSubscriber = Long.valueOf(authentication.getName());
         this.subscriptionService.unsubscribe(idSubscriber, idPublisher);

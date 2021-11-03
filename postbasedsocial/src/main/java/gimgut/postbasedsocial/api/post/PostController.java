@@ -1,6 +1,5 @@
 package gimgut.postbasedsocial.api.post;
 
-import gimgut.postbasedsocial.security.Roles;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -51,32 +49,36 @@ public class PostController {
      * @param principal
      * @return  created post id on success
      */
-    @PostMapping("/create")
+    @PostMapping("")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity createNewPost(@RequestBody CreatePostRequestDto postDto, Principal principal) {
+    public ResponseEntity createNewPost(@RequestBody PostRequestDto postDto, Principal principal) {
         postCleaner.clean(postDto);
 
-        Set<ConstraintViolation<CreatePostRequestDto>> violations = validator.validate(postDto);
+        Set<ConstraintViolation<PostRequestDto>> violations = validator.validate(postDto);
         if (!violations.isEmpty()) {
             return new ResponseEntity<>("BAD_PARAMETERS", HttpStatus.BAD_REQUEST);
         }
 
         Long userInfoId = Long.valueOf(principal.getName());
         Long postId = postService.createNewPost(postDto, userInfoId);
-        return new ResponseEntity(postId,HttpStatus.OK);
+        return new ResponseEntity(postId,HttpStatus.CREATED);
     }
 
-    @PostMapping("/edit")
-    @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity editPost(@RequestBody EditPostRequestDto postDto, Authentication authentication) {
-        postCleaner.clean(postDto);
 
-        Set<ConstraintViolation<CreatePostRequestDto>> violations = validator.validate(postDto);
+    @PatchMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
+    public ResponseEntity editPost(
+            @PathVariable @NotNull Long id,
+            @RequestBody PostRequestDto postRequestDto,
+            Authentication authentication) {
+        postCleaner.clean(postRequestDto);
+
+        Set<ConstraintViolation<PostRequestDto>> violations = validator.validate(postRequestDto);
         if (!violations.isEmpty()) {
             return new ResponseEntity<>("BAD_PARAMETERS", HttpStatus.BAD_REQUEST);
         }
 
-        EditPostResponseStatus status = postService.editPost(postDto, authentication);
+        EditPostResponseStatus status = postService.editPost(id, postRequestDto, authentication);
         if (status == EditPostResponseStatus.SUCCESS) {
             return new ResponseEntity(HttpStatus.OK);
         } else {

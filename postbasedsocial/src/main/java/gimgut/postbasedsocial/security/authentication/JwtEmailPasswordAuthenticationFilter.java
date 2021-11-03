@@ -46,7 +46,7 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
         } catch (IOException e) {
             throw new UsernameNotFoundException("Bad request body");
         }
-        logger.info("Attempting authentication for email: " + loginRequestDto.email);
+        logger.info("Attempting authentication for email: " + loginRequestDto.getEmail());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getEmail(),
                 loginRequestDto.getPassword());

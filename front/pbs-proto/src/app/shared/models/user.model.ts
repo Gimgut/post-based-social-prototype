@@ -3,7 +3,7 @@ import { DateAdapter } from "../dto/date.adapter";
 import { Adapter } from "./adapter.model";
 
 export enum Roles {
-  USER = 'USER',
+  READER = 'READER',
   WRITER = 'WRITER',
   ADMIN = 'ADMIN'
 }

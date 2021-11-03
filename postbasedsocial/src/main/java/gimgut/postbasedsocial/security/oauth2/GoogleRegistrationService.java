@@ -38,7 +38,7 @@ public class GoogleRegistrationService {
 
     @Transactional
     public UserCredentialsGoogleRegistration getUserByEmailOrRegisterAsNew(DefaultOidcUser oidcUser) {
-        UserCredentialsGoogleRegistration user = userCredentialsGoogleRepository.findByEmail_Eager(oidcUser.getEmail());
+        UserCredentialsGoogleRegistration user = userCredentialsGoogleRepository.findByEmail_JoinFetchInfo(oidcUser.getEmail());
         if (user != null) {
             return user;
         } else {
@@ -69,7 +69,7 @@ public class GoogleRegistrationService {
     @Transactional
     private UserInfo createDefaultUserInfo(DefaultOidcUser oidcUser, UserCredentialsGoogleRegistration userCredentials) {
         UserInfo userInfo = new UserInfo();
-        String defaultRole = Roles.USER.name();
+        String defaultRole = Roles.READER.name();
         Role role = roleRepository.findByName(defaultRole);
         if (role == null) {
             throw new GoogleRegistrationException("Role " + defaultRole + " was not found in the database");
@@ -78,6 +78,7 @@ public class GoogleRegistrationService {
         userInfo.setUnlocked(true);
         userInfo.setActivated(true);
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+        //TODO: load picture to some service to avoid "Rate-limit exceeded"
         userInfo.setPictureUrl(oidcUser.getPicture());
         userInfo.setUsername("User"+userCredentials.getId()+"g");
         return userInfoRepository.save(userInfo);

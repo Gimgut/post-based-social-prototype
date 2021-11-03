@@ -10,8 +10,8 @@ public interface UserCredentialsGoogleRepository extends JpaRepository<UserCrede
     UserCredentialsGoogleRegistration findByEmail(String email);
 
     @Query("SELECT u FROM UserCredentialsGoogle u JOIN FETCH u.userInfo WHERE u.email=:email")
-    UserCredentialsGoogleRegistration findByEmail_Eager(String email);
+    UserCredentialsGoogleRegistration findByEmail_JoinFetchInfo(String email);
 
     @Query("SELECT u FROM UserCredentialsGoogle u JOIN FETCH u.userInfo WHERE u.userInfo.id=:uiid")
-    UserCredentialsGoogleRegistration findByUserInfoId_Eager(Long uiid);
+    UserCredentialsGoogleRegistration findByUserInfoId_JoinFetchInfo(Long uiid);
 }

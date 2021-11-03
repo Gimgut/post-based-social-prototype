@@ -3,7 +3,7 @@
         <a routerLink="./" mat-button>Profile</a>
         <a routerLink="subscriptions" mat-button>Subscriptions</a>
         <a mat-button>My posts</a>
-        <a routerLink="create/post" mat-button>Create post</a>
+        <a routerLink="create/post" mat-button *ngIf="canCreatePost()">Create post</a>
     </div>
 </div>
 <router-outlet></router-outlet>
