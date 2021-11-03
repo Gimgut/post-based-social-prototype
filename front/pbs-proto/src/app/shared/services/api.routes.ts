@@ -40,7 +40,13 @@ export class ApiRoutes {
     `${this.apiFullPath}/subscription/unsubscribe/${idPublisher}`
 
   getSubscriptions = () =>
-    `${this.apiFullPath}/subscription`
+    `${this.apiFullPath}/subscription`;
+  //#endregion
+
+
+  //#region USER
+  getUserInfoById = (userId: string) => 
+    `${this.apiFullPath}/user/id/${userId}`;
   //#endregion
 
 

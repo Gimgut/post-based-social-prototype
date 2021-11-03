@@ -27,9 +27,6 @@ export class MyPostsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authSerivce.isAuthenticated) {
-      return;
-    }
   }
 
   fetchMoreOnClick() {

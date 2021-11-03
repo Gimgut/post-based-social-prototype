@@ -52,12 +52,11 @@ export class PostPageComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(parameter => {
       this.parameterId = parameter.parameter;
-      //console.log(this.parameterId)
       this.postService.getPost(this.parameterId).subscribe(data => {
         this.post = data;
         this.updateSubscriptionStatus(this.post.author.id);
       });
-    })
+    });
   }
 
   private updateSubscriptionStatus(idPublisher: number) {

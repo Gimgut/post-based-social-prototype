@@ -1,0 +1,14 @@
+<div class="bg-white border-radius-5px" *ngIf="user">
+    <div class="div-flex flex-wrap">
+        <div class="div-profile-image">
+            <img [src]="user?.picture" class="size-box-max-200px">
+        </div>
+        <div class="div-profile-info">
+            <h1>{{user?.username}}</h1>
+            <p>id: {{user?.id}}</p>
+            <p>Role: {{user?.role}}</p>
+            <p>Registered: {{user?.registrationTime | date: 'mediumDate' }}</p>
+        </div>
+    </div>
+    <!--TODO: ADD SUBSCRIPTION BUTTONS. ?MAKE SUBSCRIPTION A MODULE OR A SHARED COMPONENT?-->
+</div>
