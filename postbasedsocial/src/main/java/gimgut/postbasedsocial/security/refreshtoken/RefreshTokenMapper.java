@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = UserInfoMapper.class)
 public interface RefreshTokenMapper {
 
-    RefreshTokenResponseDto toDto(RefreshToken refreshToken);
+    RefreshTokenResponseDto toDto(RefreshTokenResponse refreshTokenResponse);
 }

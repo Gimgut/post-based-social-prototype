@@ -8,7 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRepository;
 import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
-import gimgut.postbasedsocial.security.refreshtoken.RefreshToken;
+import gimgut.postbasedsocial.security.refreshtoken.RefreshTokenResponse;
 import gimgut.postbasedsocial.security.refreshtoken.RefreshTokenStatus;
 import gimgut.postbasedsocial.security.refreshtoken.TypeConversionException;
 import org.apache.commons.logging.Log;
@@ -106,30 +106,30 @@ public class JwtService {
     }
 
     @Transactional(readOnly = true)
-    public RefreshToken refreshToken(String refreshToken) {
+    public RefreshTokenResponse refreshToken(String refreshToken) {
         String[] chunks = refreshToken.split("\\.");
         //TODO: make payload as class?
         Map<String, String> payload = this.payloadToMap(chunks[1]);
         if (payload.isEmpty()) {
-            return new RefreshToken(RefreshTokenStatus.BAD_TOKEN);
+            return new RefreshTokenResponse(RefreshTokenStatus.BAD_TOKEN);
         }
 
         Long userInfoId = this.objectToLong(payload.get("uiid"));
         AuthenticationType authenticationType = AuthenticationType.valueOf(payload.get("ap"));
         SecuredUser securedUser = this.findUserByAuthenticationType(userInfoId, authenticationType);
         if (securedUser == null) {
-            return new RefreshToken(RefreshTokenStatus.USER_NOT_FOUND);
+            return new RefreshTokenResponse(RefreshTokenStatus.USER_NOT_FOUND);
         }
 
         try {
             verifyRefreshToken(refreshToken, securedUser.getPassword());
         } catch (Exception e) {
-            return new RefreshToken(RefreshTokenStatus.VERIFICATION_FAILED);
+            return new RefreshTokenResponse(RefreshTokenStatus.VERIFICATION_FAILED);
         }
 
         String newAccessToken = this.getAccessToken(securedUser, authenticationType);
         String newRefreshToken = this.getRefreshToken(securedUser, authenticationType);
-        RefreshToken refreshResponse = new RefreshToken();
+        RefreshTokenResponse refreshResponse = new RefreshTokenResponse();
         refreshResponse.setStatus(RefreshTokenStatus.SUCCESS);
         refreshResponse.setAccessToken(newAccessToken);
         refreshResponse.setRefreshToken(newRefreshToken);

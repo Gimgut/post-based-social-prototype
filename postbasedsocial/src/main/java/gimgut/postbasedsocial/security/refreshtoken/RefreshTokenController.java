@@ -28,7 +28,7 @@ public class RefreshTokenController {
     @PostMapping("")
     public ResponseEntity<RefreshTokenResponseDto> refreshToken(@RequestBody @NotEmpty String refreshToken) {
         try {
-            RefreshToken tokens = jwtService.refreshToken(refreshToken);
+            RefreshTokenResponse tokens = jwtService.refreshToken(refreshToken);
             RefreshTokenResponseDto responseDto = refreshTokenMapper.toDto(tokens);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (Exception e) {

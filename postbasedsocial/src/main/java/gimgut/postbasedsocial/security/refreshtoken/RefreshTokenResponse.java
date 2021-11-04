@@ -2,20 +2,20 @@ package gimgut.postbasedsocial.security.refreshtoken;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
 
-public class RefreshToken {
+public class RefreshTokenResponse {
     private RefreshTokenStatus status;
     private String accessToken;
     private String refreshToken;
     private UserInfo userInfo;
 
-    public RefreshToken() {
+    public RefreshTokenResponse() {
     }
 
-    public RefreshToken(RefreshTokenStatus status) {
+    public RefreshTokenResponse(RefreshTokenStatus status) {
         this.status = status;
     }
 
-    public RefreshToken(String accessToken, String refreshToken, UserInfo userInfo) {
+    public RefreshTokenResponse(String accessToken, String refreshToken, UserInfo userInfo) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.userInfo = userInfo;
