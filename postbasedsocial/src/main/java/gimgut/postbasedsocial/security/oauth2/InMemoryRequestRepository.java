@@ -9,11 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryRequestRepository implements AuthorizationRequestRepository< OAuth2AuthorizationRequest > {
     private final Log logger = LogFactory.getLog(this.getClass());
     //TODO: remove element after T time elapsed
-    private final Map<String, OAuth2AuthorizationRequest> requests = new HashMap<>();
+    private final Map<String, OAuth2AuthorizationRequest> requests = new ConcurrentHashMap<>();
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
