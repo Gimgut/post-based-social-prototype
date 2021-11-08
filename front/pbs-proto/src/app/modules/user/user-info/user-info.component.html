@@ -1,4 +1,4 @@
-<div class="bg-white border-radius-5px" *ngIf="user">
+<div class="bg-white" *ngIf="user">
     <div class="div-flex flex-wrap">
         <div class="div-profile-image">
             <img [src]="user?.picture" class="size-box-max-200px">
@@ -11,4 +11,7 @@
         </div>
     </div>
     <!--TODO: ADD SUBSCRIPTION BUTTONS. ?MAKE SUBSCRIPTION A MODULE OR A SHARED COMPONENT?-->
+    <div>
+        <app-sub-buttons #subButtons [author]='user'></app-sub-buttons>
+    </div>
 </div>

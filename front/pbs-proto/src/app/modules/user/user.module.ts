@@ -6,6 +6,7 @@ import { UserComponent } from './user.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { UserFeedRecentComponent } from './user-feed-recent/user-feed-recent.component';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { UserFeedRecentComponent } from './user-feed-recent/user-feed-recent.com
   imports: [
     CommonModule,
     UserRoutingModule,
-    SharedModule
+    SharedModule,
+    MatButtonModule
   ]
 })
 export class UserModule { }

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SubButtonsComponent } from 'src/app/shared/components/subscription/sub-buttons/sub-buttons.component';
 import { Post } from 'src/app/shared/models/post.model';
 import { User, Roles } from 'src/app/shared/models/user.model';
 import { AuthenticationService } from 'src/app/shared/services/auth/authentication.service';
@@ -14,20 +15,15 @@ import { SubscriptionService } from 'src/app/shared/services/subscription.servic
 export class PostPageComponent implements OnInit {
 
   public parameterId!: string;
-  public post: Post|null = null;//= { id: 8, title: 'default post title', content: 'default post content' , author: new User(0, 'NOT_FOUND', '', 'NONE', new Date(0)) };
+  public post: Post|null = null;
 
-  public authorized:boolean;
-  public isSubscribed:boolean = false;
-  public subscriptionStatusDefined = true;
-
+  @ViewChild("subButtons") subButtons?: SubButtonsComponent;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private postService: PostService,
     private authService: AuthenticationService,
-    private subscriptionService: SubscriptionService
   ) { 
-    this.authorized = authService.authenticatedUserValue? true : false;
   }
 
   canEdit() : boolean {
@@ -39,61 +35,14 @@ export class PostPageComponent implements OnInit {
     }
   }
 
-  isOwner() {
-    if (!this.authorized) {
-      return false;
-    }
-    if (this.post?.author.id === this.authService.authenticatedUserValue?.id) {
-      return this.post && this.authService.authenticatedUserValue;
-    }
-    return false;
-  }
-
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(parameter => {
       this.parameterId = parameter.parameter;
       this.postService.getPost(this.parameterId).subscribe(data => {
         this.post = data;
-        this.updateSubscriptionStatus(this.post.author.id);
+        this.subButtons?.setAuthor(data.author);
       });
     });
-  }
-
-  private updateSubscriptionStatus(idPublisher: number) {
-    this.isSubscribed = this.subscriptionService.checkIsSubscribed(idPublisher);
-    this.subscriptionStatusDefined = true;
-  }
-
-  subscribe() {
-    const author = this.post?.author;
-    if (!author) {
-      return;
-    }
-    this.subscriptionService.subscribe(author)?.subscribe(
-      data => {
-        //this.subscriptionService.addSubscription(author);
-        this.updateSubscriptionStatus(author.id);
-      },
-      error => {
-
-      }
-    );
-  }
-
-  unsubscribe() {
-    const author = this.post?.author;
-    if (!author) {
-      return;
-    }
-    this.subscriptionService.unsubscribe(author)?.subscribe(
-      data => {
-        //this.subscriptionService.removeSubscription(author);
-        this.updateSubscriptionStatus(author.id);
-      },
-      error => {
-
-      }
-    );
   }
 
 }

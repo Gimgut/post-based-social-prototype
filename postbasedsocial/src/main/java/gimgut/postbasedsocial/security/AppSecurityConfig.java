@@ -108,7 +108,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService),
                 UsernamePasswordAuthenticationFilter.class);
 
-        //Called after auth fail on ".authenticated()" matcher with no mapping for this request url. f.e. /api/r
+        //Called after auth fail on ".authenticated()" matcher with no mapping for this request url. f.e. /api/r (/api/r doesn't exist)
         //Or if authenticated but doesn't have a necessary authority
         //Default spring implementation: redirect to oauth login page
         http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
@@ -131,7 +131,6 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private void authenticationExceptionEntryPoint(HttpServletRequest request,
                                           HttpServletResponse response,
                                           AuthenticationException authException ) throws IOException {
-        logger.info("authentication exception entry point");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 

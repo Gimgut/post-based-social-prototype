@@ -1,0 +1,2 @@
+<button *ngIf="isAuthorized && isSubscribed===false && !isOwner()" (click)="subscribe()" mat-button class='bg-gray-1'>Subscribe</button>
+<button *ngIf="isAuthorized && isSubscribed===true && !isOwner()" (click)="unsubscribe()" mat-button class='bg-gray-1'>Unsubscribe</button>

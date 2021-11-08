@@ -4,9 +4,9 @@ import { UserComponent } from './user.component';
 
 const routes: Routes = [
   {
-    path: '', 
-    component: UserComponent,
+    path: '',
     children : [
+      {path:'', component: UserComponent}
     ]
   }
 ];

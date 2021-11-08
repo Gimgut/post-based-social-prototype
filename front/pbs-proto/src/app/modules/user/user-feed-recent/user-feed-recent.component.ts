@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Post } from 'src/app/shared/models/post.model';
-import { RecentFeedOfUserService } from 'src/app/shared/services/feed/recent-of-user.service';
 
 @Component({
   selector: 'app-user-feed-recent',
@@ -13,9 +12,11 @@ export class UserFeedRecentComponent implements OnInit {
   posts:Post[] = [];
 
   constructor() { 
+    console.log('constructor user feed recent');
   }
 
   ngOnInit(): void {
+    console.log('init constructor user feed recent');
   }
 
   fetchMoreOnClick() {

@@ -17,6 +17,7 @@ import { InfoComponent } from './components/info/info.component';
 import { SubscriptionService } from './services/subscription.service';
 import { SubscriptionFeedService } from './services/subscription-feed.service';
 import { UserService } from './services/user.service';
+import { SubButtonsComponent } from './components/subscription/sub-buttons/sub-buttons.component';
 
 
 
@@ -25,7 +26,8 @@ import { UserService } from './services/user.service';
     FeedComponent,
     HeaderMainComponent,
     PostComponent,
-    InfoComponent
+    InfoComponent,
+    SubButtonsComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +44,8 @@ import { UserService } from './services/user.service';
   exports: [
     FeedComponent,
     HeaderMainComponent,
-    PostComponent
+    PostComponent,
+    SubButtonsComponent
   ]
 })
 export class SharedModule {

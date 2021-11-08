@@ -1,25 +1,25 @@
-<div class="div-flex menu-max-block subscriptions" *ngIf="subscriptions.length!==0">
+<div class="div-flex menu-max-block subscriptions">
     <div class="menu-max subscriptions-menu bg-white">
         <h2>Subscriptions</h2>
-        <a *ngFor="let sub of subscriptions" mat-button>{{sub.username}}</a>
+        <a *ngFor="let sub of subscriptions" mat-button [routerLink]="['/user', sub.id]">{{sub.username}}</a>
+        <div class="div-flex" *ngIf="subscriptions.length===0">
+            <p>No subscriptions</p>
+        </div>
     </div>
     <div class="menu-min">
         <button [matMenuTriggerFor]="menu" mat-button class="bg-gray-1">My Subscriptions</button>
 
         <mat-menu #menu="matMenu">
-            <a *ngFor="let sub of subscriptions" mat-menu-item>{{sub.username}}</a>
+            <a *ngFor="let sub of subscriptions" mat-menu-item [routerLink]="['/user', sub.id]">{{sub.username}}</a>
         </mat-menu>
     </div>
     <div class="display-block flex-grow-1">
         <app-feed [posts]="recentPosts"></app-feed>
         <div class="div-flex">
             <div class="margin-centre-horiz">
-                <button (click)="fetchMore()" mat-button class="bg-blue-1">Fetch more</button>
+                <button (click)="fetchMore()" mat-button class="bg-blue-1" *ngIf="subscriptions.length!==0">Fetch more</button>
+                <button (click)="fetchMore()" mat-button class="bg-blue-1" *ngIf="subscriptions.length===0">Refresh</button>
             </div>
         </div>
     </div>
-</div>
-
-<div class="div-flex" *ngIf="subscriptions.length===0">
-    <p>No subscriptions</p>
 </div>

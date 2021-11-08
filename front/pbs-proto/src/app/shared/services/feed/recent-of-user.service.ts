@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecentFeedStrategy } from '../../feed-strategy/recent.feed.strategy';
@@ -9,7 +9,7 @@ import { ApiRoutes } from '../api.routes';
 @Injectable({
   providedIn: 'root'
 })
-export class RecentFeedOfUserService extends RecentFeedStrategy {
+export class RecentFeedOfUserService extends RecentFeedStrategy implements OnInit {
 
   private userId: string = '';
 
@@ -20,6 +20,10 @@ export class RecentFeedOfUserService extends RecentFeedStrategy {
   ) {
     super(http, postAdapter);
     console.log('RecentService contructor');
+  }
+
+  ngOnInit(): void {
+    console.log('RecentService init');
   }
 
   setUserId(userId:string) {

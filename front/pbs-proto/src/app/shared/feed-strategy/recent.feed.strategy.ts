@@ -15,7 +15,7 @@ export abstract class RecentFeedStrategy {
       protected http: HttpClient,
       protected postAdapter: PostAdapter
     ) { 
-        console.log('RecentFeedStrategy contructor')
+        console.log('RecentFeedStrategy contructor');
     }
   
     private addPostsAfterFetching(posts: Post[]) {
@@ -54,5 +54,9 @@ export abstract class RecentFeedStrategy {
       } else {
         this.fetchMorePosts();
       }
+    }
+
+    removeAll() : void {
+      this.posts.length=0;
     }
 }

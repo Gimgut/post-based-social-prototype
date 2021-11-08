@@ -32,8 +32,14 @@ export class UserComponent implements OnInit {
       });
 
       this.recentService.setUserId(userId);
+      this.recentService.removeAll();
       this.posts = this.recentService.getPosts();
       this.recentService.tryFetchMore();
     });
   }
+
+  fetchMoreOnClick() {
+    this.recentService.tryFetchMore();
+  }
+
 }
