@@ -7,6 +7,7 @@ public abstract class RandomStringGenerator {
     protected Random random = new Random();
 
     abstract public String generateWord(int minLength, int maxLength, boolean capital);
+
     abstract public String generateWord(int minLength, int maxLength);
 
     /**
@@ -14,23 +15,25 @@ public abstract class RandomStringGenerator {
      * @param max inclusive
      * @return random int in uniform distribution
      */
-    public int generateRandomInt(int min, int max) { return min + random.nextInt(max - min + 1); }
+    public int generateRandomInt(int min, int max) {
+        return min + random.nextInt(max - min + 1);
+    }
 
     /**
      * @param minWordCount inclusive
      * @param maxWordCount inclusive
-     * @param minWordLen inclusive
-     * @param maxWordLen inclusive
+     * @param minWordLen   inclusive
+     * @param maxWordLen   inclusive
      * @return random sentence
      */
     public String generateSentence(int minWordCount, int maxWordCount, int minWordLen, int maxWordLen) {
         int sLen = generateRandomInt(minWordCount, maxWordCount);
-        if (sLen<1)
+        if (sLen < 1)
             return "";
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(generateWord(minWordLen,maxWordLen,true));
-        for (int i=1; i<sLen; i++) {
+        stringBuilder.append(generateWord(minWordLen, maxWordLen, true));
+        for (int i = 1; i < sLen; i++) {
             stringBuilder.append(" ");
             stringBuilder.append(generateWord(minWordLen, maxWordLen));
         }
@@ -61,7 +64,7 @@ public abstract class RandomStringGenerator {
         for (int i = 0; i < sLen; i++) {
             if (i != 0)
                 stringBuilder.append(" ");
-            stringBuilder.append(generateSentence(5,20));
+            stringBuilder.append(generateSentence(5, 20));
         }
         return stringBuilder.toString();
     }

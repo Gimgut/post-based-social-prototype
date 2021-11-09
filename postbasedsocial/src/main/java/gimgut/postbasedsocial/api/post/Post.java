@@ -2,10 +2,8 @@ package gimgut.postbasedsocial.api.post;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.shared.jpa.Hideable;
-import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity

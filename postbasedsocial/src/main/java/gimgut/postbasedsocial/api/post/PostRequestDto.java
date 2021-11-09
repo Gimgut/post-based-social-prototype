@@ -1,8 +1,5 @@
 package gimgut.postbasedsocial.api.post;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
-
 import javax.validation.constraints.Size;
 
 public class PostRequestDto {

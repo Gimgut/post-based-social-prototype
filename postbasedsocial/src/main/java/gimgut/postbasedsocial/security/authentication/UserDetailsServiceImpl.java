@@ -1,8 +1,8 @@
 package gimgut.postbasedsocial.security.authentication;
 
-import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
+import gimgut.postbasedsocial.security.Roles;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -22,7 +22,7 @@ public class Generator1984 {
             e.printStackTrace();
         }
 
-        List<String> lines=null;
+        List<String> lines = null;
         try {
             lines = Files.readAllLines(resource.toPath());
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public class Generator1984 {
         }
 
         //Group rows into pages with paragraphs
-        int nLines = lines.size()-1;
+        int nLines = lines.size() - 1;
         int charsPerPage = 2000;
         int pagesLimit = 100;
         StringBuilder currentPage = new StringBuilder();
@@ -40,11 +40,11 @@ public class Generator1984 {
                 currentPage.append(lines.get(line) + " ");
 
                 if (lines.get(line).length() > 0 && lines.get(line + 1).length() < 1)
-                    currentPage.append(lineSeparator+lineSeparator);
+                    currentPage.append(lineSeparator + lineSeparator);
             } else {
                 pseudoPages.add(currentPage.toString());
                 currentPage = new StringBuilder();
-                line -=1;
+                line -= 1;
             }
 
             if (pseudoPages.size() >= pagesLimit)

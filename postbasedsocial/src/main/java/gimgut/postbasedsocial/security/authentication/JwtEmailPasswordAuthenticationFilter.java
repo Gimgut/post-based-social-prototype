@@ -2,14 +2,11 @@ package gimgut.postbasedsocial.security.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.api.post.PostRequestDto;
 import gimgut.postbasedsocial.api.user.UserInfoDto;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Tokens;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

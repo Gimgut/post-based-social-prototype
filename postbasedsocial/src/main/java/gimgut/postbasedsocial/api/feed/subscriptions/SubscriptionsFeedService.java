@@ -14,7 +14,7 @@ import java.util.List;
 public class SubscriptionsFeedService {
 
     private final SubscriptionsFeedRepository subscriptionsFeedRepository;
-    private final Pageable defaultPage = PageRequest.of(0,20);
+    private final Pageable defaultPage = PageRequest.of(0, 20);
 
     public SubscriptionsFeedService(SubscriptionsFeedRepository subscriptionsFeedRepository) {
         this.subscriptionsFeedRepository = subscriptionsFeedRepository;
@@ -22,7 +22,7 @@ public class SubscriptionsFeedService {
 
     @Transactional(readOnly = true)
     public List<Post> getRecentPosts(Collection idsPublishers) {
-        if (idsPublishers.size()<1) {
+        if (idsPublishers.size() < 1) {
             return new ArrayList<>();
         }
         return this.subscriptionsFeedRepository.findNewestPostsOfUsers(defaultPage, idsPublishers);
@@ -30,7 +30,7 @@ public class SubscriptionsFeedService {
 
     @Transactional(readOnly = true)
     public List<Post> getRecentPostsAfterId(Collection idsPublishers, Long lastViewedPostId) {
-        if (idsPublishers.size()<1) {
+        if (idsPublishers.size() < 1) {
             return new ArrayList<>();
         }
         return this.subscriptionsFeedRepository.findNewestPostsOfUsersAfterId(defaultPage, lastViewedPostId, idsPublishers);

@@ -42,11 +42,11 @@ public class RandomPostService {
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
         userInfoRepository.save(userInfo);
         for (int iPost = 0; iPost < count; iPost++) {
-            LocalDateTime rndLdt = timeService.getUtcNowLDT().plusSeconds(randomStringGenerator.generateRandomInt(20* iPost,20*(iPost +1)));
+            LocalDateTime rndLdt = timeService.getUtcNowLDT().plusSeconds(randomStringGenerator.generateRandomInt(20 * iPost, 20 * (iPost + 1)));
             Post publication = new Post(
-                    randomStringGenerator.generateSentence(1,4),
-                    randomStringGenerator.generateParagraph(1,10),
-                    iPost +1,
+                    randomStringGenerator.generateSentence(1, 4),
+                    randomStringGenerator.generateParagraph(1, 10),
+                    iPost + 1,
                     rndLdt,
                     userInfo,
                     true);
@@ -65,7 +65,7 @@ public class RandomPostService {
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
         userInfo.setRole(roleRepository.findByName("WRITER"));
         userInfoRepository.save(userInfo);
-        for (int page = realPages-1; page > -1; page--) {
+        for (int page = realPages - 1; page > -1; page--) {
             LocalDateTime rndLdt = timeService.getUtcNowLDT().minusSeconds(randomStringGenerator.generateRandomInt(20 * page, 20 * (page + 1)));
             Post publication = new Post(
                     "Pseudo page " + (page + 1),

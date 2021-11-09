@@ -1,5 +1,7 @@
 package gimgut.postbasedsocial;
 
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.api.post.Post;
 import gimgut.postbasedsocial.api.post.PostRepository;
 import gimgut.postbasedsocial.api.post.RandomPostService;
@@ -8,8 +10,6 @@ import gimgut.postbasedsocial.api.user.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
-import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
 import gimgut.postbasedsocial.shared.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

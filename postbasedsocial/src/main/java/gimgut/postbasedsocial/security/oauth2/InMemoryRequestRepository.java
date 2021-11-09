@@ -7,20 +7,19 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InMemoryRequestRepository implements AuthorizationRequestRepository< OAuth2AuthorizationRequest > {
+public class InMemoryRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
     private final Log logger = LogFactory.getLog(this.getClass());
     //TODO: remove element after T time elapsed
     private final Map<String, OAuth2AuthorizationRequest> requests = new ConcurrentHashMap<>();
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        String state = request.getParameter( "state" );
+        String state = request.getParameter("state");
         if (state != null) {
-            return removeAuthorizationRequest( request );
+            return removeAuthorizationRequest(request);
         }
         return null;
     }
@@ -35,7 +34,7 @@ public class InMemoryRequestRepository implements AuthorizationRequestRepository
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
         String state = request.getParameter("state");
         if (state != null) {
-            return requests.remove( state );
+            return requests.remove(state);
         }
         return null;
     }
