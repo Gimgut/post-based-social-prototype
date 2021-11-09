@@ -6,7 +6,6 @@ import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Tokens;
 import gimgut.postbasedsocial.security.authentication.LoginResponseDto;
-import gimgut.postbasedsocial.security.authentication.LoginResponseStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;

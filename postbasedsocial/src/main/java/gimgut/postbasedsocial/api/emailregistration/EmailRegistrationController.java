@@ -29,6 +29,6 @@ public class EmailRegistrationController {
                 userCredentialsEmailRegistrationMapper.fromDto(emailRegistrationRequestDto);
         RegistrationResponseStatus registrationStatus = emailRegistrationService.registerNewUser(userCredentials);
         RegistrationResponseDto registrationResponseDto = new RegistrationResponseDto(registrationStatus);
-        return new ResponseEntity(registrationResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(registrationResponseDto, HttpStatus.OK);
     }
 }

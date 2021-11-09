@@ -3,7 +3,6 @@ package gimgut.postbasedsocial.api.user;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.List;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     UserInfo findByUsername(String username);
+
     Long findIdByUsername(String username);
 
     @Query("SELECT u FROM UserInfo u WHERE u.id IN :ids")

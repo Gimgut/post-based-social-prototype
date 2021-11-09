@@ -47,7 +47,7 @@ public class PostController {
     /**
      * @param postDto
      * @param principal
-     * @return  created post id on success
+     * @return created post id on success
      */
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
@@ -61,7 +61,7 @@ public class PostController {
 
         Long userInfoId = Long.valueOf(principal.getName());
         Long postId = postService.createNewPost(postDto, userInfoId);
-        return new ResponseEntity(postId,HttpStatus.CREATED);
+        return new ResponseEntity(postId, HttpStatus.CREATED);
     }
 
 

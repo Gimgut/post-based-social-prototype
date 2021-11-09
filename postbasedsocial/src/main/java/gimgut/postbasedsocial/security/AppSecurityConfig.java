@@ -3,11 +3,11 @@ package gimgut.postbasedsocial.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
+import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
 import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
+import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
 import gimgut.postbasedsocial.security.oauth2.Oauth2AuthenticationSuccess;
-import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
-import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
@@ -90,7 +90,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         //public endpoints
         http.authorizeRequests().antMatchers(
                 HttpMethod.GET,
-                "/api/**/feed/**" ,
+                "/api/**/feed/**",
                 "/api/**/user/**",
                 "/api/**/post/**",
                 "/login/**",
@@ -105,7 +105,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.POST,
                 "/api/**/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
-        http.authorizeRequests().antMatchers(HttpMethod.GET,"/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
         http.addFilterBefore(
@@ -119,7 +119,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.oauth2Login()
                 .authorizationEndpoint()
-                    .authorizationRequestRepository(new InMemoryRequestRepository());
+                .authorizationRequestRepository(new InMemoryRequestRepository());
         http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
         http.oauth2Login().successHandler(
                 new Oauth2AuthenticationSuccess(
@@ -133,8 +133,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void authenticationExceptionEntryPoint(HttpServletRequest request,
-                                          HttpServletResponse response,
-                                          AuthenticationException authException ) throws IOException {
+                                                   HttpServletResponse response,
+                                                   AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 

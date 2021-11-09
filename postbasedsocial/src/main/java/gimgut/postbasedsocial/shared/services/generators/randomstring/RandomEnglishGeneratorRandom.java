@@ -29,13 +29,13 @@ public class RandomEnglishGeneratorRandom extends RandomStringGenerator {
             e.printStackTrace();
         }
 
-        List<String> words=null;
+        List<String> words = null;
         try {
             words = Files.readAllLines(resource.toPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (words!=null) {
+        if (words != null) {
             this.words = new ArrayList<String>(words);
         }
     }
@@ -50,7 +50,7 @@ public class RandomEnglishGeneratorRandom extends RandomStringGenerator {
     //TODO: Build a distribution chart to look at
     public int generateRandomWordIndex() {
         double y = f();
-        return (int) (y*(double)words.size());
+        return (int) (y * (double) words.size());
     }
 
     public String getRandomEnglishWord() {

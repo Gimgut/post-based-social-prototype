@@ -6,7 +6,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -31,13 +34,13 @@ public class RefreshTokenController {
         try {
             tokens = jwtService.refreshToken(refreshToken);
         } catch (Exception e) {
-            return new ResponseEntity<>( RefreshTokenStatus.FAILED, HttpStatus.BAD_REQUEST );
+            return new ResponseEntity<>(RefreshTokenStatus.FAILED, HttpStatus.BAD_REQUEST);
         }
         if (tokens.getStatus() == RefreshTokenStatus.SUCCESS) {
             RefreshTokenResponseDto responseDto = refreshTokenMapper.toDto(tokens);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>( tokens.getStatus(), HttpStatus.BAD_REQUEST );
+            return new ResponseEntity<>(tokens.getStatus(), HttpStatus.BAD_REQUEST);
         }
     }
 }

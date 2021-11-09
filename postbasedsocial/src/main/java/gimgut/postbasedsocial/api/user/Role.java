@@ -1,7 +1,5 @@
 package gimgut.postbasedsocial.api.user;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import javax.persistence.*;
 
 @Entity

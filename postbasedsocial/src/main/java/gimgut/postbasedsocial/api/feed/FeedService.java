@@ -18,7 +18,7 @@ import java.util.List;
 public class FeedService {
 
     private final FeedRecentRepository feedRecentRepository;
-    private final Pageable defaultPage = PageRequest.of(0,20);
+    private final Pageable defaultPage = PageRequest.of(0, 20);
 
     public FeedService(FeedRecentRepository feedRecentRepository) {
         this.feedRecentRepository = feedRecentRepository;

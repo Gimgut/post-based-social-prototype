@@ -1,6 +1,5 @@
 package gimgut.postbasedsocial.security.refreshtoken;
 
-import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoDto;
 
 public class RefreshTokenResponseDto {
@@ -11,7 +10,7 @@ public class RefreshTokenResponseDto {
     public RefreshTokenResponseDto() {
     }
 
-    public RefreshTokenResponseDto( UserInfoDto userInfo, String accessToken, String refreshToken ) {
+    public RefreshTokenResponseDto(UserInfoDto userInfo, String accessToken, String refreshToken) {
         this.userInfo = userInfo;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

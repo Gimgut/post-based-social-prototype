@@ -5,7 +5,10 @@ import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 /*
  * TODO: For a real big app Redis would be better to store

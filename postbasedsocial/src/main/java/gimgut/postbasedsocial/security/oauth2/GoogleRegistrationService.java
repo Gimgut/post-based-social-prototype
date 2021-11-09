@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class GoogleRegistrationService {
@@ -54,7 +51,7 @@ public class GoogleRegistrationService {
     @Transactional
     public UserCredentialsGoogleRegistration registerNewUser(DefaultOidcUser oidcUser) {
         UserCredentialsGoogleRegistration newGoogleUser = this.createUserCredentials(oidcUser);
-        UserInfo userInfo = createDefaultUserInfo( oidcUser, newGoogleUser );
+        UserInfo userInfo = createDefaultUserInfo(oidcUser, newGoogleUser);
         newGoogleUser.setUserInfo(userInfo);
         return newGoogleUser;
     }
@@ -63,7 +60,7 @@ public class GoogleRegistrationService {
     private UserCredentialsGoogleRegistration createUserCredentials(DefaultOidcUser oidcUser) {
         UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
         newGoogleUser.setEmail(oidcUser.getEmail());
-        newGoogleUser.setPassword( generateRandomPassword() );
+        newGoogleUser.setPassword(generateRandomPassword());
         return userCredentialsGoogleRepository.save(newGoogleUser);
     }
 
@@ -87,7 +84,7 @@ public class GoogleRegistrationService {
         userInfo.setRegistrationTime(timeService.getUtcNowLDT());
         //TODO: load picture to some service to avoid "Rate-limit exceeded"
         userInfo.setPictureUrl(oidcUser.getPicture());
-        userInfo.setUsername("User"+userCredentials.getId()+"g");
+        userInfo.setUsername("User" + userCredentials.getId() + "g");
         return userInfoRepository.save(userInfo);
     }
 }

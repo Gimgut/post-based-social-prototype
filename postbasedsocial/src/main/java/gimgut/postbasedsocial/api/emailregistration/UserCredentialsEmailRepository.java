@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserCredentialsEmailRepository extends JpaRepository<UserCredentialsEmailRegistration, Long> {
 
     /**
-     * @param email @Column(unique = true)
-     * @return
+     * email is unique in DB
      */
     UserCredentialsEmailRegistration findByEmail(String email);
 

@@ -37,7 +37,7 @@ public class PostService {
     }
 
     @Transactional
-    public EditPostResponseStatus editPost(Long postId,PostRequestDto postRequestDto, Authentication authentication) {
+    public EditPostResponseStatus editPost(Long postId, PostRequestDto postRequestDto, Authentication authentication) {
         Post post = postRepository.getById(postId);
         if (post == null) {
             return EditPostResponseStatus.POST_NOT_FOUND;
@@ -55,6 +55,7 @@ public class PostService {
     /**
      * 1.Admin can edit every post
      * 2.User can edit only his own posts
+     *
      * @param post
      * @param authentication
      * @return
@@ -83,6 +84,7 @@ public class PostService {
     /**
      * 1.Admin can delete every post
      * 2.User can delete only his own posts
+     *
      * @param post
      * @param authentication
      * @return
