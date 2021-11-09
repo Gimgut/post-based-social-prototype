@@ -2,11 +2,14 @@ package gimgut.postbasedsocial.security.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gimgut.postbasedsocial.api.post.PostRequestDto;
 import gimgut.postbasedsocial.api.user.UserInfoDto;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Tokens;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +21,10 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.io.IOException;
+import java.util.Set;
 
 public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -26,15 +32,17 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
+    private final Validator validator;
 
     public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                                 ObjectMapper objectMapper,
                                                 JwtService jwtService,
-                                                UserInfoMapper userInfoMapper) {
+                                                UserInfoMapper userInfoMapper, Validator validator) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
         this.userInfoMapper = userInfoMapper;
+        this.validator = validator;
     }
 
     @Override
@@ -44,6 +52,11 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
         try {
             loginRequestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
         } catch (IOException e) {
+            throw new UsernameNotFoundException("Bad request body");
+        }
+
+        Set<ConstraintViolation<LoginRequestDto>> violations = validator.validate(loginRequestDto);
+        if (!violations.isEmpty()) {
             throw new UsernameNotFoundException("Bad request body");
         }
         logger.info("Attempting authentication for email: " + loginRequestDto.getEmail());
@@ -64,7 +77,6 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
         UserInfoDto responseUserInfo = userInfoMapper.toDto(userDetails.getUserInfo());
         LoginResponseDto loginResponse = new LoginResponseDto(
-                LoginResponseStatus.SUCCESS,
                 tokens.getAccessToken(),
                 tokens.getRefreshToken(),
                 responseUserInfo);
@@ -75,10 +87,8 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         logger.info("Authentication unsuccessful");
-        response.setStatus(200);
+        response.setStatus(400);
         response.setContentType("application/json");
-        LoginResponseDto loginResponse = new LoginResponseDto();
-        loginResponse.setStatus(LoginResponseStatus.FAILED);
-        objectMapper.writeValue(response.getOutputStream(), loginResponse);
+        response.getOutputStream().write("AUTHENTICATION_FAILED".getBytes());
     }
 }

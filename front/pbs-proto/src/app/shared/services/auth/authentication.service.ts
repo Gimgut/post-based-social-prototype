@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { LoginResponseAdapter, LoginResponseDto, LoginResponseStatus } from '../../dto/auth/login-response.dto';
-import { RefreshTokenResponseAdapter, RefreshTokenResponseDto, RefreshTokenResponseStatus } from '../../dto/auth/refresh-token-response.dto';
+import { LoginResponseAdapter, LoginResponseDto } from '../../dto/auth/login-response.dto';
+import { RefreshTokenResponseAdapter, RefreshTokenResponseDto } from '../../dto/auth/refresh-token-response.dto';
 import { User } from '../../models/user.model';
 import { ApiRoutes } from '../api.routes';
 
@@ -67,15 +67,13 @@ export class AuthenticationService {
 
     return this.http.post(this.apiRoutes.loginWithEmailPassword(), requestBody)
       .pipe(
-        map( r => { return this.loginResponseAdapter.adapt(r); }),
-        map( res => {
-          if (res.status === LoginResponseStatus.SUCCESS) {
-            console.log('loginWithEmailPassword success');
-            this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
-
-          }
-          return res;
-        }));
+        map( r => { 
+          const loginResult = this.loginResponseAdapter.adapt(r);
+          console.log('loginWithEmailPassword success');
+          this.authenticate(loginResult.userInfo, loginResult.accessToken, loginResult.refreshToken);
+          return loginResult; 
+        })
+      );
   }
 
   loginWithGoogle() {
@@ -86,14 +84,11 @@ export class AuthenticationService {
     console.log('url for code = ' + `${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
     return this.http.get(`${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
       .pipe(
-        map( r=> {return this.loginResponseAdapter.adapt(r)}),
-        map(
-        res => {
-          if (res.status === LoginResponseStatus.SUCCESS) {
-            console.log('authenticateWithGoogle success');
-            this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
-          }
-          return res;
+        map( r=> {
+          const loginResult = this.loginResponseAdapter.adapt(r);
+          console.log('authenticateWithGoogle success');
+          this.authenticate(loginResult.userInfo, loginResult.accessToken, loginResult.refreshToken);
+          return loginResult;
         })
       );
   }
@@ -108,25 +103,20 @@ export class AuthenticationService {
 
   private handleRefreshTokenError() {
     localStorage.removeItem('rt');
-    return throwError('refreshToken server refuse');
+    return throwError('refreshToken: server refused to refresh');
   }
  
   callRefreshToken(refreshToken: string) : Observable<RefreshTokenResponseDto> {
     return this.http.post(this.apiRoutes.refreshToken(), refreshToken)
       .pipe(
         catchError(this.handleRefreshTokenError),
-        map( r=> {return this.refreshTokenResponseAdapter.adapt(r)}),
-        map(
-          res => {
-            if (res.status === RefreshTokenResponseStatus.SUCCESS) {
-              console.log('callRefreshToken success')
-              this.authenticate(res.userInfo, res.accessToken, res.refreshToken);
-            } else {
-              localStorage.removeItem('rt');
-            }
-            return res;
-          })
-        );
+        map( r=> { 
+          const refreshResult = this.refreshTokenResponseAdapter.adapt(r);
+          console.log('callRefreshToken success');
+          this.authenticate(refreshResult.userInfo, refreshResult.accessToken, refreshResult.refreshToken);
+          return refreshResult;
+        })
+      );
   }
   
   startRefreshTokenEventTimer(refreshToken: string) {

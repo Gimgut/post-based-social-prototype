@@ -26,13 +26,18 @@ public class RefreshTokenController {
     }
 
     @PostMapping("")
-    public ResponseEntity<RefreshTokenResponseDto> refreshToken(@RequestBody @NotEmpty String refreshToken) {
+    public ResponseEntity refreshToken(@RequestBody @NotEmpty String refreshToken) {
+        RefreshTokenResponse tokens;
         try {
-            RefreshTokenResponse tokens = jwtService.refreshToken(refreshToken);
+            tokens = jwtService.refreshToken(refreshToken);
+        } catch (Exception e) {
+            return new ResponseEntity<>( RefreshTokenStatus.FAILED, HttpStatus.BAD_REQUEST );
+        }
+        if (tokens.getStatus() == RefreshTokenStatus.SUCCESS) {
             RefreshTokenResponseDto responseDto = refreshTokenMapper.toDto(tokens);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new RefreshTokenResponseDto(RefreshTokenStatus.FAILED), HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>( tokens.getStatus(), HttpStatus.BAD_REQUEST );
         }
     }
 }

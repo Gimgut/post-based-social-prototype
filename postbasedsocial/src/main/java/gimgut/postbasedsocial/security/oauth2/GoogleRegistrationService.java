@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class GoogleRegistrationService {
@@ -23,6 +27,7 @@ public class GoogleRegistrationService {
     private final RoleRepository roleRepository;
     private final TimeService timeService;
     private final EntityManager entityManager;
+    private final SecureRandom random = new SecureRandom();
 
     public GoogleRegistrationService(UserInfoRepository userInfoRepository,
                                      UserCredentialsGoogleRepository userCredentialsGoogleRepository,
@@ -49,7 +54,7 @@ public class GoogleRegistrationService {
     @Transactional
     public UserCredentialsGoogleRegistration registerNewUser(DefaultOidcUser oidcUser) {
         UserCredentialsGoogleRegistration newGoogleUser = this.createUserCredentials(oidcUser);
-        UserInfo userInfo = this.createDefaultUserInfo(oidcUser, newGoogleUser);
+        UserInfo userInfo = createDefaultUserInfo( oidcUser, newGoogleUser );
         newGoogleUser.setUserInfo(userInfo);
         return newGoogleUser;
     }
@@ -58,12 +63,14 @@ public class GoogleRegistrationService {
     private UserCredentialsGoogleRegistration createUserCredentials(DefaultOidcUser oidcUser) {
         UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
         newGoogleUser.setEmail(oidcUser.getEmail());
-        newGoogleUser.setPassword(this.generateRandomPassword(oidcUser));
+        newGoogleUser.setPassword( generateRandomPassword() );
         return userCredentialsGoogleRepository.save(newGoogleUser);
     }
 
-    private String generateRandomPassword(DefaultOidcUser oidcUser) {
-        return Integer.toString(("g"+oidcUser.getEmail()).hashCode());
+    private String generateRandomPassword() {
+        byte[] password = new byte[16];
+        random.nextBytes(password);
+        return String.valueOf(password);
     }
 
     @Transactional

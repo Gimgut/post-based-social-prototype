@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginResponseStatus } from 'src/app/shared/dto/auth/login-response.dto';
 import { AuthenticationService } from 'src/app/shared/services/auth/authentication.service';
 
 
@@ -56,17 +55,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isServerError = false;
     this.loginForm.disable();
     this.authenticationService.loginWithEmailPassword(this.getEmail()?.value, this.getPassword()?.value).subscribe(
-      next => {
-        if (next.status === LoginResponseStatus.SUCCESS) {
-          this.isAuthenticationFailed = false;
-          this.router.navigate(['/recent']); 
-        } else {
-          this.isAuthenticationFailed = true;
-        }
+      data => {
+        this.isAuthenticationFailed = false;
+        this.router.navigate(['/recent']); 
       },
       error => {
         console.log('error: ' + error);
-        this.isServerError = true;
+        this.isAuthenticationFailed = true;
         this.afterSubmit();
       },
       () => {

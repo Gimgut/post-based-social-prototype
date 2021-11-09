@@ -4,7 +4,6 @@ import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoDto;
 
 public class RefreshTokenResponseDto {
-    private RefreshTokenStatus status;
     private UserInfoDto userInfo;
     private String accessToken;
     private String refreshToken;
@@ -12,23 +11,10 @@ public class RefreshTokenResponseDto {
     public RefreshTokenResponseDto() {
     }
 
-    public RefreshTokenResponseDto(RefreshTokenStatus status) {
-        this.status = status;
-    }
-
-    public RefreshTokenResponseDto(RefreshTokenStatus status, UserInfoDto userInfo, String accessToken, String refreshToken) {
-        this.status = status;
+    public RefreshTokenResponseDto( UserInfoDto userInfo, String accessToken, String refreshToken ) {
         this.userInfo = userInfo;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-    }
-
-    public RefreshTokenStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RefreshTokenStatus status) {
-        this.status = status;
     }
 
     public UserInfoDto getUserInfo() {

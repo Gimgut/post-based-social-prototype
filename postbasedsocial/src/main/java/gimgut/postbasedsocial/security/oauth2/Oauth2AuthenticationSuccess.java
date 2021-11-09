@@ -47,7 +47,6 @@ public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler
         Tokens tokens = jwtService.getAccessAndRefreshTokens(registeredUser);
         UserInfoDto userInfoDto = userInfoMapper.toDto(registeredUser.getUserInfo());
         LoginResponseDto loginResponse = new LoginResponseDto(
-                LoginResponseStatus.SUCCESS,
                 tokens.getAccessToken(),
                 tokens.getRefreshToken(),
                 userInfoDto);

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-/*
+/**
  * Assumed that higher id means newer post
  */
 @Repository

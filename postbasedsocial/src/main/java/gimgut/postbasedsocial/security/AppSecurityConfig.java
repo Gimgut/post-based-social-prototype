@@ -30,6 +30,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Validator;
 import java.io.IOException;
 
 @Configuration
@@ -43,6 +44,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
+    private final Validator validator;
 
     //TODO: move to configuration file
     private final String AUTH_LOGIN = "/api/v1/auth/signin";
@@ -55,12 +57,13 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
                              UserInfoMapper userInfoMapper,
-                             GoogleRegistrationService googleRegistrationService) {
+                             Validator validator, GoogleRegistrationService googleRegistrationService) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
         this.userInfoMapper = userInfoMapper;
+        this.validator = validator;
         this.googleRegistrationService = googleRegistrationService;
     }
 
@@ -77,7 +80,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                         authenticationManagerBean(),
                         mapper,
                         jwtService,
-                        userInfoMapper);
+                        userInfoMapper,
+                        validator);
         jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();

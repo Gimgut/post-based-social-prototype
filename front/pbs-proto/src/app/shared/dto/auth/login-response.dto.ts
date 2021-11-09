@@ -2,16 +2,11 @@ import { Injectable } from "@angular/core";
 import { Adapter } from "../../models/adapter.model";
 import { User, UserAdapter } from "../../models/user.model";
 
-export enum LoginResponseStatus {
-  SUCCESS = "SUCCESS", FAILED = "FAILED"
-}
-
 export class LoginResponseDto {
   constructor(
-    public status: LoginResponseStatus,
-    public accessToken?: string,
-    public refreshToken?: string,
-    public userInfo?: User
+    public accessToken: string,
+    public refreshToken: string,
+    public userInfo: User
   ) { }
 }
 
@@ -26,11 +21,7 @@ export class LoginResponseAdapter implements Adapter<LoginResponseDto> {
   }
 
   adapt(item: any): LoginResponseDto {
-    const status = item.status as LoginResponseStatus;
-    if (status === LoginResponseStatus.FAILED) {
-      return new LoginResponseDto(status);
-    }
-    return new LoginResponseDto(status, 
+    return new LoginResponseDto(
       item.accessToken,
       item.refreshToken,
       this.userAdapter.adapt(item.userInfo));

@@ -1,8 +1,13 @@
 package gimgut.postbasedsocial.security.authentication;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
+
 public class LoginRequestDto {
 
+    @Email
     private String email;
+    @Size(min = 4, max = 256)
     private String password;
 
     public LoginRequestDto() {
