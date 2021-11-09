@@ -62,11 +62,7 @@ public class PostService {
     private boolean canEdit(Post post, Authentication authentication) {
         Long userInfoId = Long.valueOf(authentication.getName());
         Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        if ((role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId);
     }
 
     @Transactional
@@ -94,10 +90,6 @@ public class PostService {
     private boolean canDelete(Post post, Authentication authentication) {
         Long userInfoId = Long.valueOf(authentication.getName());
         Roles role = (Roles) authentication.getAuthorities().iterator().next();
-        if ((role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (role == Roles.ADMIN) || (post.getAuthor().getId() == userInfoId);
     }
 }

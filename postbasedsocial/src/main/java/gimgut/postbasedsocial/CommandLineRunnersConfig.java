@@ -87,7 +87,7 @@ public class CommandLineRunnersConfig {
             user.setUserInfo(userInfo);
             userCredentialsEmailRepository.save(user);
 
-            logger.info("Creates admin user " + user.toString());
+            logger.info("Creates admin user " + user);
         };
     }
 

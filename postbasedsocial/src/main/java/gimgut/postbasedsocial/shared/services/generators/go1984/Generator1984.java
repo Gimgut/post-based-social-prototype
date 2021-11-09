@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class Generator1984 {
 
-    private List<String> pseudoPages = new ArrayList<>();
+    private final List<String> pseudoPages = new ArrayList<>();
 
     public Generator1984() {
         File resource = null;

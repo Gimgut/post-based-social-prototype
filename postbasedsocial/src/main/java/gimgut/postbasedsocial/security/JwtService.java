@@ -159,7 +159,7 @@ public class JwtService {
         if (object.getClass() == Integer.class) {
             return ((Integer) object).longValue();
         } else if (object.getClass() == Long.class) {
-            return (Long)object;
+            return (Long) object;
         } else {
             throw new TypeConversionException("Failed to convert Object to Long");
         }
