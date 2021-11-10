@@ -100,6 +100,16 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 AUTH_LOGIN,
                 AUTH_REGISTER,
                 AUTH_REFRESH_TOKEN).permitAll();
+
+        //dev endpoints, full exposure to view
+        http.authorizeRequests().antMatchers(
+                HttpMethod.GET,
+                "/api/docs/**",
+                "/api/swagger-ui/**",
+                "/api/actuator/**",
+                "/api/instances/**").permitAll();
+
+
         //authenticated endpoints
         http.authorizeRequests().antMatchers(
                 HttpMethod.POST,
