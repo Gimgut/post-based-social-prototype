@@ -44,10 +44,10 @@ management:
     web:
       base-path: /api/actuator
       exposure:
-        include: "*"
+        include: "prometheus"
   endpoint:
     health:
-      show-details: ALWAYS
+      #show-details: ALWAYS
     info:
   server:
     port: 8080

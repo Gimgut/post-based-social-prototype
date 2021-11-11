@@ -75,12 +75,12 @@ export class ApiRoutes {
     `${this.apiFullPath}/auth/signin`;
 
   loginWithGoogle = () =>
-   `${this.apiUrl}/oauth2/authorization/google`;
+   `${this.apiUrl}/api/oauth2/authorization/google`;
 
   refreshToken = () =>
     `${this.apiFullPath}/auth/refresh_token`;
 
   authExchangeEndpointForGoogle = () => 
-    `${this.apiUrl}/login/oauth2/code/google`;
+    `${this.apiUrl}/api/oauth2/code/google`;
   //#endregion
 }

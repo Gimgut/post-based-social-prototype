@@ -45,19 +45,20 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
     private final Validator validator;
+    private final GoogleRegistrationService googleRegistrationService;
 
     //TODO: move to configuration file
     private final String AUTH_LOGIN = "/api/v1/auth/signin";
     private final String AUTH_REGISTER = "/api/v1/auth/signup";
     private final String AUTH_REFRESH_TOKEN = "/api/v1/auth/refresh_token";
-    private final GoogleRegistrationService googleRegistrationService;
 
     public AppSecurityConfig(ObjectMapper mapper,
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
                              UserInfoMapper userInfoMapper,
-                             Validator validator, GoogleRegistrationService googleRegistrationService) {
+                             Validator validator,
+                             GoogleRegistrationService googleRegistrationService) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -87,34 +88,34 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //public endpoints
+        // Public endpoints
         http.authorizeRequests().antMatchers(
                 HttpMethod.GET,
-                "/api/**/feed/**",
-                "/api/**/user/**",
-                "/api/**/post/**",
-                "/login/**",
-                "/oauth2/**").permitAll();
+                "/api/*/feed/**",
+                "/api/*/user/**",
+                "/api/*/post/**",
+                "api/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(
                 HttpMethod.POST,
                 AUTH_LOGIN,
                 AUTH_REGISTER,
                 AUTH_REFRESH_TOKEN).permitAll();
 
-        //dev endpoints, full exposure to view
+        // Dev endpoints, full exposure to view
         http.authorizeRequests().antMatchers(
                 HttpMethod.GET,
                 "/api/docs/**",
                 "/api/swagger-ui/**",
-                "/api/actuator/**",
-                "/api/instances/**").permitAll();
-
+                "/api/actuator/**").permitAll();
 
         //authenticated endpoints
         http.authorizeRequests().antMatchers(
                 HttpMethod.POST,
-                "/api/**/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
+                "/api/*/post/create")
+                .hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
+
+        // SPA: all not "/api" calls mapped to a single page
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
@@ -122,24 +123,31 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService),
                 UsernamePasswordAuthenticationFilter.class);
 
-        //Called after auth fail on ".authenticated()" matcher with no mapping for this request url. f.e. /api/r (/api/r doesn't exist)
-        //Or if authenticated but doesn't have a necessary authority
-        //Default spring implementation: redirect to oauth login page
+        // Called after auth fail on ".authenticated()" matcher with no mapping
+        // for this request url. f.e. /api/r (/api/r doesn't exist)
+        // Or if authenticated but doesn't have a necessary authority
+        // Default spring implementation: redirect to oauth login page
         http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
 
         http.oauth2Login()
                 .authorizationEndpoint()
+                // TODO: Save in a cookie?
                 .authorizationRequestRepository(new InMemoryRequestRepository());
-        http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
-        http.oauth2Login().successHandler(
-                new Oauth2AuthenticationSuccess(
-                        mapper,
-                        googleRegistrationService,
-                        jwtService,
-                        userInfoMapper));
-
-
-        //TODO: change oauth paths to api-ish
+        http.oauth2Login()
+                .authorizedClientService(new HollowOauth2AuthorizedClientService());
+        http.oauth2Login()
+                .successHandler(
+                        new Oauth2AuthenticationSuccess(
+                            mapper,
+                            googleRegistrationService,
+                            jwtService,
+                            userInfoMapper));
+        // Old: "ip:port/oauth2/authorization/google"
+        // New: "ip:port/api/oauth2/authorization/google"
+        http.oauth2Login().authorizationEndpoint().baseUri("/api/oauth2/authorization");
+        // Old: "ip:port/login/oauth2/code/google"
+        // New: "ip:port/api/oauth2/code/google
+        http.oauth2Login().redirectionEndpoint().baseUri("/api/oauth2/code/*");
     }
 
     private void authenticationExceptionEntryPoint(HttpServletRequest request,
