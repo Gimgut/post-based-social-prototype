@@ -91,7 +91,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         // Public endpoints
         http.authorizeRequests().antMatchers(
                 HttpMethod.GET,
-                "/api/*/feed/**",
+                "/api/*/feed/recent/**",
                 "/api/*/user/**",
                 "/api/*/post/**",
                 "api/oauth2/**").permitAll();
@@ -115,8 +115,6 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
 
-        // SPA: all not "/api" calls mapped to a single page
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll();
 
         http.addFilter(jwtEmailPasswordAuthenticationFilter);
         http.addFilterBefore(

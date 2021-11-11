@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,9 @@ public class SubscriptionsFeedController {
     private final SubscriptionService subscriptionService;
     private final PostMapper postMapper;
 
-    public SubscriptionsFeedController(SubscriptionsFeedService subscriptionsFeedService, SubscriptionService subscriptionService, PostMapper postMapper) {
+    public SubscriptionsFeedController(SubscriptionsFeedService subscriptionsFeedService,
+                                       SubscriptionService subscriptionService,
+                                       PostMapper postMapper) {
         this.subscriptionsFeedService = subscriptionsFeedService;
         this.subscriptionService = subscriptionService;
         this.postMapper = postMapper;
@@ -35,7 +38,6 @@ public class SubscriptionsFeedController {
     public ResponseEntity<List<PostDto>> getSubscriptionsPosts(
             @RequestParam(required = false) Long lastPostId,
             Authentication authentication) {
-
         Long idSubscriber = Long.valueOf(authentication.getName());
         Optional<Subscription> subscription = subscriptionService.getSubscription(idSubscriber);
         if (subscription.isEmpty() || subscription.get().getSubscriptions().isEmpty()) {

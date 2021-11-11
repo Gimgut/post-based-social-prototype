@@ -31,9 +31,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("Enter JwtAuthorizationFilter...");
+        logger.info("Request url: " + request.getRequestURL()
+                + " from remote addr: " + request.getRemoteAddr()
+                + " header X-FORWARDED-FOR" + request.getHeader("X-FORWARDED-FOR"));
+        if (!request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
+            response.setStatus(403);
+            logger.info("KICKED OUT");
+            return;
+        }
         String servletPath = request.getServletPath();
-        if (servletPath.equals(AUTH_LOGIN_URL) || servletPath.equals(REFRESH_TOKEN_URL)) {
-            logger.info("Skipping JwtAuthorizationFilter because path is " + AUTH_LOGIN_URL + "or" + REFRESH_TOKEN_URL);
+        if (
+                !servletPath.startsWith("/api")
+                || servletPath.startsWith(AUTH_LOGIN_URL)
+                || servletPath.startsWith(REFRESH_TOKEN_URL)) {
+            logger.info("Skipping JwtAuthorizationFilter because path is " + servletPath);
             filterChain.doFilter(request, response);
         } else {
             logger.info("Try authorization...");

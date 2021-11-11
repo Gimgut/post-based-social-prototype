@@ -26,7 +26,8 @@ public class FeedController {
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<List<PostDto>> getRecentPosts(@RequestParam(required = false) Long lastPostId) {
+    public ResponseEntity<List<PostDto>> getRecentPosts(
+            @RequestParam(required = false) Long lastPostId) {
         List<Post> posts;
         if (lastPostId == null) {
             posts = feedService.getRecentPosts();

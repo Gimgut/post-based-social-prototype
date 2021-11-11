@@ -26,7 +26,11 @@ public class PostController {
     private final Validator validator;
     private final PostCleaner postCleaner;
 
-    public PostController(PostMapper postMapper, PostRepository postRepository, PostService postService, Validator validator, PostCleaner postCleaner) {
+    public PostController(PostMapper postMapper,
+                          PostRepository postRepository,
+                          PostService postService,
+                          Validator validator,
+                          PostCleaner postCleaner) {
         this.postMapper = postMapper;
         this.postRepository = postRepository;
         this.postService = postService;
@@ -51,7 +55,8 @@ public class PostController {
      */
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity createNewPost(@RequestBody PostRequestDto postDto, Principal principal) {
+    public ResponseEntity createNewPost(@RequestBody PostRequestDto postDto,
+                                        Principal principal) {
         postCleaner.clean(postDto);
 
         Set<ConstraintViolation<PostRequestDto>> violations = validator.validate(postDto);
@@ -67,10 +72,9 @@ public class PostController {
 
     @PatchMapping("{id}")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity editPost(
-            @PathVariable @NotNull Long id,
-            @RequestBody PostRequestDto postRequestDto,
-            Authentication authentication) {
+    public ResponseEntity editPost(@PathVariable @NotNull Long id,
+                                   @RequestBody PostRequestDto postRequestDto,
+                                   Authentication authentication) {
         postCleaner.clean(postRequestDto);
 
         Set<ConstraintViolation<PostRequestDto>> violations = validator.validate(postRequestDto);
@@ -88,7 +92,8 @@ public class PostController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAnyAuthority('WRITER', 'ADMIN')")
-    public ResponseEntity deletePost(@PathVariable @NotNull Long id, Authentication authentication) {
+    public ResponseEntity deletePost(@PathVariable @NotNull Long id,
+                                     Authentication authentication) {
         EditPostResponseStatus status = postService.deletePost(id, authentication);
         if (status == EditPostResponseStatus.SUCCESS) {
             return new ResponseEntity(HttpStatus.OK);

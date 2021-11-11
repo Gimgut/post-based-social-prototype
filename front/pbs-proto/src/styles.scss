@@ -39,6 +39,7 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 $width-transition: 900px;
+$width-transition-plus: 920px;
 
 * {
   //font-family: 'Roboto', Arial, sans-serif;
@@ -88,7 +89,7 @@ a {
 }
 
 
-@media screen and (max-width: $width-transition+20px) {
+@media screen and (max-width: $width-transition-plus) {
 
   .container {
     width: 100%;

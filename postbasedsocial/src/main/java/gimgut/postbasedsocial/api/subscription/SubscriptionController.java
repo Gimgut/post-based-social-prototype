@@ -31,7 +31,8 @@ public class SubscriptionController {
     }
 
     @PatchMapping("subscribe/{idPublisher}")
-    public ResponseEntity subscribe(@PathVariable @NotNull Long idPublisher, Authentication authentication) {
+    public ResponseEntity subscribe(@PathVariable @NotNull Long idPublisher,
+                                    Authentication authentication) {
         Long idSubscriber = Long.valueOf(authentication.getName());
         if (idSubscriber.equals(idPublisher)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -41,7 +42,8 @@ public class SubscriptionController {
     }
 
     @PatchMapping("unsubscribe/{idPublisher}")
-    public ResponseEntity unsubscribe(@PathVariable @NotNull Long idPublisher, Authentication authentication) {
+    public ResponseEntity unsubscribe(@PathVariable @NotNull Long idPublisher,
+                                      Authentication authentication) {
         Long idSubscriber = Long.valueOf(authentication.getName());
         if (idSubscriber.equals(idPublisher)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
