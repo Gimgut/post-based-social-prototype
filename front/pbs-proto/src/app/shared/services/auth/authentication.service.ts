@@ -77,6 +77,7 @@ export class AuthenticationService {
   }
 
   loginWithGoogle() {
+    //console.log("window.location.href=" +this.apiRoutes.loginWithGoogle());
     window.location.href=this.apiRoutes.loginWithGoogle();
   }
 
