@@ -23,7 +23,7 @@ import javax.validation.Validator;
 import java.io.IOException;
 import java.util.Set;
 
-public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
@@ -31,10 +31,10 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
     private final UserInfoMapper userInfoMapper;
     private final Validator validator;
 
-    public JwtEmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-                                                ObjectMapper objectMapper,
-                                                JwtService jwtService,
-                                                UserInfoMapper userInfoMapper, Validator validator) {
+    public EmailPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+                                             ObjectMapper objectMapper,
+                                             JwtService jwtService,
+                                             UserInfoMapper userInfoMapper, Validator validator) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtService = jwtService;
@@ -44,19 +44,23 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        logger.info("Attempt authentication...");
+        String forwardedIp = request.getHeader("X-FORWARDED-FOR");
+        String userRequestInfo = "addr: " + (forwardedIp == null ? request.getRemoteAddr() : forwardedIp);
+
         LoginRequestDto loginRequestDto;
         try {
-            loginRequestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
+            loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
         } catch (IOException e) {
+            logger.warn("Authe failed. Can't parse JSON to LoginRequestDto." + userRequestInfo);
             throw new UsernameNotFoundException("Bad request body");
         }
 
         Set<ConstraintViolation<LoginRequestDto>> violations = validator.validate(loginRequestDto);
         if (!violations.isEmpty()) {
+            logger.warn("Authe failed. Violated fields." + userRequestInfo);
             throw new UsernameNotFoundException("Bad request body");
         }
-        logger.info("Attempting authentication for email: " + loginRequestDto.getEmail());
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getEmail(),
                 loginRequestDto.getPassword());
@@ -66,9 +70,12 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        logger.info("Authentication is successful for user: " + authResult.getName());
+        String forwardedIp = request.getHeader("X-FORWARDED-FOR");
+        String userRequestInfo = "addr: " + (forwardedIp == null ? request.getRemoteAddr() : forwardedIp);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+
+        logger.info("Authe success. UIID: " + userDetails.getId() + "." + userRequestInfo);
 
         Tokens tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
@@ -83,9 +90,11 @@ public class JwtEmailPasswordAuthenticationFilter extends UsernamePasswordAuthen
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        logger.info("Authentication unsuccessful");
+        String forwardedIp = request.getHeader("X-FORWARDED-FOR");
+        String userRequestInfo = "addr: " + (forwardedIp == null ? request.getRemoteAddr() : forwardedIp);
+        logger.info("Authe failed. Wrong credentials." + userRequestInfo);
+
         response.setStatus(400);
-        response.setContentType("application/json");
-        response.getOutputStream().write("AUTHENTICATION_FAILED".getBytes());
+        response.getOutputStream().write("WRONG_CREDENTIALS".getBytes());
     }
 }

@@ -2,7 +2,7 @@ package gimgut.postbasedsocial.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gimgut.postbasedsocial.api.user.UserInfoMapper;
-import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
+import gimgut.postbasedsocial.security.authentication.EmailPasswordAuthenticationFilter;
 import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
 import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
 import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
@@ -76,14 +76,14 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter =
-                new JwtEmailPasswordAuthenticationFilter(
+        EmailPasswordAuthenticationFilter emailPasswordAuthenticationFilter =
+                new EmailPasswordAuthenticationFilter(
                         authenticationManagerBean(),
                         mapper,
                         jwtService,
                         userInfoMapper,
                         validator);
-        jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
+        emailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
         http.csrf().disable();
@@ -116,7 +116,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/**").authenticated();
 
 
-        http.addFilter(jwtEmailPasswordAuthenticationFilter);
+        http.addFilter(emailPasswordAuthenticationFilter);
         http.addFilterBefore(
                 new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService),
                 UsernamePasswordAuthenticationFilter.class);
