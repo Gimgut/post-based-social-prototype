@@ -26,7 +26,7 @@ export class Oauth2callbackComponent  implements OnInit {
       const code = p.code;
       const state = p.state;
       if (code && state) {
-        this.authenticationService.authenticateWithGoogle(p.code, p.state).subscribe(
+        this.authenticationService.codeExchangeGoogle(p.code, p.state).subscribe(
           data => {
             this.router.navigate(['/recent']);
           },

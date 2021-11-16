@@ -62,16 +62,15 @@ export class LoginComponent implements OnInit, OnDestroy {
       error => {
         console.log('error: ' + error);
         this.isAuthenticationFailed = true;
-        this.afterSubmit();
+        this.releaseForm();
       },
       () => {
-        //complete
         console.log('complete!');
-        this.afterSubmit();
+        this.releaseForm();
       });
   }
 
-  private afterSubmit() {
+  private releaseForm() {
     this.isAuthenticating = false;
     this.loginForm.enable();
   }

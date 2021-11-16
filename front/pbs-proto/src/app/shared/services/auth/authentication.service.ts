@@ -26,7 +26,7 @@ export class AuthenticationService {
     private refreshTokenResponseAdapter: RefreshTokenResponseAdapter
   ) { 
     this.userSubject = new BehaviorSubject<User|null>(null);
-    console.log('AuthenticationService constructor')
+    console.log('AuthenticationService constructor');
   }
 
   public get authenticatedUserValue() : User | null {
@@ -77,15 +77,14 @@ export class AuthenticationService {
   }
 
   loginWithGoogle() {
-    //console.log("window.location.href=" +this.apiRoutes.loginWithGoogle());
-    window.location.href=this.apiRoutes.loginWithGoogle();
+    window.location.href = this.apiRoutes.loginWithGoogle();
   }
 
-  authenticateWithGoogle(code: string, state: string) : Observable<LoginResponseDto> {
+  codeExchangeGoogle(code: string, state: string) : Observable<LoginResponseDto> {
     console.log('url for code = ' + `${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
     return this.http.get(`${this.apiRoutes.authExchangeEndpointForGoogle()}?code=${code}&state=${state}`)
       .pipe(
-        map( r=> {
+        map( r => {
           const loginResult = this.loginResponseAdapter.adapt(r);
           console.log('authenticateWithGoogle success');
           this.authenticate(loginResult.userInfo, loginResult.accessToken, loginResult.refreshToken);
@@ -120,7 +119,7 @@ export class AuthenticationService {
       );
   }
   
-  startRefreshTokenEventTimer(refreshToken: string) {
+  private startRefreshTokenEventTimer(refreshToken: string) {
     if (this.refreshTokenTimeoutId!==null)
       return;
 
@@ -132,7 +131,7 @@ export class AuthenticationService {
     }, timeout);
   }
 
-  stopRefreshTokenEventTimer() {
+  private stopRefreshTokenEventTimer() {
     clearTimeout(this.refreshTokenTimeoutId);
     this.refreshTokenTimeoutId = null;
   }
