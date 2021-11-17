@@ -2,16 +2,12 @@ package gimgut.postbasedsocial.api.post;
 
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.shared.jpa.Hideable;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-//@SQLDelete(sql = "UPDATE post SET visible = false WHERE id = ?")
-//@FilterDef(name = "visiblePostFilter", parameters = @ParamDef(name = "isVisible", type = "boolean"))
-//@Filter(name = "visiblePostFilter", condition = "visible :isVisible")
-//@Cacheable
-//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Post implements Hideable {
 
     @Id

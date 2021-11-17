@@ -1,5 +1,8 @@
 package gimgut.postbasedsocial.api.subscription;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Cacheable;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,11 +12,11 @@ import java.util.Set;
  * Normalized UserInfo
  */
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Subscription {
 
-    /**
-     * Essentially UserInfo.id
-     */
+    /** Essentially UserInfo.id */
     @Id
     private Long id;
 

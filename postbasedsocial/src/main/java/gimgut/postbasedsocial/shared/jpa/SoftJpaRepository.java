@@ -7,6 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @NoRepositoryBean
 public interface SoftJpaRepository<T, ID> extends JpaRepository<T, ID> {
@@ -16,13 +17,13 @@ public interface SoftJpaRepository<T, ID> extends JpaRepository<T, ID> {
     List<T> findAllVisible();
 
     @Transactional(readOnly = true)
-    @Query("select e from #{#entityName} e where e.id = ?1 and e.visible = true")
-    List<T> findVisibleById(Long id);
+    @Query("select e from #{#entityName} e where e.id = :id and e.visible = true")
+    Optional<T> findVisibleById(Long id);
 
 
     @Transactional
     @Modifying
-    @Query("update #{#entityName} e set e.visible=false where e.id = ?1")
+    @Query("update #{#entityName} e set e.visible=false where e.id = :id")
     void softDelete(Long id);
 
 

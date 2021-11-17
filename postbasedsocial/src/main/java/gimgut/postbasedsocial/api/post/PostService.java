@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -20,6 +21,11 @@ public class PostService {
         this.entityManager = entityManager;
         this.postRepository = postRepository;
         this.timeService = timeService;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Post> getPostById(Long id) {
+        return postRepository.findVisibleById_JoinFetch(id);
     }
 
     @Transactional

@@ -21,18 +21,15 @@ public class PostController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
     private final PostMapper postMapper;
-    private final PostRepository postRepository;
     private final PostService postService;
     private final Validator validator;
     private final PostCleaner postCleaner;
 
     public PostController(PostMapper postMapper,
-                          PostRepository postRepository,
                           PostService postService,
                           Validator validator,
                           PostCleaner postCleaner) {
         this.postMapper = postMapper;
-        this.postRepository = postRepository;
         this.postService = postService;
         this.validator = validator;
         this.postCleaner = postCleaner;
@@ -40,8 +37,8 @@ public class PostController {
 
     @GetMapping("{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
-        Optional<Post> post = postRepository.findByIdVisible(id);
-        if (!post.isPresent()) {
+        Optional<Post> post = postService.getPostById(id);
+        if (post.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         PostDto postDto = postMapper.toPostDto(post.get());
