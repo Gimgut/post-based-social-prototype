@@ -8,15 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Set;
 
-/**
- * Normalized UserInfo
- */
+/** Normalized UserInfo */
 @Entity
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Subscription {
 
-    /** Essentially UserInfo.id */
+    /** UserInfo.id */
     @Id
     private Long id;
 

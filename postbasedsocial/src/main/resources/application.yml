@@ -14,12 +14,18 @@ spring:
     hibernate:
       ddl-auto: create-drop
     properties:
+      #javax:
+      #  persistence:
+      #    cache:
+      #      storeMode: BYPASS
       hibernate:
         globally_quoted_identifiers: true
         generate_statistics: true
+        javax.cache:
+          provider:
         cache:
           use_second_level_cache: true
-          #use_query_cache: true
+          use_query_cache: true
           region:
             factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   security:
@@ -56,4 +62,4 @@ logging:
   level:
     org:
       hibernate:
-        type: trace
+        type: #trace

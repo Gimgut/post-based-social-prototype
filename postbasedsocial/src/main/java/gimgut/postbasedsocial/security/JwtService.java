@@ -108,7 +108,7 @@ public class JwtService {
     @Transactional(readOnly = true)
     public RefreshTokenResponse refreshToken(String refreshToken) {
         String[] chunks = refreshToken.split("\\.");
-        //TODO: make payload as class?
+        //TODO: make payload as a class?
         Map<String, String> payload = this.payloadToMap(chunks[1]);
         if (payload.isEmpty()) {
             return new RefreshTokenResponse(RefreshTokenStatus.BAD_TOKEN);

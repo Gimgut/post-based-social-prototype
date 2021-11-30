@@ -46,7 +46,7 @@ public class CommandLineRunnersConfig {
             role.setName(Roles.ADMIN.name());
             roleRepository.save(role);
 
-            roleRepository.findAll().forEach((x) -> logger.info(x.toString()));
+            //roleRepository.findAll().forEach((x) -> logger.info(x.toString()));
         };
     }
 
@@ -58,7 +58,7 @@ public class CommandLineRunnersConfig {
             List<Post> allPublications = publicationRepository.findAll();
             allPublications.forEach((x) -> logger.info(x.toString()));
             //allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
-            allPublications.forEach((x) -> logger.info(x.toString()));
+            //allPublications.forEach((x) -> logger.info(x.toString()));
         };
     }
 
@@ -90,6 +90,5 @@ public class CommandLineRunnersConfig {
             logger.info("Creates admin user " + user);
         };
     }
-
 }
 

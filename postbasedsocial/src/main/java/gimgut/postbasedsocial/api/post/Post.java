@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Post implements Hideable {
 
     @Id

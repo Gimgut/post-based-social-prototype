@@ -35,7 +35,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 "url: "
                 + request.getRequestURL()
                 + " addr: " + (forwardedIp == null ? request.getRemoteAddr() : forwardedIp);
-        if (!request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
+
+        if (!request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") && !request.getRemoteAddr().equals("127.0.0.1")) {
             response.setStatus(403);
             logger.info("KICKED OUT." + userRequestInfo);
             return;

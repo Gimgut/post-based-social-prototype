@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.CacheStoreMode;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Optional<Post> getPostById(Long id) {
-        return postRepository.findVisibleById_JoinFetch(id);
+        return postRepository.findVisibleById_JoinFetchAuthor(id);
     }
 
     @Transactional
