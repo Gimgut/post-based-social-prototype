@@ -19,34 +19,34 @@ export class ApiRoutes {
 
   //#region POST CRUD
   createPost = () =>
-    `${this.apiFullPath}/post`;
+    `${this.apiFullPath}/posts`;
 
   getPost = (postId: string) =>
-    `${this.apiFullPath}/post/${postId}`;
+    `${this.apiFullPath}/posts/${postId}`;
 
   editPost = (postId: string) =>
-    `${this.apiFullPath}/post/${postId}`;
+    `${this.apiFullPath}/posts/${postId}`;
 
   deletePost = (postId: string) =>
-    `${this.apiFullPath}/post/${postId}`;
+    `${this.apiFullPath}/posts/${postId}`;
   //#endregion
 
 
   //#region SUBSCRIPTION
   subscribe = (idPublisher: number) =>
-    `${this.apiFullPath}/subscription/subscribe/${idPublisher}`
+    `${this.apiFullPath}/subscriptions/subscribe/${idPublisher}`
 
   unsubscribe = (idPublisher: number) =>
-    `${this.apiFullPath}/subscription/unsubscribe/${idPublisher}`
+    `${this.apiFullPath}/subscriptions/unsubscribe/${idPublisher}`
 
   getSubscriptions = () =>
-    `${this.apiFullPath}/subscription`;
+    `${this.apiFullPath}/subscriptions`;
   //#endregion
 
 
   //#region USER
   getUserInfoById = (userId: string) => 
-    `${this.apiFullPath}/user/id/${userId}`;
+    `${this.apiFullPath}/users/id/${userId}`;
   //#endregion
 
 
