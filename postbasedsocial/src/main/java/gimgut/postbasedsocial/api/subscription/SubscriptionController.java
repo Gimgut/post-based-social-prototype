@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/subscription")
+@RequestMapping("/api/v1/subscriptions")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;

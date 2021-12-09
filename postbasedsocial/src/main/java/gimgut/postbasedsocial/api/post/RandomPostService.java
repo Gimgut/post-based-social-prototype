@@ -1,6 +1,6 @@
 package gimgut.postbasedsocial.api.post;
 
-import gimgut.postbasedsocial.api.user.RoleRepository;
+import gimgut.postbasedsocial.api.user.role.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.shared.services.TimeService;
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -39,10 +40,10 @@ public class RandomPostService {
         userInfo.setUsername("Random01");
         userInfo.setUnlocked(true);
         userInfo.setActivated(true);
-        userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+        userInfo.setRegistrationTime(timeService.getUtcNowZDT());
         userInfoRepository.save(userInfo);
         for (int iPost = 0; iPost < count; iPost++) {
-            LocalDateTime rndLdt = timeService.getUtcNowLDT().plusSeconds(randomStringGenerator.generateRandomInt(20 * iPost, 20 * (iPost + 1)));
+            ZonedDateTime rndLdt = timeService.getUtcNowZDT().plusSeconds(randomStringGenerator.generateRandomInt(20 * iPost, 20 * (iPost + 1)));
             Post publication = new Post(
                     randomStringGenerator.generateSentence(1, 4),
                     randomStringGenerator.generateParagraph(1, 10),
@@ -62,11 +63,11 @@ public class RandomPostService {
         userInfo.setUsername("Random02");
         userInfo.setUnlocked(true);
         userInfo.setActivated(true);
-        userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+        userInfo.setRegistrationTime(timeService.getUtcNowZDT());
         userInfo.setRole(roleRepository.findByName("WRITER"));
         userInfoRepository.save(userInfo);
         for (int page = realPages - 1; page > -1; page--) {
-            LocalDateTime rndLdt = timeService.getUtcNowLDT().minusSeconds(randomStringGenerator.generateRandomInt(20 * page, 20 * (page + 1)));
+            ZonedDateTime rndLdt = timeService.getUtcNowZDT().minusSeconds(randomStringGenerator.generateRandomInt(20 * page, 20 * (page + 1)));
             Post publication = new Post(
                     "Pseudo page " + (page + 1),
                     pagedText.get(page),

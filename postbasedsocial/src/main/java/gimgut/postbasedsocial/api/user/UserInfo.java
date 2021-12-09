@@ -1,9 +1,11 @@
 package gimgut.postbasedsocial.api.user;
 
+import gimgut.postbasedsocial.api.user.role.Role;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Cacheable
@@ -28,7 +30,7 @@ public class UserInfo {
     private boolean unlocked;
 
     @Column(name = "registration_dt")
-    private LocalDateTime registrationTime;
+    private ZonedDateTime registrationTime;
 
     //TODO: shorten url before saving / use cdn / use cloud storage / etc.
     @Column(name = "picture_url")
@@ -37,7 +39,7 @@ public class UserInfo {
     public UserInfo() {
     }
 
-    public UserInfo(Long id, String username, Role role, boolean activated, boolean unlocked, LocalDateTime registrationTime, String pictureUrl) {
+    public UserInfo(Long id, String username, Role role, boolean activated, boolean unlocked, ZonedDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
@@ -87,11 +89,11 @@ public class UserInfo {
         this.unlocked = unlocked;
     }
 
-    public LocalDateTime getRegistrationTime() {
+    public ZonedDateTime getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(LocalDateTime registrationTime) {
+    public void setRegistrationTime(ZonedDateTime registrationTime) {
         this.registrationTime = registrationTime;
     }
 

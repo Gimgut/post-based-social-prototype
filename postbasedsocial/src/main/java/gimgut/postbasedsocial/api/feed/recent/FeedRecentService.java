@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.api.feed;
+package gimgut.postbasedsocial.api.feed.recent;
 
 import gimgut.postbasedsocial.api.post.Post;
 import org.springframework.data.domain.PageRequest;
@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class FeedService {
+public class FeedRecentService {
 
     private final FeedRecentRepository feedRecentRepository;
     private final Pageable defaultPage = PageRequest.of(0, 20);
 
-    public FeedService(FeedRecentRepository feedRecentRepository) {
+    public FeedRecentService(FeedRecentRepository feedRecentRepository) {
         this.feedRecentRepository = feedRecentRepository;
     }
 

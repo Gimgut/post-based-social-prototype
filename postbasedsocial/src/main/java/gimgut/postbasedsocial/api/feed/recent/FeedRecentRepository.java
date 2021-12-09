@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.api.feed;
+package gimgut.postbasedsocial.api.feed.recent;
 
 import gimgut.postbasedsocial.api.post.Post;
 import org.springframework.data.domain.Pageable;

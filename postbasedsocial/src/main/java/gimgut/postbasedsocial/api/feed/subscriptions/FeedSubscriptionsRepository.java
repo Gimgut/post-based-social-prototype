@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface SubscriptionsFeedRepository extends JpaRepository<Post, Long> {
+public interface FeedSubscriptionsRepository extends JpaRepository<Post, Long> {
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select p from Post p LEFT JOIN FETCH p.author where p.id<:lastId and p.author.id IN :authorsIds and p.visible=true order by p.id desc")

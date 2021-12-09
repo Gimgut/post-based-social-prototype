@@ -15,6 +15,4 @@ public interface PostRepository extends SoftJpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p LEFT JOIN FETCH p.author WHERE p.id = :id AND p.visible = true")
     Optional<Post> findVisibleById_JoinFetchAuthor(Long id);
 
-
-    //List<Post> findAllByOrderByCreatedAtDesc();
 }

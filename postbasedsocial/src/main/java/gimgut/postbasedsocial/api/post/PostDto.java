@@ -4,20 +4,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import gimgut.postbasedsocial.api.user.UserInfoDto;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class PostDto {
     private Long id;
     private String title;
     private String content;
     private int rating;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss Z")
+    private ZonedDateTime createdAt;
     private UserInfoDto author;
 
     public PostDto() {
     }
 
-    public PostDto(Long id, String title, String content, int rating, LocalDateTime createdAt, UserInfoDto userInfoDto) {
+    public PostDto(Long id, String title, String content, int rating, ZonedDateTime createdAt, UserInfoDto userInfoDto) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -58,11 +59,11 @@ public class PostDto {
         this.rating = rating;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(ZonedDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -1,7 +1,7 @@
 package gimgut.postbasedsocial.security.oauth2;
 
-import gimgut.postbasedsocial.api.user.Role;
-import gimgut.postbasedsocial.api.user.RoleRepository;
+import gimgut.postbasedsocial.api.user.role.Role;
+import gimgut.postbasedsocial.api.user.role.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
@@ -81,8 +81,8 @@ public class GoogleRegistrationService {
         userInfo.setRole(role);
         userInfo.setUnlocked(true);
         userInfo.setActivated(true);
-        userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-        //TODO: load picture to some service to avoid "Rate-limit exceeded"
+        userInfo.setRegistrationTime(timeService.getUtcNowZDT());
+        //TODO: load picture to some service to avoid google's "Rate-limit exceeded" error
         userInfo.setPictureUrl(oidcUser.getPicture());
         userInfo.setUsername("User" + userCredentials.getId() + "g");
         return userInfoRepository.save(userInfo);

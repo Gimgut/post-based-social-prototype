@@ -11,13 +11,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class SubscriptionsFeedService {
+public class FeedSubscriptionsService {
 
-    private final SubscriptionsFeedRepository subscriptionsFeedRepository;
+    private final FeedSubscriptionsRepository feedSubscriptionsRepository;
     private final Pageable defaultPage = PageRequest.of(0, 20);
 
-    public SubscriptionsFeedService(SubscriptionsFeedRepository subscriptionsFeedRepository) {
-        this.subscriptionsFeedRepository = subscriptionsFeedRepository;
+    public FeedSubscriptionsService(FeedSubscriptionsRepository feedSubscriptionsRepository) {
+        this.feedSubscriptionsRepository = feedSubscriptionsRepository;
     }
 
     @Transactional(readOnly = true)
@@ -25,7 +25,7 @@ public class SubscriptionsFeedService {
         if (idsPublishers.size() < 1) {
             return new ArrayList<>();
         }
-        return this.subscriptionsFeedRepository.findNewestPostsOfUsers(defaultPage, idsPublishers);
+        return this.feedSubscriptionsRepository.findNewestPostsOfUsers(defaultPage, idsPublishers);
     }
 
     @Transactional(readOnly = true)
@@ -33,6 +33,6 @@ public class SubscriptionsFeedService {
         if (idsPublishers.size() < 1) {
             return new ArrayList<>();
         }
-        return this.subscriptionsFeedRepository.findNewestPostsOfUsersAfterId(defaultPage, lastViewedPostId, idsPublishers);
+        return this.feedSubscriptionsRepository.findNewestPostsOfUsersAfterId(defaultPage, lastViewedPostId, idsPublishers);
     }
 }

@@ -3,6 +3,7 @@ package gimgut.postbasedsocial.api.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class UserInfoDto {
     private Long id;
@@ -10,14 +11,14 @@ public class UserInfoDto {
     private String role;
     private boolean activated;
     private boolean unlocked;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime registrationTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss Z")
+    private ZonedDateTime registrationTime;
     private String pictureUrl;
 
     public UserInfoDto() {
     }
 
-    public UserInfoDto(Long id, String username, String role, boolean activated, boolean unlocked, LocalDateTime registrationTime, String pictureUrl) {
+    public UserInfoDto(Long id, String username, String role, boolean activated, boolean unlocked, ZonedDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
@@ -67,11 +68,11 @@ public class UserInfoDto {
         this.unlocked = unlocked;
     }
 
-    public LocalDateTime getRegistrationTime() {
+    public ZonedDateTime getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(LocalDateTime registrationTime) {
+    public void setRegistrationTime(ZonedDateTime registrationTime) {
         this.registrationTime = registrationTime;
     }
 

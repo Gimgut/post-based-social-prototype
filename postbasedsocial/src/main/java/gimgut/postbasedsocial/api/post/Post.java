@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Cacheable
@@ -25,7 +26,7 @@ public class Post implements Hideable {
     private String content;
 
     private int rating;
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_info_id")
@@ -36,8 +37,7 @@ public class Post implements Hideable {
     public Post() {
     }
 
-    public Post(Long id, String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
-        this.id = id;
+    public Post(String title, String content, int rating, ZonedDateTime createdAt, UserInfo author, boolean visible) {
         this.title = title;
         this.content = content;
         this.rating = rating;
@@ -46,13 +46,9 @@ public class Post implements Hideable {
         this.visible = visible;
     }
 
-    public Post(String title, String content, int rating, LocalDateTime createdAt, UserInfo author, boolean visible) {
-        this.title = title;
-        this.content = content;
-        this.rating = rating;
-        this.createdAt = createdAt;
-        this.author = author;
-        this.visible = visible;
+    public Post(Long id, String title, String content, int rating, ZonedDateTime createdAt, UserInfo author, boolean visible) {
+        this(title,content, rating, createdAt, author, visible);
+        this.id = id;
     }
 
     public Long getId() {
@@ -87,11 +83,11 @@ public class Post implements Hideable {
         this.rating = rating;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(ZonedDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

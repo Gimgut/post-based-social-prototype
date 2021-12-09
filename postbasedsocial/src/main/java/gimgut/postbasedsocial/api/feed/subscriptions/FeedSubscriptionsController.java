@@ -13,23 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/feed/subscriptions")
-public class SubscriptionsFeedController {
+public class FeedSubscriptionsController {
 
-    private final SubscriptionsFeedService subscriptionsFeedService;
+    private final FeedSubscriptionsService feedSubscriptionsService;
     private final SubscriptionService subscriptionService;
     private final PostMapper postMapper;
 
-    public SubscriptionsFeedController(SubscriptionsFeedService subscriptionsFeedService,
+    public FeedSubscriptionsController(FeedSubscriptionsService feedSubscriptionsService,
                                        SubscriptionService subscriptionService,
                                        PostMapper postMapper) {
-        this.subscriptionsFeedService = subscriptionsFeedService;
+        this.feedSubscriptionsService = feedSubscriptionsService;
         this.subscriptionService = subscriptionService;
         this.postMapper = postMapper;
     }
@@ -46,9 +45,9 @@ public class SubscriptionsFeedController {
 
         List<Post> posts;
         if (lastPostId == null) {
-            posts = subscriptionsFeedService.getRecentPosts(subscription.get().getSubscriptions());
+            posts = feedSubscriptionsService.getRecentPosts(subscription.get().getSubscriptions());
         } else {
-            posts = subscriptionsFeedService.getRecentPostsAfterId(subscription.get().getSubscriptions(), lastPostId);
+            posts = feedSubscriptionsService.getRecentPostsAfterId(subscription.get().getSubscriptions(), lastPostId);
         }
         return new ResponseEntity(postMapper.toListPostDto(posts), HttpStatus.OK);
     }

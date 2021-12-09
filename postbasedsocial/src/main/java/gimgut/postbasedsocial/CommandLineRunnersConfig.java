@@ -5,8 +5,8 @@ import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailReposito
 import gimgut.postbasedsocial.api.post.Post;
 import gimgut.postbasedsocial.api.post.PostRepository;
 import gimgut.postbasedsocial.api.post.RandomPostService;
-import gimgut.postbasedsocial.api.user.Role;
-import gimgut.postbasedsocial.api.user.RoleRepository;
+import gimgut.postbasedsocial.api.user.role.Role;
+import gimgut.postbasedsocial.api.user.role.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
@@ -81,7 +81,7 @@ public class CommandLineRunnersConfig {
             userInfo.setUnlocked(true);
             Role role = roleRepository.findByName(Roles.ADMIN.name());
             userInfo.setRole(role);
-            userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+            userInfo.setRegistrationTime(timeService.getUtcNowZDT());
             userInfoRepository.save(userInfo);
 
             user.setUserInfo(userInfo);

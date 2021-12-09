@@ -36,7 +36,7 @@ public class PostService {
                 newPostDto.getTitle(),
                 newPostDto.getContent(),
                 0,
-                timeService.getUtcNowLDT(),
+                timeService.getUtcNowZDT(),
                 author,
                 true);
         entityManager.persist(post);

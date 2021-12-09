@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.api.user;
+package gimgut.postbasedsocial.api.user.role;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

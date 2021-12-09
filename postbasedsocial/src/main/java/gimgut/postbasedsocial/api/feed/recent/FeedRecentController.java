@@ -1,4 +1,4 @@
-package gimgut.postbasedsocial.api.feed;
+package gimgut.postbasedsocial.api.feed.recent;
 
 import gimgut.postbasedsocial.api.post.Post;
 import gimgut.postbasedsocial.api.post.PostDto;
@@ -13,39 +13,39 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/feed")
-public class FeedController {
+@RequestMapping("/api/v1/feed/recent")
+public class FeedRecentController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
-    private final FeedService feedService;
+    private final FeedRecentService feedRecentService;
     private final PostMapper postMapper;
 
-    public FeedController(FeedService feedService, PostMapper postMapper) {
-        this.feedService = feedService;
+    public FeedRecentController(FeedRecentService feedRecentService, PostMapper postMapper) {
+        this.feedRecentService = feedRecentService;
         this.postMapper = postMapper;
     }
 
-    @GetMapping("/recent")
+    @GetMapping("")
     public ResponseEntity<List<PostDto>> getRecentPosts(
             @RequestParam(required = false) Long lastPostId) {
         List<Post> posts;
         if (lastPostId == null) {
-            posts = feedService.getRecentPosts();
+            posts = feedRecentService.getRecentPosts();
         } else {
-            posts = feedService.getRecentPosts(lastPostId);
+            posts = feedRecentService.getRecentPosts(lastPostId);
         }
         return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }
 
-    @GetMapping("/recent/user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<List<PostDto>> getUserRecentPosts(
             @PathVariable @NotNull Long id,
             @RequestParam(required = false) Long lastPostId) {
         List<Post> posts;
         if (lastPostId == null) {
-            posts = feedService.getRecentPostsOfUser(id);
+            posts = feedRecentService.getRecentPostsOfUser(id);
         } else {
-            posts = feedService.getRecentPostsOfUser(id, lastPostId);
+            posts = feedRecentService.getRecentPostsOfUser(id, lastPostId);
         }
         return new ResponseEntity<>(postMapper.toListPostDto(posts), HttpStatus.OK);
     }

@@ -1,7 +1,7 @@
 package gimgut.postbasedsocial.api.emailregistration;
 
-import gimgut.postbasedsocial.api.user.Role;
-import gimgut.postbasedsocial.api.user.RoleRepository;
+import gimgut.postbasedsocial.api.user.role.Role;
+import gimgut.postbasedsocial.api.user.role.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
@@ -52,7 +52,7 @@ public class EmailRegistrationService {
         userInfo.setRole(role);
         userInfo.setUnlocked(true);
         userInfo.setActivated(true);
-        userInfo.setRegistrationTime(timeService.getUtcNowLDT());
+        userInfo.setRegistrationTime(timeService.getUtcNowZDT());
 
         try {
             userInfoRepository.save(userInfo);

@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
     private final Log logger = LogFactory.getLog(this.getClass());
-    //TODO: remove element after T time elapsed
+    // TODO: Think about a method to remove outdated requests. Or replace InMemoryRepository completely.
     private final Map<String, OAuth2AuthorizationRequest> requests = new ConcurrentHashMap<>();
 
     @Override

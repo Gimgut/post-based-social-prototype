@@ -129,7 +129,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.oauth2Login()
                 .authorizationEndpoint()
-                // TODO: Save in a cookie?
+                // TODO: Resolve deprecated
                 .authorizationRequestRepository(new InMemoryRequestRepository());
         http.oauth2Login()
                 .authorizedClientService(new HollowOauth2AuthorizedClientService());
