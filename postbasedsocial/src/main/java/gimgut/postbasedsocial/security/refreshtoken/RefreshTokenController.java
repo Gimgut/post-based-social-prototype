@@ -4,6 +4,8 @@ import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.JwtService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +19,7 @@ import javax.validation.constraints.NotEmpty;
 @RequestMapping("api/v1/auth/refresh_token")
 public class RefreshTokenController {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final JwtService jwtService;
     private final UserInfoMapper userInfoMapper;
     private final RefreshTokenMapper refreshTokenMapper;

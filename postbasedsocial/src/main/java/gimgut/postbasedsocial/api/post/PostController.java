@@ -2,6 +2,8 @@ package gimgut.postbasedsocial.api.post;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +21,12 @@ import java.util.Set;
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final PostMapper postMapper;
     private final PostService postService;
     private final Validator validator;
     private final PostCleaner postCleaner;
+
 
     public PostController(PostMapper postMapper,
                           PostService postService,

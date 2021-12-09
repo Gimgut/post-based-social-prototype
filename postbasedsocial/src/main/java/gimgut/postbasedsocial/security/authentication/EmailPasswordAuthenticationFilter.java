@@ -7,6 +7,8 @@ import gimgut.postbasedsocial.api.user.UserInfoMapper;
 import gimgut.postbasedsocial.security.AuthenticationType;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Tokens;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
@@ -51,13 +54,13 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
         try {
             loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
         } catch (IOException e) {
-            logger.warn("Authe failed. Can't parse JSON to LoginRequestDto." + userRequestInfo);
+            log.warn("Authe failed. Can't parse JSON to LoginRequestDto." + userRequestInfo);
             throw new UsernameNotFoundException("Bad request body");
         }
 
         Set<ConstraintViolation<LoginRequestDto>> violations = validator.validate(loginRequestDto);
         if (!violations.isEmpty()) {
-            logger.warn("Authe failed. Violated fields." + userRequestInfo);
+            log.warn("Authe failed. Violated fields." + userRequestInfo);
             throw new UsernameNotFoundException("Bad request body");
         }
 
@@ -75,7 +78,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        logger.info("Authe success. UIID: " + userDetails.getId() + "." + userRequestInfo);
+        log.info("Authe success. UIID: " + userDetails.getId() + "." + userRequestInfo);
 
         Tokens tokens = jwtService.getAccessAndRefreshTokens(userDetails, AuthenticationType.EMAIL);
 
@@ -92,7 +95,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         String forwardedIp = request.getHeader("X-FORWARDED-FOR");
         String userRequestInfo = "addr: " + (forwardedIp == null ? request.getRemoteAddr() : forwardedIp);
-        logger.info("Authe failed. Wrong credentials." + userRequestInfo);
+        log.info("Authe failed. Wrong credentials." + userRequestInfo);
 
         response.setStatus(400);
         response.getOutputStream().write("WRONG_CREDENTIALS".getBytes());

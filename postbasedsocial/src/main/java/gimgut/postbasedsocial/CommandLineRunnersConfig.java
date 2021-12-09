@@ -13,6 +13,8 @@ import gimgut.postbasedsocial.security.Roles;
 import gimgut.postbasedsocial.shared.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +27,7 @@ import java.util.List;
 @Profile("DbRandomPopulation")
 public class CommandLineRunnersConfig {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
 
     @Bean("createAppRoles")
     public CommandLineRunner createAppRoles(RoleRepository roleRepository) {
@@ -46,19 +48,18 @@ public class CommandLineRunnersConfig {
             role.setName(Roles.ADMIN.name());
             roleRepository.save(role);
 
-            //roleRepository.findAll().forEach((x) -> logger.info(x.toString()));
+            //roleRepository.findAll().forEach((x) -> log.info(x.toString()));
         };
     }
 
     @Bean
     public CommandLineRunner run(RandomPostService randomPublicationService, PostRepository publicationRepository) {
         return args -> {
-            //randomPublicationService.addRandomPublications(100);
             randomPublicationService.add1984(100);
             List<Post> allPublications = publicationRepository.findAll();
-            allPublications.forEach((x) -> logger.info(x.toString()));
+            allPublications.forEach((x) -> log.info(x.toString()));
             //allPublications = publicationRepository.findAllByOrderByCreatedAtDesc();
-            //allPublications.forEach((x) -> logger.info(x.toString()));
+            //allPublications.forEach((x) -> log.info(x.toString()));
         };
     }
 
@@ -87,7 +88,7 @@ public class CommandLineRunnersConfig {
             user.setUserInfo(userInfo);
             userCredentialsEmailRepository.save(user);
 
-            logger.info("Creates admin user " + user);
+            log.info("Creates admin user " + user);
         };
     }
 }

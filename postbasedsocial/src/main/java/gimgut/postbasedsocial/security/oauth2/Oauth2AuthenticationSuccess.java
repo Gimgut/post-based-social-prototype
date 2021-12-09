@@ -8,6 +8,8 @@ import gimgut.postbasedsocial.security.Tokens;
 import gimgut.postbasedsocial.security.authentication.LoginResponseDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -21,7 +23,7 @@ import java.io.IOException;
 @Component
 public class Oauth2AuthenticationSuccess implements AuthenticationSuccessHandler {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final ObjectMapper objectMapper;
     private final GoogleRegistrationService googleRegistrationService;
     private final JwtService jwtService;

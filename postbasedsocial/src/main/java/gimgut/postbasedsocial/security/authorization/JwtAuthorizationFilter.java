@@ -3,6 +3,8 @@ package gimgut.postbasedsocial.security.authorization;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import gimgut.postbasedsocial.security.JwtService;
 import gimgut.postbasedsocial.security.Roles;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final String AUTH_LOGIN_URL;
     private final String REFRESH_TOKEN_URL;
     private final JwtService jwtService;
@@ -38,21 +41,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (!request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") && !request.getRemoteAddr().equals("127.0.0.1")) {
             response.setStatus(403);
-            logger.info("KICKED OUT." + userRequestInfo);
+            log.info("KICKED OUT." + userRequestInfo);
             return;
         }
         String servletPath = request.getServletPath();
         if (!servletPath.startsWith("/api")
                 || servletPath.startsWith(AUTH_LOGIN_URL)
                 || servletPath.startsWith(REFRESH_TOKEN_URL)) {
-            logger.info("Skip autho." + userRequestInfo);
+            log.info("Skip autho." + userRequestInfo);
             filterChain.doFilter(request, response);
             return;
         }
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            logger.info("Unautho access." + userRequestInfo);
+            log.info("Unautho access." + userRequestInfo);
             filterChain.doFilter(request, response);
             return;
         }
@@ -62,7 +65,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String accessToken = authorizationHeader.substring(7);
             decodedJWT = jwtService.verifyAccessToken(accessToken);
         } catch (Exception e) {
-            logger.info("Autho failed." + userRequestInfo);
+            log.info("Autho failed." + userRequestInfo);
             response.setHeader("error", "Autho failed");
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -81,7 +84,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(usernamePasswordAuthenticationToken);
         SecurityContextHolder.setContext(context);
-        logger.info("Autho success." + " UIID: " + userInfoId + "." + userRequestInfo );
+        log.info("Autho success." + " UIID: " + userInfoId + "." + userRequestInfo );
         filterChain.doFilter(request, response);
     }
 }

@@ -5,6 +5,8 @@ import gimgut.postbasedsocial.api.post.PostDto;
 import gimgut.postbasedsocial.api.post.PostMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/feed/recent")
 public class FeedRecentController {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final FeedRecentService feedRecentService;
     private final PostMapper postMapper;
 

@@ -8,6 +8,8 @@ import gimgut.postbasedsocial.security.Roles;
 import gimgut.postbasedsocial.shared.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,7 @@ import java.security.SecureRandom;
 @Service
 public class GoogleRegistrationService {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final UserInfoRepository userInfoRepository;
     private final UserCredentialsGoogleRepository userCredentialsGoogleRepository;
     private final RoleRepository roleRepository;

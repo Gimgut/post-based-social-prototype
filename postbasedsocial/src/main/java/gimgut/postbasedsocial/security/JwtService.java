@@ -13,6 +13,8 @@ import gimgut.postbasedsocial.security.refreshtoken.RefreshTokenStatus;
 import gimgut.postbasedsocial.security.refreshtoken.TypeConversionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final String secret;
     private final long accessTokenExpiryTimeMs;
     private final long refreshTokenExpiryTimeMs;
