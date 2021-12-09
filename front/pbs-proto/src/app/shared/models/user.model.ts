@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { DateAdapter } from "../dto/date.adapter";
 import { Adapter } from "./adapter.model";
 
 export enum Roles {
@@ -26,12 +25,10 @@ export class User {
 export class UserAdapter implements Adapter<User> {
 
   constructor(
-    private dateAdapter: DateAdapter
   ) {}
 
   adapt(item: any): User {
-    const dtoDate = new Date(item.registrationTime);
-    return new User(item.id, item.username, item.pictureUrl, <Roles>item.role, this.dateAdapter.adapt(item.registrationTime));
+    return new User(item.id, item.username, item.pictureUrl, <Roles>item.role, item.registrationTime);
   }
 
   adaptArr(arr: any): User[] {

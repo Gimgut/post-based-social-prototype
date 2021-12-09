@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { DateAdapter } from "../dto/date.adapter";
 import { Adapter } from "./adapter.model";
 import { User, UserAdapter } from "./user.model";
 
@@ -20,14 +19,13 @@ export class Post {
 export class PostAdapter implements Adapter<Post> {
 
   constructor(
-    private userAdapter: UserAdapter,
-    private dateAdapter: DateAdapter
+    private userAdapter: UserAdapter
   ) {}
 
   adapt(item: any): Post {
     return new Post(item.id, item.title, item.content, 
       item.rating,
-      this.dateAdapter.adapt(item.createdAt),
+      item.createdAt,
       this.userAdapter.adapt(item.author));
   }
 
