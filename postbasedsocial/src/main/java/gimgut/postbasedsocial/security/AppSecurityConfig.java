@@ -94,8 +94,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(
                 HttpMethod.GET,
                 "/api/*/feed/recent/**",
-                "/api/*/user/**",
-                "/api/*/post/**",
+                "/api/*/users/**",
+                "/api/*/posts/**",
                 "api/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(
                 HttpMethod.POST,
