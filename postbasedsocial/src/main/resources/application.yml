@@ -33,8 +33,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 568593949275-lrg41604loib2nhqbju58bha470ja32r.apps.googleusercontent.com
-            client-secret: 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
+            client-id: should_be_in_a_vault
+            client-secret: secret_should_be_in_a_vault
             redirectUri: http://localhost:8080/auth/oauth2/callback
 app:
   security:
