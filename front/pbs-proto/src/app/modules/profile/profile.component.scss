@@ -1,0 +1,13 @@
+
+.menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background-color: white;
+    border-width: 1px;
+    border: 1px solid whitesmoke;
+}
+
+.menu-item {
+    display: block;
+}

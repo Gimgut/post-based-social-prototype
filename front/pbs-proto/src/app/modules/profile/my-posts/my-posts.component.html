@@ -1,0 +1,13 @@
+<div>
+    <div class="bg-white txt-align-center">
+        <h1>My Posts</h1>
+        <span *ngIf="myPosts.length===0">No posts</span>
+    </div>
+    <app-feed [posts]="myPosts"></app-feed>
+    <div class="div-flex">
+        <div class="margin-centre-horiz">
+            <button *ngIf="myPosts.length>0" (click)="fetchMoreOnClick()" mat-button class="bg-blue-1">Fetch more</button>
+            <button *ngIf="myPosts.length===0" (click)="fetchMoreOnClick()" mat-button class="bg-blue-1">Refresh</button>
+        </div>
+    </div>
+</div>

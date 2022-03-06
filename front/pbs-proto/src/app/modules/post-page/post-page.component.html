@@ -1,0 +1,3 @@
+<app-post [post]="post"></app-post>
+<a *ngIf="canEdit()" [routerLink]="['/profile/edit/post',post?.id]">Edit</a>
+<app-sub-buttons #subButtons></app-sub-buttons>
