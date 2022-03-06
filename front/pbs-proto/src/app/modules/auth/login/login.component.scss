@@ -1,0 +1,30 @@
+.margin-zero {
+    margin: 0;
+  }
+  
+  .middlebox {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 480px;
+    margin: auto;
+    padding: 1em;
+  }
+  
+  .inputform {
+    display: grid;
+    grid-gap: 1em;
+  }
+  
+  .mat-success {
+    background-color: green;
+    color: #fff;
+  }
+  
+  .auth-container {
+    display: grid;
+  }
+  
+  .content, .overlay {
+    grid-area: 1 / 1;
+    margin: auto;
+  }

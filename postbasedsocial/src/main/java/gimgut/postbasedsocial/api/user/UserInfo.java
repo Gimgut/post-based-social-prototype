@@ -1,9 +1,15 @@
 package gimgut.postbasedsocial.api.user;
 
+import gimgut.postbasedsocial.api.user.role.Role;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserInfo {
 
     @Id
@@ -12,6 +18,7 @@ public class UserInfo {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -20,28 +27,26 @@ public class UserInfo {
 
     private boolean activated;
 
-    private boolean locked;
+    private boolean unlocked;
 
-    @Column(name = "dt_registration")
-    private LocalDateTime registrationTime;
+    @Column(name = "registration_dt")
+    private ZonedDateTime registrationTime;
 
-    /**
-     * Contains picture url
-     * TODO: add service that shortens picture url
-     */
-    private String picture;
+    //TODO: shorten url before saving / use cdn / use cloud storage / etc.
+    @Column(name = "picture_url")
+    private String pictureUrl;
 
     public UserInfo() {
     }
 
-    public UserInfo(Long id, String username, Role role, boolean activated, boolean locked, LocalDateTime registrationTime, String picture) {
+    public UserInfo(Long id, String username, Role role, boolean activated, boolean unlocked, ZonedDateTime registrationTime, String pictureUrl) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.activated = activated;
-        this.locked = locked;
+        this.unlocked = unlocked;
         this.registrationTime = registrationTime;
-        this.picture = picture;
+        this.pictureUrl = pictureUrl;
     }
 
     public Long getId() {
@@ -76,19 +81,19 @@ public class UserInfo {
         this.activated = activated;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public boolean isUnlocked() {
+        return unlocked;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 
-    public LocalDateTime getRegistrationTime() {
+    public ZonedDateTime getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(LocalDateTime registrationTime) {
+    public void setRegistrationTime(ZonedDateTime registrationTime) {
         this.registrationTime = registrationTime;
     }
 
@@ -99,16 +104,16 @@ public class UserInfo {
                 ", username='" + username + '\'' +
                 ", role=" + role +
                 ", activated=" + activated +
-                ", locked=" + locked +
+                ", unlocked=" + unlocked +
                 ", registrationTime=" + registrationTime +
                 '}';
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

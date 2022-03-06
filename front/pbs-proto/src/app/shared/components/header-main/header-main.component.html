@@ -1,0 +1,33 @@
+<div class="header-main bg-c-blue">
+  <div class="header-content">
+
+    <div class="menu-max ">
+      <a routerLink="/" class="center-vert"><h1 class="white-text">Prototype</h1></a>
+      <a routerLink="/recent" class="menu-item center-vert"><h2 class="white-text center-vert">New</h2></a>
+    </div>
+
+    <div class="menu-min">
+      <a routerLink="/" class="center-vert"><h1 class="white-text">Prototype</h1></a>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu" class="menu-spacer center-vert" color="white">
+        <mat-icon class="txt-c-white">menu</mat-icon>
+      </button>
+    </div>
+
+
+    <div class="center-vert">
+      <a class="white-text menu-item" *ngIf="!authenticatedUser" routerLink="/auth">Sign In</a>
+      <a class="white-text menu-item align-vert-center flex" *ngIf="authenticatedUser" routerLink="/profile">
+          <img class="margin-vert-center" [src]="authenticatedUser?.picture" class="size-box-max-2rem border-radius-05rem">
+          <span class="margin-vert-center margin-left-03rem">{{authenticatedUser?.username}}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+  <mat-menu #menu="matMenu">
+    <a mat-menu-item routerLink="/recent">
+      <span>New</span>
+    </a>
+  </mat-menu>
+  

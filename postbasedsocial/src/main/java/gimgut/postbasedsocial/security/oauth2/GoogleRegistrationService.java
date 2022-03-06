@@ -1,112 +1,92 @@
 package gimgut.postbasedsocial.security.oauth2;
 
-import gimgut.postbasedsocial.api.user.Role;
-import gimgut.postbasedsocial.api.user.RoleRepository;
+import gimgut.postbasedsocial.api.user.role.Role;
+import gimgut.postbasedsocial.api.user.role.RoleRepository;
 import gimgut.postbasedsocial.api.user.UserInfo;
 import gimgut.postbasedsocial.api.user.UserInfoRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.services.TimeService;
+import gimgut.postbasedsocial.shared.services.TimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.security.SecureRandom;
+
 @Service
 public class GoogleRegistrationService {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final UserInfoRepository userInfoRepository;
     private final UserCredentialsGoogleRepository userCredentialsGoogleRepository;
     private final RoleRepository roleRepository;
     private final TimeService timeService;
+    private final EntityManager entityManager;
+    private final SecureRandom random = new SecureRandom();
 
     public GoogleRegistrationService(UserInfoRepository userInfoRepository,
                                      UserCredentialsGoogleRepository userCredentialsGoogleRepository,
                                      RoleRepository roleRepository,
-                                     TimeService timeService) {
+                                     TimeService timeService,
+                                     EntityManager entityManager) {
         this.userInfoRepository = userInfoRepository;
         this.userCredentialsGoogleRepository = userCredentialsGoogleRepository;
         this.roleRepository = roleRepository;
         this.timeService = timeService;
+        this.entityManager = entityManager;
     }
 
     @Transactional
     public UserCredentialsGoogleRegistration getUserByEmailOrRegisterAsNew(DefaultOidcUser oidcUser) {
-        UserCredentialsGoogleRegistration user = userCredentialsGoogleRepository.findByEmail_Eager(oidcUser.getEmail());
+        UserCredentialsGoogleRegistration user = userCredentialsGoogleRepository.findByEmail_JoinFetchInfo(oidcUser.getEmail());
         if (user != null) {
             return user;
         } else {
-            //create google user credentials
-            UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
-            newGoogleUser.setEmail(oidcUser.getEmail());
-            newGoogleUser.setPassword(Integer.toString(("g"+oidcUser.getEmail()).hashCode()));
-
-            //create user info
-            UserInfo userInfo = new UserInfo();
-            Role role = roleRepository.findByName(Roles.USER.name());
-            if (role == null)
-                return null;
-            userInfo.setRole(role);
-            userInfo.setLocked(false);
-            userInfo.setActivated(true);
-            userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-            userInfo.setPicture(oidcUser.getPicture());
-            String generatedUsername;
-            do {
-                generatedUsername =
-                        "User"
-                        + Math.abs(("g" + oidcUser.getEmail()).hashCode())
-                        + ("g" + oidcUser.getName()).hashCode();
-            } while (userInfoRepository.findIdByUsername(generatedUsername) != null);
-            userInfo.setUsername(generatedUsername);
-
-            newGoogleUser.setUserInfo(userInfo);
-
-            //save
-            try {
-                userInfoRepository.save(userInfo);
-                userCredentialsGoogleRepository.save(newGoogleUser);
-            } catch (Exception e) {
-                logger.error("Failed userInfoRepository.save(userInfo)");
-                return null;
-            }
-            return newGoogleUser;
+            return registerNewUser(oidcUser);
         }
     }
 
-    /*
     @Transactional
-    public RegistrationResponseStatus registerNewUser(UserCredentialsEmailRegistration user) {
-        //TODO: validate userCredentials fields
-
-        if (userCredentialsGoogleRepository.findByEmail(user.getEmail()) != null)
-            return RegistrationResponseStatus.EMAIL_EXISTS;
-
-        if (userInfoRepository.findByUsername(user.getUserInfo().getUsername()) != null)
-            return RegistrationResponseStatus.USERNAME_EXISTS;
-
-        //set UserCredentialsEmailRegistration parameters
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        //set UserInfo parameters
-        UserInfo userInfo = user.getUserInfo();
-        Role role = roleRepository.findByName(Roles.USER.name());
-        if (role == null)
-            return RegistrationResponseStatus.FAILED;
-        userInfo.setRole(role);
-        userInfo.setLocked(false);
-        userInfo.setActivated(true);
-        userInfo.setRegistrationTime(timeService.getUtcNowLDT());
-
-        try {
-            userInfoRepository.save(userInfo);
-            userCredentialsEmailRepository.save(user);
-        } catch (Exception e) {
-            return RegistrationResponseStatus.FAILED;
-        }
-        return RegistrationResponseStatus.SUCCESS;
+    public UserCredentialsGoogleRegistration registerNewUser(DefaultOidcUser oidcUser) {
+        UserCredentialsGoogleRegistration newGoogleUser = this.createUserCredentials(oidcUser);
+        UserInfo userInfo = createDefaultUserInfo(oidcUser, newGoogleUser);
+        newGoogleUser.setUserInfo(userInfo);
+        return newGoogleUser;
     }
 
-     */
+    @Transactional
+    private UserCredentialsGoogleRegistration createUserCredentials(DefaultOidcUser oidcUser) {
+        UserCredentialsGoogleRegistration newGoogleUser = new UserCredentialsGoogleRegistration();
+        newGoogleUser.setEmail(oidcUser.getEmail());
+        newGoogleUser.setPassword(generateRandomPassword());
+        return userCredentialsGoogleRepository.save(newGoogleUser);
+    }
+
+    private String generateRandomPassword() {
+        byte[] password = new byte[16];
+        random.nextBytes(password);
+        return String.valueOf(password);
+    }
+
+    @Transactional
+    private UserInfo createDefaultUserInfo(DefaultOidcUser oidcUser, UserCredentialsGoogleRegistration userCredentials) {
+        UserInfo userInfo = new UserInfo();
+        String defaultRole = Roles.READER.name();
+        Role role = roleRepository.findByName(defaultRole);
+        if (role == null) {
+            throw new GoogleRegistrationException("Role " + defaultRole + " was not found in the database");
+        }
+        userInfo.setRole(role);
+        userInfo.setUnlocked(true);
+        userInfo.setActivated(true);
+        userInfo.setRegistrationTime(timeService.getUtcNowZDT());
+        //TODO: load picture to some service to avoid google's "Rate-limit exceeded" error
+        userInfo.setPictureUrl(oidcUser.getPicture());
+        userInfo.setUsername("User" + userCredentials.getId() + "g");
+        return userInfoRepository.save(userInfo);
+    }
 }

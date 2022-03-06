@@ -1,8 +1,8 @@
 package gimgut.postbasedsocial.security.authentication;
 
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRegistration;
+import gimgut.postbasedsocial.api.emailregistration.UserCredentialsEmailRepository;
 import gimgut.postbasedsocial.security.Roles;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRepository;
-import gimgut.postbasedsocial.security.registration.UserCredentialsEmailRegistration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,17 +22,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserCredentialsEmailRegistration user = userCredentialsEmailRepository.findByEmail_Eager(email);
-        if (user == null)
+        if (user == null) {
             throw new UsernameNotFoundException("Email not found:" + email);
+        }
         UserDetailsImpl userDetails = new UserDetailsImpl(
                 user.getId(),
                 user.getUserInfo().getUsername(),
                 user.getPassword(),
                 true,
-                !user.getUserInfo().isLocked(),
+                user.getUserInfo().isUnlocked(),
                 true,
                 user.getUserInfo().isActivated(),
-                Collections.singleton(Roles.valueOf(user.getUserInfo().getRole().getName()))
+                Collections.singleton(Roles.valueOf(user.getUserInfo().getRole().getName())),
+                user.getUserInfo()
         );
         return userDetails;
     }

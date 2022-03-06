@@ -1,16 +1,23 @@
 package gimgut.postbasedsocial.api.post;
 
+import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.shared.jpa.Hideable;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
-public class Post {
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Post implements Hideable {
 
     @Id
     @SequenceGenerator(name = "publication_sequence", sequenceName = "publication_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "publication_sequence")
     @Column(name = "id", updatable = false)
-    private long id;
+    private Long id;
 
     @Column(length = 128)
     private String title;
@@ -19,37 +26,36 @@ public class Post {
     private String content;
 
     private int rating;
-    private Timestamp datetime;
+    private ZonedDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_info_id")
+    private UserInfo author;
+
+    private boolean visible;
 
     public Post() {
     }
 
-    public Post(long id, String title, String content, int rating, Timestamp datetime) {
+    public Post(String title, String content, int rating, ZonedDateTime createdAt, UserInfo author, boolean visible) {
+        this.title = title;
+        this.content = content;
+        this.rating = rating;
+        this.createdAt = createdAt;
+        this.author = author;
+        this.visible = visible;
+    }
+
+    public Post(Long id, String title, String content, int rating, ZonedDateTime createdAt, UserInfo author, boolean visible) {
+        this(title,content, rating, createdAt, author, visible);
         this.id = id;
-        this.title = title;
-        this.content = content;
-        this.rating = rating;
-        this.datetime = datetime;
     }
 
-    public Post(String title, String content, int rating, Timestamp datetime) {
-        this.title = title;
-        this.content = content;
-        this.rating = rating;
-        this.datetime = datetime;
-    }
-
-    public Post(String title, String content, Timestamp datetime) {
-        this.title = title;
-        this.content = content;
-        this.datetime = datetime;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -77,23 +83,39 @@ public class Post {
         this.rating = rating;
     }
 
-    public Timestamp getDatetime() {
-        return datetime;
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDatetime(Timestamp datetime) {
-        this.datetime = datetime;
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public UserInfo getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserInfo author) {
+        this.author = author;
     }
 
     @Override
     public String toString() {
-        return "Publication{" +
+        return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", rating=" + rating +
-                ", datetime=" + datetime +
+                ", createdAt=" + createdAt +
                 '}';
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
 

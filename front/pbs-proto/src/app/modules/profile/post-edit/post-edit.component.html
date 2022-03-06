@@ -1,0 +1,7 @@
+<p>post-edit works!</p>
+<div class="create-post">
+    <app-post-editor #postEditor></app-post-editor>
+    <p *ngIf='serverErrorEdit'>Server error</p>
+    <button (click)="editPostButtonClick()">Edit</button>
+    <button (click)="deletePostButtonClick()">Delete</button>
+</div>

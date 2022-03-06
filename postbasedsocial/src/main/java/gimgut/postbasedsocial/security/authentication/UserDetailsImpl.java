@@ -1,5 +1,7 @@
 package gimgut.postbasedsocial.security.authentication;
 
+import gimgut.postbasedsocial.api.user.UserInfo;
+import gimgut.postbasedsocial.security.SecuredUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -7,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails, SecuredUser {
 
     private Long id;
     private String username;
@@ -17,11 +19,15 @@ public class UserDetailsImpl implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean enabled;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
+    private UserInfo userInfo;
 
     public UserDetailsImpl() {
     }
 
-    public UserDetailsImpl(Long id, String username, String password, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, Collection<? extends GrantedAuthority> grantedAuthorities) {
+    public UserDetailsImpl(Long id, String username, String password,
+                           boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled,
+                           Collection<? extends GrantedAuthority> grantedAuthorities,
+                           UserInfo userInfo) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -30,6 +36,15 @@ public class UserDetailsImpl implements UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
         this.grantedAuthorities = grantedAuthorities;
+        this.userInfo = userInfo;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public Long getId() {

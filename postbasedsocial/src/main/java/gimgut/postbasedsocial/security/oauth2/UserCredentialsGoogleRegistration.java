@@ -18,7 +18,7 @@ public class UserCredentialsGoogleRegistration implements SecuredUser {
     private String email;
 
     /**
-     * Ephemeral, needed for refresh token invalidation
+     * Ephemeral, can be user for token invalidation, etc.
      */
     private String password;
 

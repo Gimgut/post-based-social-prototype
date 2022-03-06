@@ -1,20 +1,23 @@
 package gimgut.postbasedsocial.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gimgut.postbasedsocial.api.user.UserInfoRepository;
-import gimgut.postbasedsocial.security.authentication.JwtEmailPasswordAuthenticationFilter;
+import gimgut.postbasedsocial.api.user.UserInfoMapper;
+import gimgut.postbasedsocial.security.authentication.EmailPasswordAuthenticationFilter;
+import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
 import gimgut.postbasedsocial.security.oauth2.GoogleRegistrationService;
+import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import gimgut.postbasedsocial.security.oauth2.InMemoryRequestRepository;
 import gimgut.postbasedsocial.security.oauth2.Oauth2AuthenticationSuccess;
-import gimgut.postbasedsocial.security.authorization.JwtAuthorizationFilter;
-import gimgut.postbasedsocial.security.oauth2.HollowOauth2AuthorizedClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,88 +32,128 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Validator;
 import java.io.IOException;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger log = LogManager.getLogger(this.getClass());
     private final ObjectMapper mapper;
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtService jwtService;
-
-    private final String AUTH_LOGIN = "/api/auth/signin";
-    private final String AUTH_REGISTER = "/api/auth/signup";
-    private final String AUTH_REFRESH_TOKEN = "/api/auth/refresh_token";
+    private final UserInfoMapper userInfoMapper;
+    private final Validator validator;
     private final GoogleRegistrationService googleRegistrationService;
-    private final UserInfoRepository userInfoRepository;
+
+    //TODO: move to configuration file
+    private final String AUTH_LOGIN = "/api/v1/auth/signin";
+    private final String AUTH_REGISTER = "/api/v1/auth/signup";
+    private final String AUTH_REFRESH_TOKEN = "/api/v1/auth/refresh_token";
 
     public AppSecurityConfig(ObjectMapper mapper,
                              UserDetailsService userDetailsService,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
-                             GoogleRegistrationService googleRegistrationService,
-                             UserInfoRepository userInfoRepository) {
+                             UserInfoMapper userInfoMapper,
+                             Validator validator,
+                             GoogleRegistrationService googleRegistrationService) {
         this.mapper = mapper;
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
+        this.userInfoMapper = userInfoMapper;
+        this.validator = validator;
         this.googleRegistrationService = googleRegistrationService;
-        this.userInfoRepository = userInfoRepository;
     }
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-        //auth.authenticationProvider(emailPasswordAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtEmailPasswordAuthenticationFilter jwtEmailPasswordAuthenticationFilter = new JwtEmailPasswordAuthenticationFilter(
-                authenticationManagerBean(), mapper, jwtService, userInfoRepository);
-        jwtEmailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
+        EmailPasswordAuthenticationFilter emailPasswordAuthenticationFilter =
+                new EmailPasswordAuthenticationFilter(
+                        authenticationManagerBean(),
+                        mapper,
+                        jwtService,
+                        userInfoMapper,
+                        validator);
+        emailPasswordAuthenticationFilter.setFilterProcessesUrl(AUTH_LOGIN);
 
         http.cors();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //public endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/feed/**" , "/api/user/**", "/api/post/**", "/login/**", "/oauth2/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.POST, AUTH_LOGIN, AUTH_REGISTER, AUTH_REFRESH_TOKEN).permitAll();
+        // Public endpoints
+        http.authorizeRequests().antMatchers(
+                HttpMethod.GET,
+                "/api/*/feed/recent/**",
+                "/api/*/users/**",
+                "/api/*/posts/**",
+                "api/oauth2/**").permitAll();
+        http.authorizeRequests().antMatchers(
+                HttpMethod.POST,
+                AUTH_LOGIN,
+                AUTH_REGISTER,
+                AUTH_REFRESH_TOKEN).permitAll();
+
+        // Dev endpoints, full exposure to view
+        http.authorizeRequests().antMatchers(
+                HttpMethod.GET,
+                "/api/docs/**",
+                "/api/swagger-ui/**",
+                "/api/actuator/**").permitAll();
+
         //authenticated endpoints
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/post/create").hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
+        http.authorizeRequests().antMatchers(
+                HttpMethod.POST,
+                "/api/*/post/create")
+                .hasAnyAuthority(Roles.WRITER.name(), Roles.ADMIN.name());
         http.authorizeRequests().antMatchers("/api/**").authenticated();
-        http.authorizeRequests().antMatchers("/**").permitAll();
 
-        http.addFilter(jwtEmailPasswordAuthenticationFilter);
-        http.addFilterBefore(new JwtAuthorizationFilter(AUTH_LOGIN, jwtService), UsernamePasswordAuthenticationFilter.class);
 
-        http.oauth2Login()
-                .successHandler(new Oauth2AuthenticationSuccess(mapper, googleRegistrationService, jwtService))
-                .and()
-                .exceptionHandling().authenticationEntryPoint(this::authenticationEntryPoint);
+        http.addFilter(emailPasswordAuthenticationFilter);
+        http.addFilterBefore(
+                new JwtAuthorizationFilter(AUTH_LOGIN, AUTH_REFRESH_TOKEN, jwtService),
+                UsernamePasswordAuthenticationFilter.class);
+
+        // Called after auth fail on ".authenticated()" matcher with no mapping
+        // for this request url. f.e. /api/r (/api/r doesn't exist)
+        // Or if authenticated but doesn't have a necessary authority
+        // Default spring implementation: redirect to oauth login page
+        http.exceptionHandling().authenticationEntryPoint(this::authenticationExceptionEntryPoint);
+
         http.oauth2Login()
                 .authorizationEndpoint()
-                    .authorizationRequestRepository(new InMemoryRequestRepository());
-        http.oauth2Login().authorizedClientService(new HollowOauth2AuthorizedClientService());
-
-
-        //http.oauth2Login().loginPage("http://localhost:4200/auth").successHandler(new Oauth2AuthenticationSuccess());
-        //http.oauth2Client().disable();
-        //http.oauth2Login().disable();
-
+                // TODO: Resolve deprecated
+                .authorizationRequestRepository(new InMemoryRequestRepository());
+        http.oauth2Login()
+                .authorizedClientService(new HollowOauth2AuthorizedClientService());
+        http.oauth2Login()
+                .successHandler(
+                        new Oauth2AuthenticationSuccess(
+                            mapper,
+                            googleRegistrationService,
+                            jwtService,
+                            userInfoMapper));
+        // Old: "ip:port/oauth2/authorization/google"
+        // New: "ip:port/api/oauth2/authorization/google"
+        http.oauth2Login().authorizationEndpoint().baseUri("/api/oauth2/authorization");
+        // Old: "ip:port/login/oauth2/code/google"
+        // New: "ip:port/api/oauth2/code/google
+        http.oauth2Login().redirectionEndpoint().baseUri("/api/oauth2/code/*");
     }
 
-    private void authenticationEntryPoint(HttpServletRequest request, HttpServletResponse response,
-                                          AuthenticationException authException ) throws IOException {
-        logger.info("authentication exception entry point");
-        response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
-        response.getWriter().write( mapper.writeValueAsString( Collections.singletonMap( "error", "Unauthenticated" ) ) );
+    private void authenticationExceptionEntryPoint(HttpServletRequest request,
+                                                   HttpServletResponse response,
+                                                   AuthenticationException authException) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Bean
@@ -123,9 +166,6 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
-        //config.addAllowedOrigin("http://localhost:4200");
-        //config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");

@@ -1,0 +1,63 @@
+<!-- Raw html/css impl. for comparison with AngularForm in auth.login -->
+<div class="auth-container" *ngIf="!isRegistrationSuccess">
+    <form [formGroup]="regForm" (ngSubmit)="onSubmit()" class="inputform white-bg">
+      <h2 class="margin-zero" align="center">Registration</h2>
+  
+      <label class="field field_v1">
+        <input id="email" formControlName="email" type="email" class="field__input" placeholder="Example: your-email@gmail.com">
+        <span class="field__label-wrap">
+          <span class="field__label" [ngClass]="regForm.controls['email'].hasError('email') || emailExists || badEmail ? 'txt-error' : ''">E-mail</span>
+        </span>
+      </label>
+  
+      <label class="field field_v1">
+        <input id="password" formControlName="password" type="password" class="field__input" placeholder="Example: lkj3n9db,mj2">
+        <span class="field__label-wrap">
+          <span class="field__label" [ngClass]="regForm.controls['password'].hasError('minlength') || regForm.controls['password'].hasError('maxlength') || badPassword ? 'txt-error' : ''">Password</span>
+        </span>
+      </label>
+  
+      <label class="field field_v1">
+        <input id="passwordRepeat" formControlName="passwordRepeat" type="password" class="field__input" placeholder="Repeat your password">
+        <span class="field__label-wrap">
+          <span class="field__label" [ngClass]="regForm.hasError('nopwdmatch') ? 'txt-error' : ''">Repeat your password</span>
+        </span>
+      </label>
+  
+      <label class="field field_v1">
+        <input id="username" formControlName="username" type="text" class="field__input" placeholder="Example: Maxim78">
+        <span class="field__label-wrap">
+          <span class="field__label" [ngClass]="usernameExists || badUsername || regForm.controls['username'].hasError('minlength') || regForm.controls['username'].hasError('maxlength') ? 'txt-error' : ''">Username</span>
+        </span>
+      </label>
+  
+      <button class="button-3" type="submit" [disabled]="isPending">Sign Up</button>
+  
+      <div>
+        <p class="txt-error" *ngIf="regForm.controls['email'].hasError('email') || badEmail">* invalid e-mail</p>
+        <p class="txt-error" *ngIf="emailExists">* the e-mail is already registered</p>
+  
+        <p class="txt-error" *ngIf="regForm.controls['password'].hasError('minlength')">* min password length is {{PASSWORD_MIN_LENGTH}}</p>
+        <p class="txt-error" *ngIf="regForm.controls['password'].hasError('maxlength')">* max password length is {{PASSWORD_MAX_LENGTH}}</p>
+        <p class="txt-error" *ngIf="regForm.controls['password'].hasError('pattern')">* password has restricted characters</p>
+        <p class="txt-error" *ngIf="regForm.hasError('nopwdmatch')">* passowords doesn`t match</p>
+        <p class="txt-error" *ngIf="badPassword">* invalid password</p>
+  
+        <p class="txt-error" *ngIf="regForm.controls['username'].hasError('minlength')">* min username length is {{USERNAME_MIN_LENGTH}}</p>
+        <p class="txt-error" *ngIf="regForm.controls['username'].hasError('maxlength')">* max username length is {{USERNAME_MAX_LENGTH}}</p>
+        <p class="txt-error" *ngIf="regForm.controls['username'].hasError('pattern')">* username has restricted characters</p>
+        <p class="txt-error" *ngIf="usernameExists">* the username is already taken</p>
+        <p class="txt-error" *ngIf="badUsername">* invalid username</p>
+  
+        <p class="txt-error" *ngIf="!regForm.valid">* all fields must be filled</p>
+        <p class="txt-error" *ngIf="unknownError">* server error</p>
+      </div>
+    </form>
+  
+    <div *ngIf="isPending" class="loader">Loading...</div>
+</div>
+  
+<div class="auth-container div-reg-ok" *ngIf="isRegistrationSuccess">
+    <h2>Registration success!</h2>
+    <a class="button-3" [routerLink]="['/auth']">Sign In</a>
+</div>

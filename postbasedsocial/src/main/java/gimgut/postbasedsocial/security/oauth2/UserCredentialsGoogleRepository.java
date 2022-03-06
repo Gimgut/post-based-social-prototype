@@ -1,17 +1,25 @@
 package gimgut.postbasedsocial.security.oauth2;
 
-import gimgut.postbasedsocial.security.SecuredUser;
-import gimgut.postbasedsocial.security.oauth2.UserCredentialsGoogleRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+
+import javax.persistence.QueryHint;
 
 public interface UserCredentialsGoogleRepository extends JpaRepository<UserCredentialsGoogleRegistration, Long> {
 
-    UserCredentialsGoogleRegistration findByEmail(String email);
 
+    @QueryHints({
+            @QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "false"),
+            @QueryHint(name = org.hibernate.annotations.QueryHints.CACHE_MODE, value = "GET")
+    })
     @Query("SELECT u FROM UserCredentialsGoogle u JOIN FETCH u.userInfo WHERE u.email=:email")
-    UserCredentialsGoogleRegistration findByEmail_Eager(String email);
+    UserCredentialsGoogleRegistration findByEmail_JoinFetchInfo(String email);
 
-    @Query("SELECT u FROM UserCredentialsGoogle u JOIN FETCH u.userInfo WHERE u.userInfo=:uiid")
-    UserCredentialsGoogleRegistration findByUserInfoId_Eager(Long uiid);
+    @QueryHints({
+            @QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "false"),
+            @QueryHint(name = org.hibernate.annotations.QueryHints.CACHE_MODE, value = "GET")
+    })
+    @Query("SELECT u FROM UserCredentialsGoogle u JOIN FETCH u.userInfo WHERE u.userInfo.id=:uiid")
+    UserCredentialsGoogleRegistration findByUserInfoId_JoinFetchInfo(Long uiid);
 }

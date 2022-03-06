@@ -1,0 +1,19 @@
+<div class="bg-white">
+    <div class="txt-align-center">
+        <h1>Profile</h1>
+    </div>
+    <div class="div-flex flex-wrap">
+        <div class="div-profile-image">
+            <img [src]="user?.picture" class="size-box-max-200px">
+        </div>
+        <div class="div-profile-info">
+            <p>Id: {{user?.id}}</p>
+            <p>Username: {{user?.username}}</p>
+            <p>Role: {{user?.role}}</p>
+            <p>Reg time: {{user?.registrationTime | date: 'medium' }}</p>
+        </div>
+    </div>
+    <div>
+        <button (click)="logout()" mat-button class="bg-gray-1">Log out</button>
+    </div>
+</div>
